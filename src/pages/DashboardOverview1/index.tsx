@@ -1,19 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { Tab } from '@/components/Base/Headless';
-import Lucide from '@/components/Base/Lucide';
 import { useCallback, useEffect, useState } from 'react';
 import { Role } from '@/constants';
 import { getAllCalculations } from '@/redux-toolkit/slices/calculations/calcuationsAPI';
 import { getAllMerchantCodes } from '@/redux-toolkit/slices/merchants/merchantAPI';
 import { getAllVendorCodes } from '@/redux-toolkit/slices/vendor/vendorAPI';
-import { setActiveTab } from '@/redux-toolkit/slices/common/tabs/tabSlice';
 import { useAppSelector } from '@/redux-toolkit/hooks/useAppSelector';
 import { useAppDispatch } from '@/redux-toolkit/hooks/useAppDispatch';
 import { getTabs } from '@/redux-toolkit/slices/common/tabs/tabSelectors';
 import { selectDarkMode } from '@/redux-toolkit/slices/common/darkMode/darkModeSlice';
 import { extractChartData, getFormattedCurrentDate } from '@/utils/helper';
-// import { withLazyLoading } from '@/utils/lazyStrategies';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
@@ -22,24 +18,8 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 // Normal imports instead of lazy loading
-import MerchantBoard from '@/pages/DashboardOverview1/MerchantBoard/index';
 import VendorBoard from '@/pages/DashboardOverview1/VendorBoard/index';
-import Miscellaneous from '@/pages/DashboardOverview1/Miscellaneous/index';
 import { getVendorCodes } from '@/redux-toolkit/slices/vendor/vendorSlice';
-
-// Commented out lazy loading approach:
-// const MerchantBoard = withLazyLoading(
-//   () => import('@/pages/DashboardOverview1/MerchantBoard/index'),
-//   { chunkName: 'merchant-board', retries: 3 }
-// );
-// const VendorBoard = withLazyLoading(
-//   () => import('@/pages/DashboardOverview1/VendorBoard/index'),
-//   { chunkName: 'vendor-board', retries: 3 }
-// );
-// const Miscellaneous = withLazyLoading(
-//   () => import('@/pages/DashboardOverview1/Miscellaneous/index'),
-//   { chunkName: 'miscellaneous', retries: 3 }
-// );
 
 type DataEntry = {
   date: string;
@@ -184,14 +164,6 @@ function Main() {
   useEffect(() => {
     transactionModal();
   }, [merchantCodes, vendorCodes]);
-
-  const handleTabChange = (index: number) => {
-    // Only change tab if modal is not open
-    if (!newTransactionModal) {
-      dispatch(setActiveTab(index));
-    }
-    setIsloading(false);
-  };
 
   const handleGetAllCalculations = useCallback(async (params = '') => {
     try {
@@ -418,9 +390,6 @@ function Main() {
     const [startDate, endDate] = dateRangeStr.split(' - ');
     return { startDate, endDate };
   };
-  const { startDate, endDate } = getFilterDateRange(
-    merchantSelectedFilterDates,
-  );
   const { startDate: vendorStartDate, endDate: vendorEndDate } =
     getFilterDateRange(vendorSelectedFilterDates);
   return (
@@ -436,175 +405,6 @@ function Main() {
         <div className="col-span-12">
           <div className="relative flex flex-col col-span-12 lg:col-span-12 xl:col-span-12 gap-y-7">
             <div className="flex flex-col p-3 sm:p-5 box box--stacked">
-              <Tab.Group selectedIndex={activeTab} onChange={handleTabChange}>
-                <Tab.List className="flex border-b-0 bg-transparent relative">
-                  {[
-                    Role.ADMIN,
-                    Role.TRANSACTIONS,
-                    Role.OPERATIONS,
-                    Role.MERCHANT_ADMIN,
-                    Role.MERCHANT,
-                    Role.SUB_MERCHANT,
-                    Role.MERCHANT_OPERATIONS,
-                  ].includes(userRole) && (
-                    <Tab className="relative flex-1">
-                      {({ selected }) => (
-                        <Tab.Button
-                          className={`w-full py-3 px-3 sm:px-4 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm font-medium transition-all duration-200 relative ${
-                            selected
-                              ? 'bg-white dark:bg-darkmode-700 text-slate-900 dark:text-white border-t-4 border-l-4 border-r-4 border-gray-100 dark:border-darkmode-400 rounded-tl-xl rounded-tr-xl shadow-sm'
-                              : 'bg-slate-50 dark:bg-darkmode-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-darkmode-700'
-                          }`}
-                          as="button"
-                          style={
-                            selected
-                              ? {
-                                  position: 'relative',
-                                  zIndex: 10,
-                                }
-                              : {}
-                          }
-                        >
-                          <Lucide
-                            icon="CreditCard"
-                            className="w-5 h-5 sm:w-4 sm:h-4 stroke-[2] shrink-0"
-                          />
-                          <span className="whitespace-nowrap">
-                            Merchant
-                            <br className="sm:hidden" /> Board
-                          </span>
-                        </Tab.Button>
-                      )}
-                    </Tab>
-                  )}
-                  {[
-                    Role.ADMIN,
-                    Role.TRANSACTIONS,
-                    Role.OPERATIONS,
-                    Role.VENDOR,
-                    Role.VENDOR_OPERATIONS,
-                    Role.VENDOR_ADMIN,
-                  ].includes(userRole) &&
-                    ![
-                      Role.MERCHANT,
-                      Role.MERCHANT_ADMIN,
-                      Role.SUB_MERCHANT,
-                      Role.MERCHANT_OPERATIONS,
-                    ].includes(userRole) && (
-                      <Tab className="relative flex-1">
-                        {({ selected }) => (
-                          <Tab.Button
-                            className={`w-full py-3 px-3 sm:px-4 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm font-medium transition-all duration-200 relative ${
-                              selected
-                                ? 'bg-white dark:bg-darkmode-700 text-slate-900 dark:text-white border-t-4 border-l-4 border-r-4 border-gray-100 dark:border-darkmode-400 rounded-tl-xl rounded-tr-xl shadow-sm'
-                                : 'bg-slate-50 dark:bg-darkmode-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-darkmode-700'
-                            }`}
-                            as="button"
-                            style={
-                              selected
-                                ? {
-                                    position: 'relative',
-                                    zIndex: 10,
-                                  }
-                                : {}
-                            }
-                          >
-                            <Lucide
-                              icon="Store"
-                              className="w-5 h-5 sm:w-4 sm:h-4 stroke-[2] shrink-0"
-                            />
-                            <span className="whitespace-nowrap">
-                              Vendor
-                              <br className="sm:hidden" /> Board
-                            </span>
-                          </Tab.Button>
-                        )}
-                      </Tab>
-                    )}
-                  {[Role.ADMIN].includes(userRole) && (
-                    <Tab className="relative flex-1">
-                      {({ selected }) => (
-                        <Tab.Button
-                          className={`w-full py-3 px-3 sm:px-4 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm font-medium transition-all duration-200 relative ${
-                            selected
-                              ? 'bg-white dark:bg-darkmode-700 text-slate-900 dark:text-white border-t-4 border-l-4 border-r-4 border-gray-100 dark:border-darkmode-400 rounded-tl-xl rounded-tr-xl shadow-sm'
-                              : 'bg-slate-50 dark:bg-darkmode-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-darkmode-700'
-                          }`}
-                          as="button"
-                          style={
-                            selected
-                              ? {
-                                  position: 'relative',
-                                  zIndex: 10,
-                                }
-                              : {}
-                          }
-                        >
-                          <Lucide
-                            icon="LayoutGrid"
-                            className="w-5 h-5 sm:w-4 sm:h-4 stroke-[2] shrink-0"
-                          />
-                          <span className="whitespace-nowrap text-center">
-                            Miscellaneous
-                            <br className="sm:hidden" /> Board
-                          </span>
-                        </Tab.Button>
-                      )}
-                    </Tab>
-                  )}
-                </Tab.List>
-                <Tab.Panels className="border-b border-l border-r border-gray-100 dark:border-darkmode-400 border-t-4 border-t-gray-100 dark:border-t-darkmode-400">
-                  {[
-                    Role.ADMIN,
-                    Role.TRANSACTIONS,
-                    Role.OPERATIONS,
-                    Role.MERCHANT_ADMIN,
-                    Role.MERCHANT,
-                    Role.SUB_MERCHANT,
-                    Role.MERCHANT_OPERATIONS,
-                  ].includes(userRole) && (
-                    <Tab.Panel className="p-3 sm:p-5 leading-relaxed">
-                      <MerchantBoard
-                        calculationData={calculationData}
-                        payinChartData={chartData.payinData}
-                        payoutChartData={chartData.payoutData}
-                        ChargebackChartData={chartData.chargebackData}
-                        ReverseChartData={chartData.reverseData}
-                        payInCommissionData={chartData.payinCommissionData}
-                        payoutCommissionData={chartData.payoutCommissionData}
-                        settlementChartData={chartData.settlementData}
-                        settlementCommissionData={
-                          chartData.settlementCommissionData
-                        } // Add this line
-                        totalMerchantCommissionData={
-                          chartData.totalMerchantCommissionData
-                        }
-                        merchantSelectedFilterDates={
-                          merchantSelectedFilterDates
-                        }
-                        setMerchantSelectedFilterDates={
-                          setMerchantSelectedFilterDates
-                        }
-                        merchantSelectedFilter={merchantSelectedFilter}
-                        setMerchantSelectedFilter={setMerchantSelectedFilter}
-                        merchantCodes={merchantCodes}
-                        handleFilterData={handleFilterData}
-                        startDate={startDate}
-                        endDate={endDate}
-                        isLoading={isLoading}
-                      />
-                    </Tab.Panel>
-                  )}
-                  {[
-                    Role.ADMIN,
-                    Role.TRANSACTIONS,
-                    Role.OPERATIONS,
-                    Role.VENDOR,
-                    Role.SUB_VENDOR,
-                    Role.VENDOR_OPERATIONS,
-                    Role.VENDOR_ADMIN,
-                  ].includes(userRole) && (
-                    <Tab.Panel className="p-5 leading-relaxed">
                       <VendorBoard
                         calculationData={calculationData}
                         vendorPayinChartData={chartData.vendorPayinData}
@@ -638,19 +438,6 @@ function Main() {
                         endDate={vendorEndDate}
                         isLoading={isLoading}
                       />
-                    </Tab.Panel>
-                  )}
-                  {[Role.ADMIN].includes(userRole) && (
-                    <Tab.Panel className="p-5 leading-relaxed">
-                      <Miscellaneous
-                        merchantCodes={merchantCodes}
-                        // selectedDate={miscSelectedFilterDate}
-                        // selectedMerchants={miscSelectedFilter.map(f => f.value)}
-                      />
-                    </Tab.Panel>
-                  )}
-                </Tab.Panels>
-              </Tab.Group>
             </div>
           </div>
         </div>
