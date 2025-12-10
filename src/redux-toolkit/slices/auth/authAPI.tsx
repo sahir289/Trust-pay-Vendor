@@ -31,11 +31,11 @@ interface LoginParams {
   unique_admin_id?: string;
 }
 
-interface UserLocation {
+type UserLocation = {
   latitude: number;
   longitude: number;
   accuracy: number;
-}
+} | null | undefined;
 
 export async function getAccurateLocation(): Promise<UserLocation> {
   const permission = await navigator.permissions
@@ -44,14 +44,23 @@ export async function getAccurateLocation(): Promise<UserLocation> {
     
   console.log(permission, "Permission status");
 
+  if (permission?.state !== "granted") {
+    throw new Error(
+      "Location permission is not granted. Please allow location access in your browser settings."
+    );
+  }
+
   const getPosition = () =>
     new Promise<GeolocationPosition>((resolve, reject) => {
       navigator.geolocation.getCurrentPosition(
         resolve,
-        reject,
+        (error) => {
+          console.error("Geolocation error:", error);
+          reject(error);
+        },
         {
           enableHighAccuracy: true,
-          timeout: 20000,      
+          timeout: 30000,      
           maximumAge: 0,
         }
       );
@@ -75,9 +84,9 @@ export async function getAccurateLocation(): Promise<UserLocation> {
           continue;
         }
 
-        throw new Error(
-          "Location access was denied. Please make sure location services are enabled and permission is allowed."
-        );
+        // throw new Error(
+        //   "Location access was denied. Please make sure location services are enabled and permission is allowed."
+        // );
       }
 
       if (attempt < 2) {
@@ -85,11 +94,11 @@ export async function getAccurateLocation(): Promise<UserLocation> {
         continue;
       }
 
-      throw new Error("Unable to retrieve your location. Please check your connection or GPS.");
+      // throw new Error("Unable to retrieve your location. Please check your connection or GPS.");
     }
   }
 
-  throw new Error("Failed to get location after multiple attempts.");
+  // throw new Error("Failed to get location after multiple attempts.");
 }
 
 export const loginUser = async ({
@@ -123,12 +132,18 @@ export const loginUser = async ({
   }
 
   let payload: { username: string; password: string; newPassword?: string,  unique_admin_id?: string,
-     user_location: UserLocation;
+     user_location?: UserLocation;
   } = {
     username,
     password,
+  };
+
+ if(user_location !== undefined && user_location !== null){
+  payload = {
+    ...payload,
     user_location,
   };
+}
 
   if(unique_admin_id !== undefined) {
     payload = {

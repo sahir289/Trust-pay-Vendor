@@ -538,9 +538,9 @@ function Main() {
     <>
       <div
         className={clsx([
-          'echo group bg-stone-50 background relative min-h-screen dark:bg-darkmode-900',
-          "before:content-[''] before:h-[200px] before:w-screen before:bg-gradient-to-b before:from-slate-900/[0.01] before:to-transparent [&.background--hidden]:before:opacity-0 before:transition-all before:ease-in-out before:duration-300 before:top-0 before:fixed before:pointer-events-none",
-          "after:content-[''] after:h-[200px] after:w-screen [&.background--hidden]:after:opacity-0 after:transition-all after:ease-in-out after:duration-300 after:top-0 after:fixed after:bg-texture-white after:bg-contain after:bg-fixed after:bg-[center_-13rem] after:bg-no-repeat after:pointer-events-none",
+          'echo group bg-gradient-to-b from-slate-200/70 to-slate-50 background relative min-h-screen dark:from-darkmode-800/[.95] dark:to-darkmode-900/[.95]',
+          "before:content-[''] before:h-[370px] before:w-screen before:bg-gradient-to-t before:from-theme-1/80 before:to-theme-2 [&.background--hidden]:before:opacity-0 before:transition-[opacity,height] before:ease-in-out before:duration-300 before:top-0 before:fixed",
+          "after:content-[''] after:h-[370px] after:w-screen [&.background--hidden]:after:opacity-0 after:transition-[opacity,height] after:ease-in-out after:duration-300 after:top-0 after:fixed after:bg-texture-white after:bg-contain after:bg-fixed after:bg-[center_-13rem] after:bg-no-repeat",
           topBarActive && 'background--hidden',
         ])}
       >
@@ -909,13 +909,9 @@ function Main() {
           >
             <div
               className={clsx([
-                'container flex items-center w-full h-full transition-all ease-in-out duration-200 bg-transparent shadow-none',
-                'group-[.top-bar--active]:rounded-none group-[.top-bar--active]:px-5',
-                'group-[.top-bar--active]:bg-white',
-                'group-[.top-bar--active]:border-b-4 group-[.top-bar--active]:border-emerald-500',
-                'group-[.top-bar--active]:shadow-sm',
-                'dark:group-[.top-bar--active]:bg-darkmode-800',
-                'dark:group-[.top-bar--active]:border-emerald-400',
+                'container flex items-center w-full h-full transition-[padding,background-color,border-color] ease-in-out duration-300 box bg-transparent border-transparent shadow-none dark:bg-transparent dark:border-transparent',
+                'group-[.top-bar--active]:box group-[.top-bar--active]:px-5',
+                'group-[.top-bar--active]:bg-transparent group-[.top-bar--active]:border-transparent group-[.top-bar--active]:bg-gradient-to-r group-[.top-bar--active]:from-theme-1 group-[.top-bar--active]:to-theme-2',
                 !isSidebarExpanded && 'pl-2',
               ])}
             >

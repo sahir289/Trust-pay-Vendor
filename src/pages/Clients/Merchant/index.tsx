@@ -170,7 +170,11 @@ const Merchant = () => {
 
   useEffect(() => {
     if (refreshMerchant) {
-      fetchMerchants();
+      if (debouncedSearchQuery) {
+        fetchMerchants(debouncedSearchQuery);
+      } else {
+        fetchMerchants();
+      }
       dispatch(setRefreshmerchant(false));
     }
   }, [refreshMerchant, fetchMerchants, dispatch]);

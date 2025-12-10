@@ -134,10 +134,12 @@ function Main() {
   );
 
   useEffect(() => {
-    if (refreshVendor) {
+    if (debouncedSearchQuery) {
+      fetchVendors(debouncedSearchQuery);
+    } else {
       fetchVendors();
-      dispatch(setRefreshvendor(false));
     }
+    dispatch(setRefreshvendor(false));
   }, [refreshVendor]);
 
   useEffect(() => {

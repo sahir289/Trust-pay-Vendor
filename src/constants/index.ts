@@ -3541,14 +3541,22 @@ export const BeneficiaryAccountsFormFields = (
         label: 'Name',
         type: 'text',
         placeholder: 'Enter Bank Name',
-        validation: yup.string().required('Bank Name is required'),
+        validation: yup
+          .string()
+          .trim()
+          .required("Bank Name is required")
+          .test(
+            "no-empty-spaces",
+            "Bank Name cannot be only spaces",
+            (value) => !!value && value.trim().length > 0
+          ),
       },
       {
         name: 'acc_holder_name',
         label: 'Account Holder Name',
         type: 'text',
         placeholder: 'Acc Holder Name',
-        validation: yup.string().required('Account Holder Name is required'),
+        validation: yup.string().trim().required('Account Holder Name is required'),
       },
       {
         name: 'acc_no',
@@ -3569,7 +3577,19 @@ export const BeneficiaryAccountsFormFields = (
         label: 'UPI ID',
         type: 'text',
         placeholder: 'Enter UPI ID',
-        validation: yup.string().optional(),
+        validation: yup
+        .string()
+        .trim()
+        .optional()
+        .test(
+          "no-spaces",
+          "UPI ID cannot contain spaces",
+          (value) => !value || !/\s/.test(value)
+        )
+        .matches(
+          /^[a-zA-Z0-9.\-_]+@[a-zA-Z0-9.\-_]+$/,
+          "Invalid UPI ID format"
+        )
       },
       {
         name: 'ifsc',
@@ -3605,14 +3625,22 @@ export const BeneficiaryAccountsFormFields = (
         label: 'Name',
         type: 'text',
         placeholder: 'Enter Bank Name',
-        validation: yup.string().required('Bank Name is required'),
+        validation: yup
+        .string()
+        .trim()
+        .required("Bank Name is required")
+        .test(
+          "no-empty-spaces",
+          "Bank Name cannot be only spaces",
+          (value) => !!value && value.trim().length > 0
+        ),
       },
       {
         name: 'acc_holder_name',
         label: 'Account Holder Name',
         type: 'text',
         placeholder: 'Acc Holder Name',
-        validation: yup.string().required('Account Holder Name is required'),
+        validation: yup.string().trim().required('Account Holder Name is required'),
       },
       {
         name: 'acc_no',
@@ -3633,7 +3661,19 @@ export const BeneficiaryAccountsFormFields = (
         label: 'UPI ID',
         type: 'text',
         placeholder: 'Enter UPI ID',
-        validation: yup.string().optional(),
+        validation: yup
+        .string()
+        .trim()
+        .optional()
+        .test(
+          "no-spaces",
+          "UPI ID cannot contain spaces",
+          (value) => !value || !/\s/.test(value)
+        )
+        .matches(
+          /^[a-zA-Z0-9.\-_]+@[a-zA-Z0-9.\-_]+$/,
+          "Invalid UPI ID format"
+        )
       },
       {
         name: 'ifsc',

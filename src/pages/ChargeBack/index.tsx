@@ -120,6 +120,10 @@ function ChargeBack() {
     [dispatch, pagination?.limit],
   );
 
+  useEffect(() => {
+    dispatch(resetPagination());
+  }, []);
+
   // useEffect(() => {
   //   if (refreshChargeBacks) {
   //     fetchChargebacks();
