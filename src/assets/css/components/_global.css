@@ -1,0 +1,60 @@
+html {
+  scroll-behavior: smooth;
+  
+  body {
+    letter-spacing: theme("letterSpacing.normal");
+    font-size: theme("fontSize.sm");
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: theme("fontFamily.sans");
+    color: theme("colors.slate.800");
+    line-height: theme("lineHeight.relaxed");
+    overflow-x: hidden;
+    background: #fafaf9;
+  }
+  
+  &.dark body {
+    color: theme("colors.slate.100");
+    background: rgb(15, 23, 42);
+    
+    .text-slate-500 {
+      color: theme("colors.slate.400");
+    }
+    *,
+    ::before,
+    ::after {
+      border-color: rgba(255, 255, 255, 0.06);
+    }
+  }
+}
+
+/* Responsive typography */
+@media (max-width: 640px) {
+  html body {
+    font-size: theme("fontSize.xs");
+    line-height: theme("lineHeight.5");
+  }
+}
+
+/* Better spacing for content containers */
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}

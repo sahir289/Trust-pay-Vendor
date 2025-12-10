@@ -1,0 +1,39 @@
+/* data-renderer.css */
+.data-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 1.5rem;
+    background: linear-gradient(to bottom, #f9fafb, #f3f4f6);
+  }
+  
+  .dark .data-container {
+    background: linear-gradient(to bottom, #1f2937, #111827);
+  }
+  
+  /* Custom scrollbar */
+  .data-container::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .data-container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .data-container::-webkit-scrollbar-thumb {
+    background: #9ca3af;
+    border-radius: 4px;
+  }
+  
+  .dark .data-container::-webkit-scrollbar-thumb {
+    background: #4b5563;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  .data-container > * {
+    animation: fadeIn 0.3s ease-in;
+  }

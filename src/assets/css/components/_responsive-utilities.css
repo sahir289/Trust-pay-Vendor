@@ -1,0 +1,426 @@
+/* Responsive Data Display Utilities */
+
+/* Better overflow handling for tables and data containers */
+.overflow-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.5) rgba(241, 245, 249, 0.5);
+  position: relative;
+}
+
+.overflow-responsive::-webkit-scrollbar {
+  height: 10px;
+}
+
+.overflow-responsive::-webkit-scrollbar-track {
+  background: rgba(241, 245, 249, 0.5);
+  border-radius: 5px;
+}
+
+.overflow-responsive::-webkit-scrollbar-thumb {
+  background-color: rgba(148, 163, 184, 0.6);
+  border-radius: 5px;
+  border: 2px solid rgba(241, 245, 249, 0.5);
+}
+
+.overflow-responsive::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(148, 163, 184, 0.8);
+}
+
+.dark .overflow-responsive::-webkit-scrollbar-track {
+  background: rgba(30, 41, 59, 0.5);
+}
+
+.dark .overflow-responsive::-webkit-scrollbar-thumb {
+  background-color: rgba(71, 85, 105, 0.7);
+  border-color: rgba(30, 41, 59, 0.5);
+}
+
+.dark .overflow-responsive::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(71, 85, 105, 0.9);
+}
+
+/* Responsive table wrapper */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 1rem;
+  position: relative;
+  /* Add subtle shadow to indicate scrollable content */
+  box-shadow: inset -10px 0 8px -8px rgba(0, 0, 0, 0.15);
+}
+
+.dark .table-responsive {
+  box-shadow: inset -10px 0 8px -8px rgba(0, 0, 0, 0.5);
+}
+
+.table-responsive table {
+  min-width: 100%;
+  width: max-content;
+}
+
+@media (min-width: 768px) {
+  .table-responsive table {
+    width: 100%;
+  }
+}
+
+/* Mobile-friendly table cells */
+@media (max-width: 640px) {
+  .table-mobile-friendly td,
+  .table-mobile-friendly th {
+    min-width: 100px;
+    padding: 0.5rem 0.375rem !important;
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+  
+  /* Sticky first column for context */
+  .table-mobile-friendly td:first-child,
+  .table-mobile-friendly th:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 10;
+    background-color: white;
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .dark .table-mobile-friendly td:first-child,
+  .dark .table-mobile-friendly th:first-child {
+    background-color: rgb(var(--color-darkmode-600));
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Add visual indicator for horizontal scroll */
+  .table-responsive::after {
+    content: '→';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: linear-gradient(to right, transparent, rgba(59, 130, 246, 0.1) 20%, rgba(59, 130, 246, 0.2));
+    color: rgba(59, 130, 246, 0.8);
+    padding: 1rem 0.5rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    pointer-events: none;
+    z-index: 5;
+    animation: slideHint 2s ease-in-out infinite;
+  }
+  
+  @keyframes slideHint {
+    0%, 100% { opacity: 0.4; transform: translateY(-50%) translateX(0); }
+    50% { opacity: 1; transform: translateY(-50%) translateX(-5px); }
+  }
+  
+  .dark .table-responsive::after {
+    background: linear-gradient(to right, transparent, rgba(59, 130, 246, 0.15) 20%, rgba(59, 130, 246, 0.3));
+    color: rgba(96, 165, 250, 0.9);
+  }
+}
+
+/* Grid responsive utilities */
+.grid-responsive {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+@media (min-width: 640px) {
+  .grid-responsive {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 768px) {
+  .grid-responsive {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid-responsive {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* Card spacing improvements */
+.card-spacing {
+  padding: 1rem;
+}
+
+@media (min-width: 640px) {
+  .card-spacing {
+    padding: 1.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .card-spacing {
+    padding: 1.5rem;
+  }
+}
+
+/* Dashboard grid improvements */
+.dashboard-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+@media (min-width: 768px) {
+  .dashboard-grid {
+    gap: 1.25rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .dashboard-grid {
+    gap: 1.5rem;
+  }
+}
+
+/* Content width constraints */
+.content-wrapper {
+  width: 100%;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 1280px) {
+  .content-wrapper {
+    max-width: 1280px;
+  }
+}
+
+@media (min-width: 1536px) {
+  .content-wrapper {
+    max-width: 1536px;
+  }
+}
+
+/* Better form layouts on mobile */
+@media (max-width: 640px) {
+  .form-mobile-stack .flex-row {
+    flex-direction: column !important;
+  }
+  
+  .form-mobile-stack .sm\\:w-auto {
+    width: 100% !important;
+  }
+}
+
+/* Data display spacing */
+.data-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.75rem 0;
+}
+
+@media (min-width: 768px) {
+  .data-row {
+    gap: 1rem;
+    padding: 1rem 0;
+  }
+}
+
+/* Improved button groups on mobile */
+@media (max-width: 640px) {
+  .button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+  }
+  
+  .button-group > * {
+    width: 100%;
+  }
+}
+
+@media (min-width: 641px) {
+  .button-group {
+    display: flex;
+    flex-direction: row;
+    gap: 0.75rem;
+    align-items: center;
+  }
+}
+
+/* Stats card improvements */
+.stat-card {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background: white;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.dark .stat-card {
+  background: rgb(var(--color-darkmode-600));
+}
+
+@media (min-width: 768px) {
+  .stat-card {
+    padding: 1.5rem;
+  }
+}
+
+/* Text truncation utilities */
+.truncate-2-lines {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.truncate-3-lines {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+/* Mobile table scroll indicator */
+@media (max-width: 640px) {
+  .table-scroll-hint {
+    display: block;
+    text-align: center;
+    font-size: 0.75rem;
+    color: rgba(59, 130, 246, 0.8);
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    background: rgba(59, 130, 246, 0.05);
+    border-radius: 0.375rem;
+    animation: fadeInOut 3s ease-in-out infinite;
+  }
+  
+  .dark .table-scroll-hint {
+    color: rgba(96, 165, 250, 0.9);
+    background: rgba(59, 130, 246, 0.1);
+  }
+  
+  @keyframes fadeInOut {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+}
+
+@media (min-width: 641px) {
+  .table-scroll-hint {
+    display: none;
+  }
+}
+
+/* Responsive padding utilities */
+.responsive-px {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .responsive-px {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .responsive-px {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+.responsive-py {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+@media (min-width: 640px) {
+  .responsive-py {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .responsive-py {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+}
+
+/* Chart container improvements */
+.chart-container {
+  width: 100%;
+  height: 300px;
+  min-height: 250px;
+}
+
+@media (min-width: 768px) {
+  .chart-container {
+    height: 350px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .chart-container {
+    height: 400px;
+  }
+}
+
+/* Modal responsive improvements */
+@media (max-width: 640px) {
+  .modal-responsive {
+    width: 95vw !important;
+    max-width: 95vw !important;
+    margin: 0.5rem;
+  }
+}
+
+/* Flex gap utilities for older browsers */
+.flex-gap-2 > * + * {
+  margin-left: 0.5rem;
+}
+
+.flex-gap-4 > * + * {
+  margin-left: 1rem;
+}
+
+/* Ensure images don't break layout */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Better spacing for filters and search bars */
+.filter-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .filter-bar {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+}
+
+/* Improved sidebar spacing on mobile */
+@media (max-width: 1024px) {
+  .mobile-padding {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+}

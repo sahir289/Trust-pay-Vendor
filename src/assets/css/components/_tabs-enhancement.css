@@ -1,0 +1,161 @@
+/* Professional Corporate Tab Design */
+
+/* Better tab styling for mobile */
+@media (max-width: 640px) {
+  /* Make tabs more prominent on mobile */
+  .tab-button-mobile {
+    min-height: 60px;
+    padding: 0.75rem 0.5rem;
+  }
+  
+  /* Better active state for mobile tabs */
+  [role="tab"][aria-selected="true"] {
+    position: relative;
+  }
+  
+  [role="tab"][aria-selected="true"]::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: rgb(var(--color-primary));
+    border-radius: 0;
+  }
+}
+
+/* Professional tab base style */
+[role="tab"] {
+  transition: all 0.2s ease;
+  position: relative;
+  border-radius: 0;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  border-bottom: 4px solid transparent;
+  padding-bottom: 0.75rem;
+}
+
+[role="tab"]:hover:not([aria-selected="true"]) {
+  background: rgba(var(--color-primary), 0.04);
+  color: rgb(var(--color-primary));
+  border-bottom-color: rgba(var(--color-primary), 0.2);
+}
+
+/* Active tab - clean underline indicator */
+[role="tab"][aria-selected="true"] {
+  font-weight: 700;
+  background: white;
+  color: rgb(var(--color-primary));
+  border-bottom-color: rgb(var(--color-primary));
+  box-shadow: 0 -1px 0 0 #e2e8f0;
+}
+
+.dark [role="tab"][aria-selected="true"] {
+  background: rgb(30, 41, 59);
+  box-shadow: 0 -1px 0 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Better focus states for accessibility */
+[role="tab"]:focus-visible {
+  outline: 2px solid rgb(var(--color-primary));
+  outline-offset: 2px;
+  z-index: 10;
+}
+
+/* Tab panel animations - Subtle */
+[role="tabpanel"] {
+  animation: fadeInTab 0.25s ease;
+}
+
+@keyframes fadeInTab {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Tab list wrapper improvements */
+[role="tablist"] {
+  gap: 0.25rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--color-primary), 0.3) transparent;
+  padding: 0.25rem 0;
+  border-bottom: 2px solid rgba(15, 23, 42, 0.08);
+}
+
+.dark [role="tablist"] {
+  border-bottom: 2px solid rgba(255, 255, 255, 0.08);
+}
+
+[role="tablist"]::-webkit-scrollbar {
+  height: 4px;
+}
+
+[role="tablist"]::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+[role="tablist"]::-webkit-scrollbar-thumb {
+  background: rgba(var(--color-primary), 0.3);
+  border-radius: 6px;
+}
+
+[role="tablist"]::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--color-primary), 0.5);
+}
+
+/* Ensure tabs don't shrink too much */
+[role="tab"] {
+  flex-shrink: 0;
+  min-width: fit-content;
+}
+
+/* Better spacing for tab content */
+[role="tabpanel"] > * {
+  animation: slideUpFade 0.3s ease;
+}
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Dark mode adjustments */
+.dark [role="tab"]:hover:not([aria-selected="true"]) {
+  background: rgba(var(--color-primary), 0.1);
+  color: rgb(var(--color-primary));
+}
+
+/* Mobile tab text alignment */
+@media (max-width: 640px) {
+  [role="tab"] span {
+    line-height: 1.2;
+    text-align: center;
+  }
+}
+
+/* Desktop tab improvements */
+@media (min-width: 641px) {
+  [role="tab"] {
+    padding: 0.875rem 1.5rem;
+    margin-bottom: -3px;
+  }
+  
+  [role="tablist"] {
+    justify-content: flex-start;
+  }
+}
+

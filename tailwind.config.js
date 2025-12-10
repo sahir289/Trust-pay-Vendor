@@ -1,0 +1,468 @@
+/* eslint-disable no-undef */
+const plugin = require("tailwindcss/plugin");
+const colors = require("tailwindcss/colors");
+const { parseColor } = require("tailwindcss/lib/util/color");
+
+/** Converts HEX color to RGB */
+const toRGB = (value) => {
+  return parseColor(value).color.join(" ");
+};
+
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  darkMode: "class",
+  theme: {
+    container: {
+      center: true,
+      padding: {
+        DEFAULT: "1rem",
+        sm: "1.5rem",
+        lg: "2rem",
+        xl: "2.5rem",
+        "2xl": "3rem",
+      },
+      screens: {
+        sm: "640px",
+        md: "768px",
+        lg: "1024px",
+        xl: "1280px",
+        "2xl": "1536px",
+        "3xl": "1920px",
+      },
+    },
+    extend: {
+      screens: {
+        "3xl": "1600px",
+        "xs": "475px",
+      },
+      colors: {
+        theme: {
+          1: "rgb(var(--color-theme-1) / <alpha-value>)",
+          2: "rgb(var(--color-theme-2) / <alpha-value>)",
+        },
+        primary: "rgb(var(--color-primary) / <alpha-value>)",
+        secondary: "rgb(var(--color-secondary) / <alpha-value>)",
+        success: "rgb(var(--color-success) / <alpha-value>)",
+        info: "rgb(var(--color-info) / <alpha-value>)",
+        warning: "rgb(var(--color-warning) / <alpha-value>)",
+        pending: "rgb(var(--color-pending) / <alpha-value>)",
+        danger: "rgb(var(--color-danger) / <alpha-value>)",
+        light: "rgb(var(--color-light) / <alpha-value>)",
+        dark: "rgb(var(--color-dark) / <alpha-value>)",
+        darkmode: {
+          50: "rgb(var(--color-darkmode-50) / <alpha-value>)",
+          100: "rgb(var(--color-darkmode-100) / <alpha-value>)",
+          200: "rgb(var(--color-darkmode-200) / <alpha-value>)",
+          300: "rgb(var(--color-darkmode-300) / <alpha-value>)",
+          400: "rgb(var(--color-darkmode-400) / <alpha-value>)",
+          500: "rgb(var(--color-darkmode-500) / <alpha-value>)",
+          600: "rgb(var(--color-darkmode-600) / <alpha-value>)",
+          700: "rgb(var(--color-darkmode-700) / <alpha-value>)",
+          800: "rgb(var(--color-darkmode-800) / <alpha-value>)",
+          900: "rgb(var(--color-darkmode-900) / <alpha-value>)",
+        },
+      },
+      fontFamily: {
+        "public-sans": ["Public Sans"],
+        "dm-sans": ["DM Sans"],
+      },
+      backgroundImage: {
+        "texture-black":
+          "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='2346.899' height='1200.894' viewBox='0 0 2346.899 1200.894'%3E%3Cg id='Group_369' data-name='Group 369' transform='translate(-33.74 508.575)'%3E%3Cg id='Group_366' data-name='Group 366' transform='translate(33.74 -458.541)'%3E%3Crect id='Rectangle_492' data-name='Rectangle 492' width='745.289' height='650.113' transform='matrix(0.978, 0.208, -0.208, 0.978, 296.729, 261.648)' fill='rgba(30,41,59,0.01)'/%3E%3Crect id='Rectangle_491' data-name='Rectangle 491' width='1335.276' height='650.113' transform='translate(0 543.106) rotate(-24)' fill='rgba(30,41,59,0.01)'/%3E%3C/g%3E%3Cg id='Group_367' data-name='Group 367' transform='translate(1647.456 1026.688) rotate(-128)'%3E%3Crect id='Rectangle_492-2' data-name='Rectangle 492' width='745.289' height='650.113' transform='matrix(0.978, 0.208, -0.208, 0.978, 296.729, 261.648)' fill='rgba(30,41,59,0.01)'/%3E%3Crect id='Rectangle_491-2' data-name='Rectangle 491' width='1335.276' height='650.113' transform='translate(0 543.106) rotate(-24)' fill='rgba(30,41,59,0.01)'/%3E%3C/g%3E%3Cg id='Group_368' data-name='Group 368' transform='matrix(-0.656, -0.755, 0.755, -0.656, 1017.824, 1042.94)'%3E%3Crect id='Rectangle_492-3' data-name='Rectangle 492' width='745.289' height='650.113' transform='matrix(0.978, 0.208, -0.208, 0.978, 296.729, 261.648)' fill='rgba(30,41,59,0.01)'/%3E%3Crect id='Rectangle_491-3' data-name='Rectangle 491' width='1335.276' height='650.113' transform='translate(0 543.106) rotate(-24)' fill='rgba(30,41,59,0.01)'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E%0A\")",
+        "texture-white":
+          "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='2346.899' height='1200.894' viewBox='0 0 2346.899 1200.894'%3E%3Cg id='Group_369' data-name='Group 369' transform='translate(-33.74 508.575)'%3E%3Cg id='Group_366' data-name='Group 366' transform='translate(33.74 -458.541)'%3E%3Crect id='Rectangle_492' data-name='Rectangle 492' width='745.289' height='650.113' transform='translate(296.729 261.648) rotate(12.007)' fill='rgba(255,255,255,0.014)'/%3E%3Crect id='Rectangle_491' data-name='Rectangle 491' width='1335.276' height='650.113' transform='translate(0 543.106) rotate(-24)' fill='rgba(255,255,255,0.014)'/%3E%3C/g%3E%3Cg id='Group_367' data-name='Group 367' transform='translate(1647.456 1026.688) rotate(-128)'%3E%3Crect id='Rectangle_492-2' data-name='Rectangle 492' width='745.289' height='650.113' transform='translate(296.729 261.648) rotate(12.007)' fill='rgba(255,255,255,0.014)'/%3E%3Crect id='Rectangle_491-2' data-name='Rectangle 491' width='1335.276' height='650.113' transform='translate(0 543.106) rotate(-24)' fill='rgba(255,255,255,0.014)'/%3E%3C/g%3E%3Cg id='Group_368' data-name='Group 368' transform='matrix(-0.656, -0.755, 0.755, -0.656, 1017.824, 1042.94)'%3E%3Crect id='Rectangle_492-3' data-name='Rectangle 492' width='745.289' height='650.113' transform='translate(296.729 261.648) rotate(12.007)' fill='rgba(255,255,255,0.014)'/%3E%3Crect id='Rectangle_491-3' data-name='Rectangle 491' width='1335.276' height='650.113' transform='translate(0 543.106) rotate(-24)' fill='rgba(255,255,255,0.014)'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E%0A\")",
+        "chevron-white":
+          "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ffffff95' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E\")",
+        "chevron-black":
+          "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2300000095' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E\")",
+      },
+      spacing: {
+        '18': '4.5rem',
+        '88': '22rem',
+        '100': '25rem',
+        '112': '28rem',
+        '128': '32rem',
+      },
+      maxWidth: {
+        '8xl': '88rem',
+        '9xl': '96rem',
+      },
+      minWidth: {
+        '20': '5rem',
+        '24': '6rem',
+        '32': '8rem',
+        '40': '10rem',
+        '48': '12rem',
+      },
+      boxShadow: {
+        'elevation': '0 0 0 1px rgba(15, 23, 42, 0.05), 0 2px 4px 0 rgba(15, 23, 42, 0.06), 0 8px 16px 0 rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(16, 185, 129, 0.1)',
+        'elevation-lg': '0 0 0 1px rgba(15, 23, 42, 0.08), 0 4px 8px 0 rgba(15, 23, 42, 0.08), 0 12px 24px 0 rgba(15, 23, 42, 0.12)',
+        'elevation-hover': '0 0 0 1px rgba(15, 23, 42, 0.08), 0 4px 12px 0 rgba(16, 185, 129, 0.15), 0 8px 24px 0 rgba(15, 23, 42, 0.1)',
+      },
+    },
+  },
+  plugins: [
+    require("@tailwindcss/forms"),
+    plugin(function ({ addBase }) {
+      addBase({
+        // Default colors - Professional Corporate Theme
+        ":root": {
+          "--color-theme-1": toRGB("#0f172a"),
+          "--color-theme-2": toRGB("#1e293b"),
+          "--color-primary": toRGB("#10b981"),
+          "--color-secondary": toRGB("#6366f1"),
+          "--color-success": toRGB("#059669"),
+          "--color-info": toRGB("#3b82f6"),
+          "--color-warning": toRGB("#f59e0b"),
+          "--color-pending": toRGB("#f97316"),
+          "--color-danger": toRGB("#dc2626"),
+          "--color-light": toRGB("#f8fafc"),
+          "--color-dark": toRGB("#0f172a"),
+          "&.dark": {
+            "--color-theme-1": toRGB("#1e293b"),
+            "--color-theme-2": toRGB("#334155"),
+            "--color-primary": toRGB("#34d399"),
+          },
+        },
+        // Default dark-mode colors
+        ".dark": {
+          "--color-primary": toRGB("#34d399"),
+          "--color-darkmode-50": "71 85 105",
+          "--color-darkmode-100": "64 74 97",
+          "--color-darkmode-200": "51 65 85",
+          "--color-darkmode-300": "45 58 78",
+          "--color-darkmode-400": "39 51 71",
+          "--color-darkmode-500": "30 41 59",
+          "--color-darkmode-600": "26 35 51",
+          "--color-darkmode-700": "21 28 42",
+          "--color-darkmode-800": "15 23 42",
+          "--color-darkmode-900": "12 18 33",
+        },
+        // Theme 1 - Sunset Vibes
+        ".theme-1": {
+          "--color-theme-1": toRGB("#f97316"),
+          "--color-theme-2": toRGB("#ec4899"),
+          "--color-primary": toRGB("#f97316"),
+          "--color-secondary": toRGB("#fbbf24"),
+          "--color-success": toRGB("#10b981"),
+          "--color-info": toRGB("#06b6d4"),
+          "--color-warning": toRGB("#f59e0b"),
+          "--color-pending": toRGB("#fb923c"),
+          "--color-danger": toRGB("#ef4444"),
+          "--color-light": toRGB("#fef3c7"),
+          "--color-dark": toRGB("#78350f"),
+          "&.dark": {
+            "--color-theme-1": toRGB("#fb923c"),
+            "--color-theme-2": toRGB("#f472b6"),
+            "--color-primary": toRGB("#fb923c"),
+          },
+        },
+        // Theme 2 - Ocean Breeze
+        ".theme-2": {
+          "--color-theme-1": toRGB("#0ea5e9"),
+          "--color-theme-2": toRGB("#06b6d4"),
+          "--color-primary": toRGB("#0ea5e9"),
+          "--color-secondary": toRGB("#22d3ee"),
+          "--color-success": toRGB("#14b8a6"),
+          "--color-info": toRGB("#06b6d4"),
+          "--color-warning": toRGB("#fbbf24"),
+          "--color-pending": toRGB("#fb923c"),
+          "--color-danger": toRGB("#f43f5e"),
+          "--color-light": toRGB("#e0f2fe"),
+          "--color-dark": toRGB("#0c4a6e"),
+          "&.dark": {
+            "--color-theme-1": toRGB("#38bdf8"),
+            "--color-theme-2": toRGB("#22d3ee"),
+            "--color-primary": toRGB("#38bdf8"),
+          },
+        },
+        // Theme 3 - Forest Green
+        ".theme-3": {
+          "--color-theme-1": toRGB("#059669"),
+          "--color-theme-2": toRGB("#10b981"),
+          "--color-primary": toRGB("#059669"),
+          "--color-secondary": toRGB("#34d399"),
+          "--color-success": toRGB("#10b981"),
+          "--color-info": toRGB("#06b6d4"),
+          "--color-warning": toRGB("#fbbf24"),
+          "--color-pending": toRGB("#fb923c"),
+          "--color-danger": toRGB("#ef4444"),
+          "--color-light": toRGB("#d1fae5"),
+          "--color-dark": toRGB("#064e3b"),
+          "&.dark": {
+            "--color-theme-1": toRGB("#34d399"),
+            "--color-theme-2": toRGB("#6ee7b7"),
+            "--color-primary": toRGB("#34d399"),
+          },
+        },
+        // Theme 4 - Royal Purple
+        ".theme-4": {
+          "--color-theme-1": toRGB("#7c3aed"),
+          "--color-theme-2": toRGB("#a855f7"),
+          "--color-primary": toRGB("#7c3aed"),
+          "--color-secondary": toRGB("#c084fc"),
+          "--color-success": toRGB("#10b981"),
+          "--color-info": toRGB("#06b6d4"),
+          "--color-warning": toRGB("#fbbf24"),
+          "--color-pending": toRGB("#fb923c"),
+          "--color-danger": toRGB("#ef4444"),
+          "--color-light": toRGB("#f3e8ff"),
+          "--color-dark": toRGB("#581c87"),
+          "&.dark": {
+            "--color-theme-1": toRGB("#a78bfa"),
+            "--color-theme-2": toRGB("#c084fc"),
+            "--color-primary": toRGB("#a78bfa"),
+          },
+        },
+        // Theme 5 colors
+        ".theme-5": {
+          "--color-theme-1": toRGB(colors.sky["800"]),
+          "--color-theme-2": toRGB(colors.emerald["800"]),
+          "--color-primary": toRGB(colors.sky["800"]),
+          "--color-secondary": toRGB(colors.slate["200"]),
+          "--color-success": toRGB(colors.teal["600"]),
+          "--color-info": toRGB(colors.cyan["600"]),
+          "--color-warning": toRGB(colors.yellow["600"]),
+          "--color-pending": toRGB(colors.orange["700"]),
+          "--color-danger": toRGB(colors.red["700"]),
+          "--color-light": toRGB(colors.slate["100"]),
+          "--color-dark": toRGB(colors.slate["800"]),
+          "&.dark": {
+            "--color-theme-1": toRGB(colors.sky["800"]),
+            "--color-theme-2": toRGB(colors.emerald["800"]),
+            "--color-primary": toRGB(colors.green["800"]),
+          },
+        },
+        // Theme 6 colors
+        ".theme-6": {
+          "--color-theme-1": toRGB("#247ba0"),
+          "--color-theme-2": toRGB("#0a2463"),
+          "--color-primary": toRGB("#247ba0"),
+          "--color-secondary": toRGB(colors.slate["200"]),
+          "--color-success": toRGB(colors.teal["600"]),
+          "--color-info": toRGB(colors.cyan["600"]),
+          "--color-warning": toRGB(colors.yellow["600"]),
+          "--color-pending": toRGB(colors.orange["700"]),
+          "--color-danger": toRGB(colors.red["700"]),
+          "--color-light": toRGB(colors.slate["100"]),
+          "--color-dark": toRGB(colors.slate["800"]),
+          "&.dark": {
+            "--color-theme-1": toRGB("#247ba0"),
+            "--color-theme-2": toRGB("#0a2463"),
+            "--color-primary": toRGB("#247ba0"),
+          },
+        },
+        // Theme 7 colors
+        ".theme-7": {
+          "--color-theme-1": toRGB(colors.lime["950"]),
+          "--color-theme-2": toRGB(colors.teal["900"]),
+          "--color-primary": toRGB(colors.lime["950"]),
+          "--color-secondary": toRGB(colors.slate["200"]),
+          "--color-success": toRGB(colors.teal["600"]),
+          "--color-info": toRGB(colors.cyan["600"]),
+          "--color-warning": toRGB(colors.yellow["600"]),
+          "--color-pending": toRGB(colors.orange["700"]),
+          "--color-danger": toRGB(colors.red["700"]),
+          "--color-light": toRGB(colors.slate["100"]),
+          "--color-dark": toRGB(colors.slate["800"]),
+          "&.dark": {
+            "--color-theme-1": toRGB(colors.teal["900"]),
+            "--color-theme-2": toRGB(colors.lime["950"]),
+            "--color-primary": toRGB(colors.teal["900"]),
+          },
+        },
+        // Theme 8 colors
+        ".theme-8": {
+          "--color-theme-1": toRGB("#357266"),
+          "--color-theme-2": toRGB("#0E3B43"),
+          "--color-primary": toRGB("#357266"),
+          "--color-secondary": toRGB(colors.slate["200"]),
+          "--color-success": toRGB(colors.teal["600"]),
+          "--color-info": toRGB(colors.cyan["600"]),
+          "--color-warning": toRGB(colors.yellow["600"]),
+          "--color-pending": toRGB(colors.orange["700"]),
+          "--color-danger": toRGB(colors.red["700"]),
+          "--color-light": toRGB(colors.slate["100"]),
+          "--color-dark": toRGB(colors.slate["800"]),
+          "&.dark": {
+            "--color-theme-1": toRGB("#357266"),
+            "--color-theme-2": toRGB("#0E3B43"),
+            "--color-primary": toRGB("#357266"),
+          },
+        },
+        // Theme 9 colors
+        ".theme-9": {
+          "--color-theme-1": toRGB("#6C6C60"),
+          "--color-theme-2": toRGB("#4D4D42"),
+          "--color-primary": toRGB("#6C6C60"),
+          "--color-secondary": toRGB(colors.slate["200"]),
+          "--color-success": toRGB(colors.teal["600"]),
+          "--color-info": toRGB(colors.cyan["600"]),
+          "--color-warning": toRGB(colors.yellow["600"]),
+          "--color-pending": toRGB(colors.orange["700"]),
+          "--color-danger": toRGB(colors.red["700"]),
+          "--color-light": toRGB(colors.slate["100"]),
+          "--color-dark": toRGB(colors.slate["800"]),
+          "&.dark": {
+            "--color-theme-1": toRGB("#6C6C60"),
+            "--color-theme-2": toRGB("#4D4D42"),
+            "--color-primary": toRGB("#6C6C60"),
+          },
+        },
+        // Theme 10 colors
+        ".theme-10": {
+          "--color-theme-1": toRGB(colors.indigo["800"]),
+          "--color-theme-2": toRGB(colors.blue["900"]),
+          "--color-primary": toRGB(colors.indigo["800"]),
+          "--color-secondary": toRGB(colors.slate["200"]),
+          "--color-success": toRGB(colors.teal["600"]),
+          "--color-info": toRGB(colors.cyan["600"]),
+          "--color-warning": toRGB(colors.yellow["600"]),
+          "--color-pending": toRGB(colors.orange["700"]),
+          "--color-danger": toRGB(colors.red["700"]),
+          "--color-light": toRGB(colors.slate["100"]),
+          "--color-dark": toRGB(colors.slate["800"]),
+          "&.dark": {
+            "--color-theme-1": toRGB(colors.indigo["800"]),
+            "--color-theme-2": toRGB(colors.blue["900"]),
+            "--color-primary": toRGB(colors.indigo["800"]),
+          },
+        },
+        // Theme 11 colors
+        ".theme-11": {
+          "--color-theme-1": toRGB("#2f3e46"),
+          "--color-theme-2": toRGB("#52796f"),
+          "--color-primary": toRGB("#2f3e46"),
+          "--color-secondary": toRGB(colors.slate["200"]),
+          "--color-success": toRGB(colors.teal["600"]),
+          "--color-info": toRGB(colors.cyan["600"]),
+          "--color-warning": toRGB(colors.yellow["600"]),
+          "--color-pending": toRGB(colors.orange["700"]),
+          "--color-danger": toRGB(colors.red["700"]),
+          "--color-light": toRGB(colors.slate["100"]),
+          "--color-dark": toRGB(colors.slate["800"]),
+          "&.dark": {
+            "--color-theme-1": toRGB("#52796f"),
+            "--color-theme-2": toRGB("#2f3e46"),
+            "--color-primary": toRGB("#52796f"),
+          },
+        },
+        // Theme 12 colors
+        ".theme-12": {
+          "--color-theme-1": toRGB("#5e503f"),
+          "--color-theme-2": toRGB("#22333b"),
+          "--color-primary": toRGB("#5e503f"),
+          "--color-secondary": toRGB(colors.slate["200"]),
+          "--color-success": toRGB(colors.teal["600"]),
+          "--color-info": toRGB(colors.cyan["600"]),
+          "--color-warning": toRGB(colors.yellow["600"]),
+          "--color-pending": toRGB(colors.orange["700"]),
+          "--color-danger": toRGB(colors.red["700"]),
+          "--color-light": toRGB(colors.slate["100"]),
+          "--color-dark": toRGB(colors.slate["800"]),
+          "&.dark": {
+            "--color-theme-1": toRGB("#5e503f"),
+            "--color-theme-2": toRGB("#22333b"),
+            "--color-primary": toRGB("#5e503f"),
+          },
+        },
+        // Theme 13 colors
+        ".theme-13": {
+          "--color-theme-1": toRGB("#5e548e"),
+          "--color-theme-2": toRGB("#231942"),
+          "--color-primary": toRGB("#5e548e"),
+          "--color-secondary": toRGB(colors.slate["200"]),
+          "--color-success": toRGB(colors.teal["600"]),
+          "--color-info": toRGB(colors.cyan["600"]),
+          "--color-warning": toRGB(colors.yellow["600"]),
+          "--color-pending": toRGB(colors.orange["700"]),
+          "--color-danger": toRGB(colors.red["700"]),
+          "--color-light": toRGB(colors.slate["100"]),
+          "--color-dark": toRGB(colors.slate["800"]),
+          "&.dark": {
+            "--color-theme-1": toRGB("#5e548e"),
+            "--color-theme-2": toRGB("#231942"),
+            "--color-primary": toRGB("#5e548e"),
+          },
+        },
+        // Theme 14 colors
+        ".theme-14": {
+          "--color-theme-1": toRGB("#02292f"),
+          "--color-theme-2": toRGB("#767522"),
+          "--color-primary": toRGB("#02292f"),
+          "--color-secondary": toRGB(colors.slate["200"]),
+          "--color-success": toRGB(colors.teal["600"]),
+          "--color-info": toRGB(colors.cyan["600"]),
+          "--color-warning": toRGB(colors.yellow["600"]),
+          "--color-pending": toRGB(colors.orange["700"]),
+          "--color-danger": toRGB(colors.red["700"]),
+          "--color-light": toRGB(colors.slate["100"]),
+          "--color-dark": toRGB(colors.slate["800"]),
+          "&.dark": {
+            "--color-theme-1": toRGB("#767522"),
+            "--color-theme-2": toRGB("#02292f"),
+            "--color-primary": toRGB("#767522"),
+          },
+        },
+        // Theme 15 colors
+        ".theme-15": {
+          "--color-theme-1": toRGB("#4c956c"),
+          "--color-theme-2": toRGB("#006466"),
+          "--color-primary": toRGB("#4c956c"),
+          "--color-secondary": toRGB(colors.slate["200"]),
+          "--color-success": toRGB(colors.teal["600"]),
+          "--color-info": toRGB(colors.cyan["600"]),
+          "--color-warning": toRGB(colors.yellow["600"]),
+          "--color-pending": toRGB(colors.orange["700"]),
+          "--color-danger": toRGB(colors.red["700"]),
+          "--color-light": toRGB(colors.slate["100"]),
+          "--color-dark": toRGB(colors.slate["800"]),
+          "&.dark": {
+            "--color-theme-1": toRGB("#4c956c"),
+            "--color-theme-2": toRGB("#006466"),
+            "--color-primary": toRGB("#4c956c"),
+          },
+        },
+        // Theme 16 colors
+        ".theme-16": {
+          "--color-theme-1": toRGB(colors.sky["900"]),
+          "--color-theme-2": toRGB(colors.blue["950"]),
+          "--color-primary": toRGB(colors.sky["900"]),
+          "--color-secondary": toRGB(colors.slate["200"]),
+          "--color-success": toRGB(colors.teal["600"]),
+          "--color-info": toRGB(colors.cyan["600"]),
+          "--color-warning": toRGB(colors.yellow["600"]),
+          "--color-pending": toRGB(colors.orange["700"]),
+          "--color-danger": toRGB(colors.red["700"]),
+          "--color-light": toRGB(colors.slate["100"]),
+          "--color-dark": toRGB(colors.slate["800"]),
+          "&.dark": {
+            "--color-theme-1": toRGB(colors.sky["900"]),
+            "--color-theme-2": toRGB(colors.blue["950"]),
+            "--color-primary": toRGB(colors.sky["900"]),
+          },
+        },
+        // Theme 17 colors
+        ".theme-17": {
+          "--color-theme-1": toRGB(colors.slate["900"]),
+          "--color-theme-2": toRGB(colors.slate["800"]),
+          "--color-primary": toRGB(colors.slate["900"]),
+          "--color-secondary": toRGB(colors.slate["200"]),
+          "--color-success": toRGB(colors.teal["600"]),
+          "--color-info": toRGB(colors.cyan["600"]),
+          "--color-warning": toRGB(colors.yellow["600"]),
+          "--color-pending": toRGB(colors.orange["700"]),
+          "--color-danger": toRGB(colors.red["700"]),
+          "--color-light": toRGB(colors.slate["100"]),
+          "--color-dark": toRGB(colors.slate["800"]),
+          "&.dark": {
+            "--color-theme-1": toRGB(colors.slate["700"]),
+            "--color-theme-2": toRGB(colors.slate["800"]),
+            "--color-primary": toRGB(colors.slate["700"]),
+          },
+        },
+      });
+    }),
+  ],
+};

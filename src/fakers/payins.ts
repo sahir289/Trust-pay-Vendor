@@ -1,0 +1,237 @@
+import _ from "lodash";
+
+export interface PayIn {
+    id: string;
+    sno: number;
+    code: string;
+    confirmed: string;
+    commission: string;
+    amount: string;
+    status: string;
+    merchant_order_id: string;
+    merchant_code: string;
+    name: string;
+    photo: string;
+    user_submitted_utr: string;
+    utr: string;
+    method: string;
+    duration: number;
+    bank: string;
+    updated_at: string;
+    actions: string;
+}
+
+const imageAssets = import.meta.glob<{
+    default: string;
+}>("/src/assets/images/users/*.{jpg,jpeg,png,svg}", { eager: true });
+
+const fakersPayIns = {
+    fakePayIns(): Array<PayIn> {
+        const payins: Array<PayIn> = [
+            {
+                id: "1d54f8a4-7040-4e65-9254-ef55aa72efdc",
+                sno: 1,
+                code: "W7G9W",
+                confirmed: "₹0",
+                commission: "₹0",
+                amount: "₹0",
+                status: "Success",
+                merchant_order_id: "1d54f8a4-7040-4e65-9254-ef55aa72efdc",
+                merchant_code: "Tom",
+                name: "Tom Hanks",
+                photo: imageAssets["/src/assets/images/users/user1-50x50.jpg"]?.default || "/src/assets/images/default-user.jpg",
+                user_submitted_utr: "121212121212",
+                utr: "121212121212",
+                method: "Bank Transfer",
+                duration: 30,
+                bank: "ICICI Bank",
+                updated_at: "28/01/2025 at 05:01:23 PM",
+                actions: "",
+            },
+            {
+                id: "1d54f8a4-7040-4e65-9254-ef55aa72efdc",
+                sno: 2,
+                code: "W7G9W",
+                confirmed: "₹0",
+                commission: "₹0",
+                amount: "₹0",
+                status: "Initiated",
+                merchant_order_id: "1d54f8a4-7040-4e65-9254-ef55aa72efdc",
+                merchant_code: "Tom",
+                name: "Meryl Streep",
+                photo: imageAssets["/src/assets/images/users/user2-50x50.jpg"]?.default || "/src/assets/images/default-user.jpg",
+                user_submitted_utr: "121212121212",
+                utr: "121212121212",
+                method: "Bank Transfer",
+                duration: 30,
+                bank: "ICICI Bank",
+                updated_at: "28/01/2025 at 05:01:23 PM",
+                actions: "",
+            },
+            {
+                id: "1d54f8a4-7040-4e65-9254-ef55aa72efdc",
+                sno: 3,
+                code: "W7G9W",
+                confirmed: "₹0",
+                commission: "₹0",
+                amount: "₹0",
+                status: "Pending",
+                merchant_order_id: "1d54f8a4-7040-4e65-9254-ef55aa72efdc",
+                merchant_code: "Tom",
+                name: "Leonardo DiCaprio",
+                photo: imageAssets["/src/assets/images/users/user3-50x50.jpg"]?.default || "/src/assets/images/default-user.jpg",
+                user_submitted_utr: "121212121212",
+                utr: "121212121212",
+                method: "Bank Transfer",
+                duration: 30,
+                bank: "ICICI Bank",
+                updated_at: "28/01/2025 at 05:01:23 PM",
+                actions: "",
+            },
+            {
+                id: "1d54f8a4-7040-4e65-9254-ef55aa72efdc",
+                sno: 4,
+                code: "W7G9W",
+                confirmed: "₹0",
+                commission: "₹0",
+                amount: "₹0",
+                status: "Assigned",
+                merchant_order_id: "1d54f8a4-7040-4e65-9254-ef55aa72efdc",
+                merchant_code: "Tom",
+                name: "Angelina Jolie",
+                photo: imageAssets["/src/assets/images/users/user4-50x50.jpg"]?.default || "/src/assets/images/default-user.jpg",
+                user_submitted_utr: "121212121212",
+                utr: "121212121212",
+                method: "Bank Transfer",
+                duration: 30,
+                bank: "ICICI Bank",
+                updated_at: "28/01/2025 at 05:01:23 PM",
+                actions: "",
+            },
+            {
+                id: "1d54f8a4-7040-4e65-9254-ef55aa72efdc",
+                sno: 5,
+                code: "W7G9W",
+                confirmed: "₹0",
+                commission: "₹0",
+                amount: "₹0",
+                status: "Dropped",
+                merchant_order_id: "1d54f8a4-7040-4e65-9254-ef55aa72efdc",
+                merchant_code: "Tom",
+                name: "Brad Pitt",
+                photo: imageAssets["/src/assets/images/users/user5-50x50.jpg"]?.default || "/src/assets/images/default-user.jpg",
+                user_submitted_utr: "121212121212",
+                utr: "121212121212",
+                method: "Bank Transfer",
+                duration: 30,
+                bank: "ICICI Bank",
+                updated_at: "28/01/2025 at 05:01:23 PM",
+                actions: "",
+            },
+            {
+                id: "1d54f8a4-7040-4e65-9254-ef55aa72efdc",
+                sno: 6,
+                code: "W7G9W",
+                confirmed: "₹0",
+                commission: "₹0",
+                amount: "₹0",
+                status: "Duplicate",
+                merchant_order_id: "1d54f8a4-7040-4e65-9254-ef55aa72efdc",
+                merchant_code: "Tom",
+                name: "Jennifer Lawrence",
+                photo: imageAssets["/src/assets/images/users/user6-50x50.jpg"]?.default || "/src/assets/images/default-user.jpg",
+                user_submitted_utr: "121212121212",
+                utr: "121212121212",
+                method: "Bank Transfer",
+                duration: 30,
+                bank: "ICICI Bank",
+                updated_at: "28/01/2025 at 05:01:23 PM",
+                actions: "",
+            },
+            {
+                id: "1d54f8a4-7040-4e65-9254-ef55aa72efdc",
+                sno: 7,
+                code: "W7G9W",
+                confirmed: "₹0",
+                commission: "₹0",
+                amount: "₹0",
+                status: "Dispute",
+                merchant_order_id: "1d54f8a4-7040-4e65-9254-ef55aa72efdc",
+                merchant_code: "Tom",
+                name: "Johnny Depp",
+                photo: imageAssets["/src/assets/images/users/user7-50x50.jpg"]?.default || "/src/assets/images/default-user.jpg",
+                user_submitted_utr: "121212121212",
+                utr: "121212121212",
+                method: "Bank Transfer",
+                duration: 30,
+                bank: "ICICI Bank",
+                updated_at: "28/01/2025 at 05:01:23 PM",
+                actions: "",
+            },
+            {
+                id: "1d54f8a4-7040-4e65-9254-ef55aa72efdc",
+                sno: 8,
+                code: "W7G9W",
+                confirmed: "₹0",
+                commission: "₹0",
+                amount: "₹0",
+                status: "Bank Mismatch",
+                merchant_order_id: "1d54f8a4-7040-4e65-9254-ef55aa72efdc",
+                merchant_code: "Tom",
+                name: "Cate Blanchett",
+                photo: imageAssets["/src/assets/images/users/user8-50x50.jpg"]?.default || "/src/assets/images/default-user.jpg",
+                user_submitted_utr: "121212121212",
+                utr: "121212121212",
+                method: "Bank Transfer",
+                duration: 30,
+                bank: "ICICI Bank",
+                updated_at: "28/01/2025 at 05:01:23 PM",
+                actions: "",
+            },
+            {
+                id: "1d54f8a4-7040-4e65-9254-ef55aa72efdc",
+                sno: 9,
+                code: "W7G9W",
+                confirmed: "₹0",
+                commission: "₹0",
+                amount: "₹0",
+                status: "Failed",
+                merchant_order_id: "1d54f8a4-7040-4e65-9254-ef55aa72efdc",
+                merchant_code: "Tom",
+                name: "Denzel Washington",
+                photo: imageAssets["/src/assets/images/users/user9-50x50.jpg"]?.default || "/src/assets/images/default-user.jpg",
+                user_submitted_utr: "121212121212",
+                utr: "121212121212",
+                method: "Bank Transfer",
+                duration: 30,
+                bank: "ICICI Bank",
+                updated_at: "28/01/2025 at 05:01:23 PM",
+                actions: "",
+            },
+            {
+                id: "1d54f8a4-7040-4e65-9254-ef55aa72efdc",
+                sno: 10,
+                code: "W7G9W",
+                confirmed: "₹0",
+                commission: "₹0",
+                amount: "₹0",
+                status: "Image Pending",
+                merchant_order_id: "1d54f8a4-7040-4e65-9254-ef55aa72efdc",
+                merchant_code: "Tom",
+                name: "Julia Roberts",
+                photo: imageAssets["/src/assets/images/users/user10-50x50.jpg"]?.default || "/src/assets/images/default-user.jpg",
+                user_submitted_utr: "121212121212",
+                utr: "121212121212",
+                method: "Bank Transfer",
+                duration: 30,
+                bank: "ICICI Bank",
+                updated_at: "28/01/2025 at 05:01:23 PM",
+                actions: "",
+            },
+        ];
+
+        return (payins);
+    },
+};
+
+export default fakersPayIns;
