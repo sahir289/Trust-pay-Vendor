@@ -3,7 +3,7 @@
 /* eslint-disable no-undef */
 import '@/assets/css/vendors/simplebar.css';
 import '@/assets/css/themes/echo.css';
-import Breadcrumb from '@/components/Base/Breadcrumb';
+// import Breadcrumb from '@/components/Base/Breadcrumb';
 import { useState, useEffect, createRef, useCallback, useRef } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { selectSideMenu } from '@/redux-toolkit/slices/common/sideMenu/sideMenuSelectors';
@@ -16,9 +16,9 @@ import Lucide from '@/components/Base/Lucide';
 import users from '@/assets/images/users/users.svg';
 import clsx from 'clsx';
 import SimpleBar from 'simplebar';
-import SwitchAccount from '@/components/SwitchAccount';
-import NotificationsPanel from '@/components/NotificationsPanel';
-import ActivitiesPanel from '@/components/ActivitiesPanel';
+// import SwitchAccount from '@/components/SwitchAccount';
+// import NotificationsPanel from '@/components/NotificationsPanel';
+// import ActivitiesPanel from '@/components/ActivitiesPanel';
 import { useAuth } from '@/components/context/AuthContext';
 import {
   logout,
@@ -55,53 +55,53 @@ const debounce = (func: Function, wait: number) => {
 };
 
 // Utility to build breadcrumb path from active menu
-const buildBreadcrumbPath = (menuItems: Array<FormattedMenu | string>) => {
-  const path: { title: string; to: string; active: boolean }[] = [];
+// const buildBreadcrumbPath = (menuItems: Array<FormattedMenu | string>) => {
+//   const path: { title: string; to: string; active: boolean }[] = [];
 
-  // Always start with Dashboard as the root
-  path.push({ title: 'Home', to: '/auth/dashboard', active: false });
+//   // Always start with Dashboard as the root
+//   path.push({ title: 'Home', to: '/auth/dashboard', active: false });
 
-  const findActiveMenu = (
-    items: Array<FormattedMenu | string>,
-    currentPath: string[] = [],
-  ) => {
-    for (const item of items) {
-      if (typeof item === 'string') continue;
+//   const findActiveMenu = (
+//     items: Array<FormattedMenu | string>,
+//     currentPath: string[] = [],
+//   ) => {
+//     for (const item of items) {
+//       if (typeof item === 'string') continue;
 
-      if (item.active) {
-        path.push({
-          title: item.title,
-          to: item.pathname || currentPath.join('/'),
-          active: true,
-        });
-        return true;
-      }
+//       if (item.active) {
+//         path.push({
+//           title: item.title,
+//           to: item.pathname || currentPath.join('/'),
+//           active: true,
+//         });
+//         return true;
+//       }
 
-      if (item.subMenu && item.activeDropdown) {
-        const found = findActiveMenu(item.subMenu, [
-          ...currentPath,
-          item.pathname || '',
-        ]);
-        if (found) {
-          if (!path.some((p) => p.title === item.title)) {
-            path.splice(path.length - 1, 0, {
-              title: item.title,
-              to: item.pathname || currentPath.join('/'),
-              active: false,
-            });
-          }
-          return true;
-        }
-      }
-    }
-    return false;
-  };
+//       if (item.subMenu && item.activeDropdown) {
+//         const found = findActiveMenu(item.subMenu, [
+//           ...currentPath,
+//           item.pathname || '',
+//         ]);
+//         if (found) {
+//           if (!path.some((p) => p.title === item.title)) {
+//             path.splice(path.length - 1, 0, {
+//               title: item.title,
+//               to: item.pathname || currentPath.join('/'),
+//               active: false,
+//             });
+//           }
+//           return true;
+//         }
+//       }
+//     }
+//     return false;
+//   };
 
-  findActiveMenu(menuItems);
-  return path.length > 1
-    ? path
-    : [{ title: 'Dashboard', to: '/auth/dashboard', active: true }];
-};
+//   findActiveMenu(menuItems);
+//   return path.length > 1
+//     ? path
+//     : [{ title: 'Dashboard', to: '/auth/dashboard', active: true }];
+// };
 
 function Main() {
   const dispatch = useAppDispatch();
@@ -116,11 +116,12 @@ function Main() {
   const [isSidebarFixed, setIsSidebarFixed] = useState(
     localStorage.getItem('isSidebarFixed') === 'true',
   );
-  const [switchAccount, setSwitchAccount] = useState(false);
-  const [notificationsPanel, setNotificationsPanel] = useState(false);
-  const [activitiesPanel, setActivitiesPanel] = useState(false);
+  // const [switchAccount, setSwitchAccount] = useState(false);
+  // const [notificationsPanel, setNotificationsPanel] = useState(false);
+  // const [activitiesPanel, setActivitiesPanel] = useState(false);
   const [compactMenuOnHover, setCompactMenuOnHover] = useState(false);
-  const [activeMobileMenu, setActiveMobileMenu] = useState(false);
+  // const [activeMobileMenu, setActiveMobileMenu] = useState(false);
+  console.log(setCompactMenuOnHover, "setCompactMenuOnHover");
   const location = useLocation();
   const navigate = useNavigate();
   const [formattedMenu, setFormattedMenu] = useState<
@@ -153,6 +154,7 @@ function Main() {
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
+  console.log(apiKey, uniqueId, companyName, "company nAME")
 
   const toggleBlur = async (event: React.MouseEvent) => {
     event.stopPropagation();
@@ -494,12 +496,12 @@ function Main() {
     isSidebarFixed || !compactMenu || (compactMenu && compactMenuOnHover);
 
   // Build dynamic breadcrumb path
-  const breadcrumbPath = buildBreadcrumbPath(formattedMenu);
+  // const breadcrumbPath = buildBreadcrumbPath(formattedMenu);
 
-  const handleVerificationClick = (event: React.MouseEvent) => {
-    event.preventDefault();
-    setVerification(true);
-  };
+  // const handleVerificationClick = (event: React.MouseEvent) => {
+  //   event.preventDefault();
+  //   setVerification(true);
+  // };
 
   const handleVerification = async (passwordData: { password: string }) => {
     setIsLoading(true);
