@@ -1548,7 +1548,7 @@ const InProgressPayOut: React.FC<AllPayOutProps> = ({
                   selectedIndex={selectedSubTab === Status.INITIATED ? 0 : 1}
                   onChange={(tabIndex) => handleSubTabChange(tabIndex === 0)}
                 >
-                  <Tab.List variant="tabs">
+                  {Role.VENDOR !== role && <Tab.List variant="tabs">
                     <Tab>
                       <Tab.Button
                         className="w-full py-2 flex items-center justify-center"
@@ -1567,7 +1567,7 @@ const InProgressPayOut: React.FC<AllPayOutProps> = ({
                         PENDING
                       </Tab.Button>
                     </Tab>
-                  </Tab.List>
+                  </Tab.List>}
                 </Tab.Group>
               </div>
               {payOuts.loading && isLoad ? (

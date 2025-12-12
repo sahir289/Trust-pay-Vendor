@@ -2,28 +2,25 @@ html {
   scroll-behavior: smooth;
   
   body {
-    letter-spacing: theme("letterSpacing.normal");
+    letter-spacing: theme("letterSpacing.wide");
     font-size: theme("fontSize.sm");
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-family: theme("fontFamily.sans");
-    color: theme("colors.slate.800");
-    line-height: theme("lineHeight.relaxed");
+    font-family: theme("fontFamily.public-sans");
+    color: theme("colors.slate.600");
+    line-height: theme("lineHeight.6");
     overflow-x: hidden;
-    background: #fafaf9;
   }
   
   &.dark body {
     color: theme("colors.slate.100");
-    background: rgb(15, 23, 42);
-    
     .text-slate-500 {
       color: theme("colors.slate.400");
     }
     *,
     ::before,
     ::after {
-      border-color: rgba(255, 255, 255, 0.06);
+      border-color: theme("colors.white" / 10%);
     }
   }
 }

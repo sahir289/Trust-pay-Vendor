@@ -97,6 +97,12 @@ const payinSlice = createSlice({
         const searchInAddData = window.sessionStorage.getItem('searchInAddData')        
         // If no filters are set, proceed with normal update
         const hasNoFilters = !Object.keys(filters).length;
+        const hasFiltersAndSearch = Object.keys(filters).length > 0 && searchInAddData === 'true';
+
+        if (hasFiltersAndSearch) {
+          console.warn('Cannot add entry when both search and filters are active.');
+          return state;
+        }
         if (hasNoFilters) {
           // Define logic for handling tab-based updates
           if (!state.loading  && searchInAddData !== 'true') {
