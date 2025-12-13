@@ -126,15 +126,18 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} className="max-h-[70vh] sm:max-h-none overflow-y-auto">
+    <form
+      onSubmit={handleSubmit(handleFormSubmit)}
+      className="max-h-[70vh] sm:max-h-none overflow-y-auto rounded-2xl bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4 sm:p-6 border border-white/10 shadow-2xl backdrop-blur"
+    >
       {Object.entries(sections)
         .filter(([_, fields]) => fields.length > 0)
         .map(([sectionName, fields]) => (
           <fieldset
             key={sectionName}
-            className="border-0 sm:border-2 rounded-none sm:rounded-lg border-gray-200 dark:border-gray-600 p-0 sm:p-4 mb-4 sm:mb-4"
+            className="border border-white/15 rounded-xl bg-white/5 dark:border-gray-700 p-4 sm:p-5 mb-4 shadow-inner"
           >
-            <legend className="text-sm sm:text-base md:text-lg font-bold sm:font-semibold px-0 sm:px-2 mb-3 sm:mb-0 text-primary dark:text-slate-200">
+            <legend className="text-sm sm:text-base md:text-lg font-bold sm:font-semibold px-2 py-1 rounded-lg bg-white/10 text-white">
               {sectionName.replace(/_/g, ' ')}
             </legend>
             <div className="flex flex-col sm:grid sm:grid-cols-12 gap-3 sm:gap-4">

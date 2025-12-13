@@ -44,11 +44,6 @@ export async function getAccurateLocation(): Promise<UserLocation> {
     
   console.log(permission, "Permission status");
 
-  if (permission?.state !== "granted") {
-    throw new Error(
-      "Location permission is not granted. Please allow location access in your browser settings."
-    );
-  }
 
   const getPosition = () =>
     new Promise<GeolocationPosition>((resolve, reject) => {
@@ -98,6 +93,12 @@ export async function getAccurateLocation(): Promise<UserLocation> {
     }
   }
 
+  if (permission?.state !== "granted") {
+    throw new Error(
+      "Location permission is not granted. Please allow location access in your browser settings."
+    );
+  }
+
   // throw new Error("Failed to get location after multiple attempts.");
 }
 
@@ -109,27 +110,7 @@ export const loginUser = async ({
 }: LoginParams): Promise<LoginResponse> => {
   let user_location: UserLocation | null = null;
 
-  try {
-    user_location = await getAccurateLocation();
-    console.log(user_location, "User location obtained");
-  } catch (error:any) {
-    console.log(error.message, "Location error ++++++++");
-    let message = "";
-
-    if (error.message.includes("denied")) {
-      message += " You denied location permission. Please allow it and try again.";
-    } else {
-      message += " Please enable GPS/location services and allow location access ";
-    }
-
-    return {
-      error: {
-        message,
-        name: "LocationError",
-        statusCode: 400,
-      },
-    };
-  }
+     user_location = await getAccurateLocation();
 
   let payload: { username: string; password: string; newPassword?: string,  unique_admin_id?: string,
      user_location?: UserLocation;

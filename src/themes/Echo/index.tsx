@@ -522,25 +522,24 @@ function Main() {
     <>
       <div
         className={clsx([
-          'echo group bg-gradient-to-b from-slate-200/70 to-slate-50 background relative min-h-screen dark:from-darkmode-800/[.95] dark:to-darkmode-900/[.95]',
-          "before:content-[''] before:h-[370px] before:w-screen before:bg-gradient-to-t before:from-theme-1/80 before:to-theme-2 [&.background--hidden]:before:opacity-0 before:transition-[opacity,height] before:ease-in-out before:duration-300 before:top-0 before:fixed",
-          "after:content-[''] after:h-[370px] after:w-screen [&.background--hidden]:after:opacity-0 after:transition-[opacity,height] after:ease-in-out after:duration-300 after:top-0 after:fixed after:bg-texture-white after:bg-contain after:bg-fixed after:bg-[center_-13rem] after:bg-no-repeat",
+          'echo group bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 relative min-h-screen',
+          "before:content-[''] before:h-[420px] before:w-screen before:bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.28),transparent_32%),radial-gradient(circle_at_80%_0%,rgba(14,165,233,0.22),transparent_26%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.18),transparent_24%)] before:top-0 before:fixed before:left-0 before:right-0 before:pointer-events-none",
           topBarActive && 'background--hidden',
         ])}
       >
         <div
           className={clsx([
-            'navbar fixed top-0 left-0 right-0 z-40 h-16 bg-white shadow-md border-b border-gray-200',
-            'flex items-center justify-between px-6',
+            'navbar fixed top-0 left-0 right-0 z-40 h-16 bg-white/10 border-b border-white/10 shadow-lg backdrop-blur-xl',
+            'flex items-center justify-between px-4 sm:px-6',
           ])}
         >
           <div className="navbar-left flex items-center space-x-4">
-            <div className="logo bg-gradient-to-r from-blue-500 to-purple-500 w-10 h-10 rounded-full flex items-center justify-center">
-              <span className="text-white font-bold">TP</span>
+            <div className="logo bg-gradient-to-br from-theme-1 to-theme-2 w-11 h-11 rounded-2xl flex items-center justify-center shadow-lg shadow-theme-2/40">
+              <span className="text-white font-bold text-lg">TP</span>
             </div>
-            <span className="text-lg font-semibold text-gray-800">TrustPay</span>
+            <span className="text-lg font-semibold text-white drop-shadow">TrustPay</span>
             <button
-              className="toggle-sidebar-btn p-2 rounded-full hover:bg-gray-200"
+              className="toggle-sidebar-btn p-2 rounded-full hover:bg-white/10 text-white transition"
               onClick={(event) => {
                 event.preventDefault();
                 toggleSidebarMode(event);
@@ -548,24 +547,24 @@ function Main() {
             >
               <Lucide
                 icon={isSidebarExpanded ? 'ChevronLeft' : 'ChevronRight'}
-                className="w-5 h-5 text-gray-800"
+                className="w-5 h-5"
               />
             </button>
           </div>
           <div className="navbar-right flex items-center space-x-4">
             <button
-              className="fullscreen-btn p-2 rounded-md hover:bg-gray-100"
+              className="fullscreen-btn p-2 rounded-full hover:bg-white/10 text-white transition"
               onClick={toggleFullscreen}
               title={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
             >
               <Lucide
                 icon={isFullscreen ? 'Minimize' : 'Maximize'}
-                className="w-6 h-6 text-gray-700"
+                className="w-5 h-5"
               />
             </button>
             <div className="relative">
               <button
-                className="profile-btn w-10 h-10 rounded-full overflow-hidden border-2 border-gray-300 focus:outline-none"
+                className="profile-btn w-10 h-10 rounded-full overflow-hidden border-2 border-white/20 focus:outline-none shadow-lg shadow-theme-2/30"
                 onClick={toggleDropdown}
               >
                 <img
@@ -575,14 +574,14 @@ function Main() {
                 />
               </button>
               {isOpen && (
-                <div className="dropdown-menu absolute right-0 mt-2 w-48 bg-white text-gray-800 rounded-md shadow-lg">
+                <div className="dropdown-menu absolute right-0 mt-2 w-48 bg-slate-900/90 text-white rounded-xl shadow-2xl border border-white/10 backdrop-blur">
                   <div className="px-4 py-3">
                     <p className="text-sm font-medium">{userData.name}</p>
-                    <p className="text-xs text-gray-500">{userData.designation}</p>
+                    <p className="text-xs text-white/60">{userData.designation}</p>
                   </div>
-                  <hr />
+                  <hr className="border-white/10" />
                   <button
-                    className="dropdown-item flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left"
+                    className="dropdown-item flex items-center px-4 py-2 hover:bg-white/5 w-full text-left"
                     onClick={() => {
                       setShowChangePasswordModal(true);
                       setIsOpen(false);
@@ -592,7 +591,7 @@ function Main() {
                     Change Password
                   </button>
                   <button
-                    className="dropdown-item flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left"
+                    className="dropdown-item flex items-center px-4 py-2 hover:bg-white/5 w-full text-left text-danger"
                     onClick={() => {
                       HandleLogOut();
                       setIsOpen(false);
@@ -608,20 +607,20 @@ function Main() {
         </div>
         <div
           className={clsx([
-            'sidebar-container fixed top-16 left-0 z-30 h-[calc(100%-4rem)] bg-white text-gray-800 shadow-lg',
-            isSidebarExpanded ? 'w-64' : 'w-24',
-            'transition-all duration-300',
+            'sidebar-container fixed top-16 left-0 z-30 h-[calc(100%-4rem)] bg-white/10 text-white shadow-2xl backdrop-blur-xl border-r border-white/10',
+            isSidebarExpanded ? 'w-72' : 'w-24',
+            'transition-all duration-300 overflow-hidden',
           ])}
         >
           {/* <div className="sidebar-header flex items-center justify-between px-4 py-3 border-b border-gray-300">
           </div> */}
-          <div className="sidebar-menu mt-4">
-            <ul className="menu-list space-y-2">
+          <div className="sidebar-menu mt-4 h-full">
+            <ul className="menu-list space-y-1 px-2">
               {formattedMenu.map((menu, index) =>
                 typeof menu === 'string' ? (
                   <li
                     key={index}
-                    className="menu-divider text-gray-500 text-sm px-4"
+                    className="menu-divider text-white/50 text-xs px-4 uppercase tracking-wide"
                   >
                     {/* {menu} */}
                   </li>
@@ -630,8 +629,8 @@ function Main() {
                     <a
                       href=""
                       className={clsx([
-                        'menu-item flex items-center px-4 py-2 rounded-md hover:bg-gray-200',
-                        menu.active && 'bg-gray-200',
+                        'menu-item flex items-center px-3 py-2 rounded-xl hover:bg-white/10 transition',
+                        menu.active && 'bg-white/15 shadow-lg shadow-theme-2/20',
                       ])}
                       onClick={(event) => {
                         event.preventDefault();
@@ -640,21 +639,21 @@ function Main() {
                     >
                       <Lucide
                         icon={menu.icon || 'Circle'}
-                        className="menu-icon w-5 h-5 text-gray-800"
+                        className="menu-icon w-5 h-5 text-white"
                       />
                       {isSidebarExpanded && (
-                        <span className="menu-title ml-3">{menu.title}</span>
+                          <span className="menu-title ml-3 text-sm">{menu.title}</span>
                       )}
                     </a>
                     {menu.subMenu && menu.activeDropdown && (
-                      <ul className="submenu-list pl-6 mt-2 space-y-1">
+                        <ul className="submenu-list pl-6 mt-2 space-y-1">
                         {menu.subMenu.map((subMenu, subIndex) => (
                           <li key={subIndex}>
                             <a
                               href=""
                               className={clsx([
-                                'submenu-item flex items-center px-4 py-2 rounded-md hover:bg-gray-200',
-                                subMenu.active && 'bg-gray-200',
+                                  'submenu-item flex items-center px-3 py-2 rounded-lg hover:bg-white/10 text-white/80 transition',
+                                  subMenu.active && 'bg-white/15 text-white',
                               ])}
                               onClick={(event) => {
                                 event.preventDefault();
@@ -663,7 +662,7 @@ function Main() {
                             >
                               <Lucide
                                 icon={subMenu.icon || 'Circle'}
-                                className="submenu-icon w-4 h-4 text-gray-800"
+                                  className="submenu-icon w-4 h-4 text-white/80"
                               />
                               {isSidebarExpanded && (
                                 <span className="submenu-title ml-3">

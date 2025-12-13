@@ -503,8 +503,11 @@ const CommonTable: React.FC<CommonTableProps> = ({
   };
 
   return (
-    <>
-      <div className="overflow-responsive table-responsive w-full">
+    <div className="relative w-full min-h-full rounded-3xl overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-3 sm:p-5 border border-white/10 shadow-2xl">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.16),transparent_28%),radial-gradient(circle_at_80%_0%,rgba(14,165,233,0.14),transparent_24%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.14),transparent_22%)]"></div>
+      <div className="absolute inset-0 backdrop-blur-sm"></div>
+      <div className="relative z-10 space-y-5">
+        <div className="overflow-hidden shadow-2xl rounded-2xl border border-white/15 dark:border-darkmode-500 bg-white/85 dark:bg-darkmode-800/90 table-responsive w-full backdrop-blur">
         {fullScreenImage && (
           <Modal
             handleModal={() => setFullScreenImage(null)}
@@ -2199,7 +2202,8 @@ const CommonTable: React.FC<CommonTableProps> = ({
           </FormSelect>
         </div>
       )}
-    </>
+      </div>
+    </div>
   );
 };
 
