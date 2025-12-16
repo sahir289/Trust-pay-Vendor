@@ -304,35 +304,6 @@ const CompletedPayIn: React.FC<AllPayInProps> = ({
             }),
           );
         }
-        // } else {
-        //   localStorage.setItem('searchInAddData', 'true');
-        //   response = await getPayInsSearch(
-        //     new URLSearchParams({
-        //       ...Object.fromEntries(searchParams),
-        //       status: Status.SUCCESS,
-        //     }).toString(),
-        //   );
-        //   if (response) {
-        //     dispatch(
-        //       getPayIns({
-        //         payin: response.payins,
-        //         totalCount: response.totalCount,
-        //         loading: false,
-        //         error: null,
-        //         refreshPayIn: false,
-        //         isloadingPayinEntries: isLoad,
-        //       }),
-        //     );
-        //     !isLoad && dispatch(setIsloadingPayinEntries(true));
-        //   } else {
-        //     dispatch(
-        //       addAllNotification({
-        //         status: Status.ERROR,
-        //         message: 'No Completed PayIns Found!',
-        //       })
-        //     );
-        //   }
-        // }
       } catch {
         dispatch(
           addAllNotification({
@@ -489,24 +460,6 @@ const CompletedPayIn: React.FC<AllPayInProps> = ({
     setIsLoading(false);
   };
 
-  // const handleGetAllMerchantCodes = useCallback(async () => {
-  //   if (role !== Role.VENDOR) {
-  //     const res = await getAllMerchantCodes();
-  //     setMerchantCodes(
-  //       res.map((el: any) => ({
-  //         label: el.label,
-  //         value: el.value,
-  //       })),
-  //     );
-  //     setMerchantCodesData(
-  //       res.map((el: any) => ({
-  //         label: el.label,
-  //         value: el.merchant_id,
-  //       })),
-  //     );
-  //   }
-  // }, []);
-
   const handleViewAllData = useCallback(async () => {
     dispatch(onload());
     // setSearchQuery('');
@@ -534,29 +487,6 @@ const CompletedPayIn: React.FC<AllPayInProps> = ({
     setActiveDataTab(1);
   }, [dispatch, getPayInData, filters]);
 
-  // useEffect(() => {
-  //   if (role !== Role.VENDOR) {
-  //     handleGetAllMerchantCodes();
-  //   }
-  // }, [handleGetAllMerchantCodes]);
-
-  //const handleGetAllVendorCodes = useCallback(async () => {
-  //   if (role !== Role.MERCHANT) {
-  //     const res = await getAllVendorCodes();
-  //     setVendorCodes(
-  //       res.map((el: any) => ({
-  //         label: el.label,
-  //         value: el.value,
-  //       })),
-  //     );
-  //   }
-  // }, []);
-
-  // useEffect(() => {
-  //   if (role !== Role.MERCHANT) {
-  //     handleGetAllVendorCodes();
-  //   }
-  // }, [handleGetAllVendorCodes]);
   const openExport = () => {
     setCallMerchant(true);
     setCallVendor(true);

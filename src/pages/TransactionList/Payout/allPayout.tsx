@@ -51,8 +51,6 @@ import { getAllBankNames } from '@/redux-toolkit/slices/bankDetails/bankDetailsA
 import { getBankNames } from '@/redux-toolkit/slices/bankDetails/bankDetailsSlice';
 import { selectAllBankNames } from '@/redux-toolkit/slices/bankDetails/bankDetailsSelectors';
 import Drawer from '@/components/Base/Drawer';
-// import { getVendorCodes } from '@/redux-toolkit/slices/vendor/vendorSlice';
-// import { getAllVendorCodes } from '@/redux-toolkit/slices/vendor/vendorAPI';
 import LoadingIcon from '@/components/Base/LoadingIcon';
 import {
   setPagination,
@@ -61,11 +59,9 @@ import {
 import { getPayOutReportSlice } from '@/redux-toolkit/slices/reports/reportSlice';
 import { downloadCSV } from '@/components/ExportComponent';
 import { getSelectedPayoutReport } from '@/redux-toolkit/slices/reports/reportAPI';
-// import { getAllMerchantCodes } from '@/redux-toolkit/slices/merchants/merchantAPI';
 import { selectPayoutReports } from '@/redux-toolkit/slices/reports/reportSelectors';
 import MultiSelect from '@/components/MultiSelect/MultiSelect';
 import Litepicker from '@/components/Base/Litepicker';
-// import { getCount } from '@/redux-toolkit/slices/common/apis/commonAPI';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
@@ -126,12 +122,8 @@ const AllPayOut: React.FC<AllPayOutProps> = ({
     `${date} - ${date}`,
   );
   const [totalPayoutAmount, setTotalPayoutAmount] = useState<number>(0);
-  // const [merchantCodes, setMerchantCodes] = useState<any[]>([]);
-  // const [merchantCodesData, setMerchantCodesData] = useState<any[]>([]);
-  // const [vendorCodes, setVendorCodes] = useState<any[]>([]);
   const [selectedFilter, setSelectedFilter] = useState<any[]>([]);
   const [selectedFilterVendor, setSelectedFilterVendor] = useState<any[]>([]);
-  // const [searchQuery, setSearchQuery] = useState<string>('');
   const [utrId, setUtrId] = useState<string>('');
   const [merchantOrderId, setMerchantOrderId] = useState<string>('');
   const [nickName, setNickName] = useState<string>('');
@@ -142,7 +134,6 @@ const AllPayOut: React.FC<AllPayOutProps> = ({
   const allPayoutReports = useAppSelector(selectPayoutReports);
   const refreshPayOut = useAppSelector(getRefreshPayOut);
   const isLoad = useAppSelector(getIsLoadPayOut);
-  // const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
   const [debouncedUtrId, setDebouncedUtrId] = useState<string>('');
   const [debouncedMerchantOrderId, setDebouncedMerchantOrderId] =
     useState<string>('');
@@ -220,9 +211,6 @@ const AllPayOut: React.FC<AllPayOutProps> = ({
           limit: (pagination?.limit || 20).toString(),
           // ...(searchQuery && { search: searchQuery }),
         });
-        // const searchParams = new URLSearchParams({
-        //   ...(searchQuery && { search: searchQuery }),
-        // });
 
         if (filters) {
           Object.entries(filters).forEach(([key, value]) => {
@@ -249,12 +237,6 @@ const AllPayOut: React.FC<AllPayOutProps> = ({
         dispatch(getTotalCount(response.data.totalCount));
         dispatch(getPayOuts(response.data));
         !isLoad && dispatch(setIsloadingPayOutEntries(true));
-        // } else {
-        //   response = await getAllPayOuts(searchParams.toString());
-        //   dispatch(getTotalCount(response.totalCount));
-        //   dispatch(getPayOuts(response.data));
-        //   !isLoad && dispatch(setIsloadingPayOutEntries(true));
-        // }
       } catch {
         dispatch(
           addAllNotification({
@@ -275,15 +257,6 @@ const AllPayOut: React.FC<AllPayOutProps> = ({
       debouncedNickName,
     ],
   );
-  // useEffect(() => {
-  //   const handler = setTimeout(() => {
-  //     setDebouncedSearchQuery(searchQuery.trim());
-  //   }, 1000);
-
-  //   return () => {
-  //     clearTimeout(handler);
-  //   };
-  // }, [searchQuery]);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -342,88 +315,8 @@ const AllPayOut: React.FC<AllPayOutProps> = ({
     dispatch,
   ]);
 
-  // useEffect(() => {
-  //   getPayOutData();
-  // }, [pagination?.page, pagination?.limit, getPayOutData]);
-
-  // useEffect(() => {
-  //   if (refreshPayOut) {
-  //     getPayOutData();
-  //     dispatch(setRefreshPayOut(false));
-  //   }
-  // }, [refreshPayOut, getPayOutData, dispatch]);
-
-  // const handleGetAllMerchantCodes = useCallback(async () => {
-  //   const res = await getAllMerchantCodes();
-  //   setMerchantCodes(
-  //     res.map((el: any) => ({
-  //       label: el.label,
-  //       value: el.value,
-  //     })),
-  //   );
-  //   setMerchantCodesData(
-  //     res.map((el: any) => ({
-  //       label: el.label,
-  //       value: el.merchant_id,
-  //     })),
-  //   );
-  // }, [role]);
-
-  // useEffect(() => {
-  //   if (role !== Role.VENDOR) {
-  //     handleGetAllMerchantCodes();
-  //   }
-  // }, [handleGetAllMerchantCodes]);
-
-  // const handleGetAllVendorCodes = useCallback(async () => {
-  //   const res = await getAllVendorCodes();
-  //   setVendorCodes(
-  //     res.map((el: any) => ({
-  //       label: el.label,
-  //       value: el.value,
-  //     })),
-  //   );
-  //   dispatch(getVendorCodes(res));
-  // }, [dispatch]);
-
-  // useEffect(() => {
-  //   if (role !== Role.MERCHANT) {
-  //     handleGetAllVendorCodes();
-  //   }
-  // }, [handleGetAllVendorCodes]);
-
-  // useEffect(() => {
-  //   if (role) {
-  //     if (role !== Role.VENDOR) {
-  //       handleGetAllMerchantCodes();
-  //     }
-  //     if (role !== Role.MERCHANT) {
-  //       handleGetAllVendorCodes();
-  //     }
-  //   }
-  // }, [role, handleGetAllMerchantCodes, handleGetAllVendorCodes]);
-
   const payOuts = useAppSelector(getAllPayOutData);
   const bankNames = useAppSelector(selectAllBankNames);
-  // const vendorCodeOptions = useAppSelector(selectAllVendorCodes);
-  //payout add vendor through vendor id
-  // const fetchvendorCodes = async () => {
-  //   const vendorCodesList = await getAllVendorCodes();
-  //   const data = vendorCodesList?.map(
-  //     ({ vendor_id, ...rest }: { vendor_id: string; [key: string]: any }) => ({
-  //       ...rest,
-  //       value: vendor_id,
-  //     }),
-  //   );
-  //   if (vendorCodesList) {
-  //     dispatch(getVendorCodes(data));
-  //   }
-  // };
-  // useEffect(() => {
-  //   if (role !== null && role !== Role.MERCHANT) {
-  //     vendorModal ? fetchvendorCodes() : null;
-  //   }
-  // }, [vendorModal]);
 
   const bankOptions = [...bankNames];
 
@@ -601,9 +494,7 @@ const AllPayOut: React.FC<AllPayOutProps> = ({
       (payout) => payout && payout.id && selectedRows.includes(payout.id),
     );
     let result;
-    // const payoutIds = selectedPayOuts
-    //   .filter((p) => p && p?.id)
-    //   .map((p) => p?.id);
+
     const payoutIds = selectedPayOuts.map((payout) => payout.id);
     const updatedData = {
       payouts_ids: payoutIds,
@@ -1351,9 +1242,6 @@ const AllPayOut: React.FC<AllPayOutProps> = ({
                           {role === Role.ADMIN ? (
                             <div className="my-2 py-2 flex flex-col justify-center">
                               <div className="flex flex-row">
-                                {/* <div className="px-2 flex">
-                                Select Merchant :{' '}
-                              </div> */}
                                 <MultiSelect
                                   codes={merchantCodes}
                                   selectedFilter={selectedFilter}

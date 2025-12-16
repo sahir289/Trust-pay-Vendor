@@ -220,28 +220,6 @@ const AllPayIn: React.FC<AllPayInProps> = ({
     if (merchantOrderId || userSubmittedUtr || bankName) {
       return true;
     }
-
-    // Check filters from FilterState
-    // const hasFilterStateValues = Boolean(
-    //   filters.merchant_id?.length || 
-    //   filters.user_ids?.length || 
-    //   filters.status || 
-    //   filters.updated_at ||
-    //   filters.user_submitted_utr ||
-    //   filters.merchant_order_id ||
-    //   filters.utr ||
-    //   filters.nick_name ||
-    //   filters.bank_acc_id ||
-    //   filters.amount ||
-    //   filters.user
-    // );
-
-    // // Check additional filters from component state
-    // const hasAdditionalFilters = Boolean(
-    //   selectedColumn && filterValue
-    // );
-
-    // return hasFilterStateValues || hasAdditionalFilters;
   };
 
   const getPayInData = useCallback(
@@ -442,27 +420,7 @@ const AllPayIn: React.FC<AllPayInProps> = ({
   }, [dispatch, date, getPayInData]);
 
   const payins = useAppSelector(getAllPayInData);
-  // const UpdateFailedPayinUtr = async (data: any) => {
-  //   if (data.user_submitted_utr) {
-  //     const utr = {utr:data.user_submitted_utr}
-  //     const url = `updateFailedPayinUtr/${data.id}`;
-  //     const res = await updatePayIns(`${url}` ,utr);
-  //     if (res.meta) {
-  //       setNotificationMessage(res?.meta?.message || res?.data?.message);
-  //       setNotificationStatus(Status.SUCCESS);
-  //       basicNonStickyNotificationToggle();
-  //       dispatch(setRefreshPayIn(true));
-  //     } else {
-  //       setNotificationStatus(Status.ERROR);
-  //       setNotificationMessage(res.error.message);
-  //       basicNonStickyNotificationToggle();
-  //     }
-  //   } else {
-  //     setNotificationStatus(Status.ERROR);
-  //     setNotificationMessage('Unable to reset UTR');
-  //     basicNonStickyNotificationToggle();
-  //   }
-  // };
+
   const handleNotifyData = async (id: string) => {
     const url = `update-payment-notified-status/${id}`;
     const apiData = { type: 'PAYIN' };

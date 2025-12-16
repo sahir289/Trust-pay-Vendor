@@ -243,16 +243,6 @@ const RejectedPayOut: React.FC<AllPayOutProps> = ({
     setIsReset(true);
   }, [dispatch]);
 
-  // useEffect(() => {
-  //   getPayOutData();
-  // }, [JSON.stringify(params)]);
-
-  // useEffect(() => {
-  //   if (refreshPayOut) {
-  //     getPayOutData();
-  //     dispatch(setRefreshPayOut(false));
-  //   }
-  // }, [refreshPayOut, dispatch]);
   const setExportModal = () => {
     setCallMerchant(true);
     setCallVendor(true);

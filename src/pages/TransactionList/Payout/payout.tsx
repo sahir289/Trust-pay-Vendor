@@ -24,12 +24,6 @@ import CompletedPayOut from '@/pages/TransactionList/Payout/completedPayout';
 import InProgressPayOut from '@/pages/TransactionList/Payout/inProgressPayout';
 import RejectedPayOut from '@/pages/TransactionList/Payout/rejectedPayout';
 
-// Commented out lazy loading approach:
-// const AllPayOut = withLazyLoading(() => import('@/pages/TransactionList/Payout/allPayout'), { chunkName: 'AllPayOut' });
-// const CompletedPayOut = withLazyLoading(() => import('@/pages/TransactionList/Payout/completedPayout'), { chunkName: 'CompletedPayOut' });
-// const InProgressPayOut = withLazyLoading(() => import('@/pages/TransactionList/Payout/inProgressPayout'), { chunkName: 'InProgressPayOut' });
-// const RejectedPayOut = withLazyLoading(() => import('@/pages/TransactionList/Payout/rejectedPayout'), { chunkName: 'RejectedPayOut' });
-
 const PayOut: React.FC = () => {
   const dispatch = useAppDispatch();
   useAppSelector(selectDarkMode); // Subscribe to dark mode to trigger re-render

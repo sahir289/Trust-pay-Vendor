@@ -1507,13 +1507,31 @@ const BankAccount: React.FC = () => {
   );
 
   return (
-    <div className="flex flex-col p-5 ">
-      <div className="col-span-12">
-        <div className="flex flex-col  md:h-10 gap-y-3 md:items-center md:flex-row">
-          <div className="text-base font-medium group-[.mode--light]:text-white">
-            Bank Accounts
+    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4 sm:p-6 lg:p-8 shadow-2xl border border-white/10 min-h-screen">
+      {/* Background gradient overlay */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.15),transparent_30%),radial-gradient(circle_at_85%_10%,rgba(14,165,233,0.12),transparent_28%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.12),transparent_24%)]"></div>
+
+      <div className="relative z-10">
+        {/* Header Section */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 border rounded-2xl border-white/20 bg-white/10 shrink-0">
+              <Lucide
+                icon="Building"
+                className="w-5 h-5 sm:w-6 sm:h-6 text-white"
+              />
+            </div>
+            <div>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold text-white">
+                Bank Accounts
+              </h1>
+              <p className="text-white/60 text-sm hidden sm:block">
+                Manage your bank accounts
+              </p>
+            </div>
           </div>
-          <div className="flex flex-col sm:flex-row gap-x-3 gap-y-2 md:ml-auto">
+
+          <div className="flex flex-col sm:flex-row gap-x-3 gap-y-2">
             <Modal
               handleModal={bankModal}
               forOpen={newUserModal}
@@ -1528,406 +1546,419 @@ const BankAccount: React.FC = () => {
                   bankToEdit ? true : false,
                 )}
                 onSubmit={handleSubmitData}
-                //edit toggle
                 defaultValues={formInitialValues || {}}
-                // defaultValues={bankToEdit || {}}
                 isEditMode={!!bankToEdit}
                 handleCancel={bankModal}
                 isLoading={isLoading}
               />
             </Modal>
-            <Modal handleModal={handleCancelDelete} forOpen={deleteModal}>
-              <ModalContent
-                handleCancelDelete={handleCancelDelete}
-                handleConfirmDelete={handleConfirmDelete}
-              >
-                Are you sure you want to delete this bank?
-              </ModalContent>
-            </Modal>
-            <Modal handleModal={handleCancelFreeze} forOpen={freezeModal}>
-              <ModalContent
-                handleCancelDelete={handleCancelFreeze}
-                handleConfirmDelete={() =>
-                  formData && handleConfirmFreeze(formData)
-                }
-              >
-                Are you sure you want to Freeze this bank?
-              </ModalContent>
-            </Modal>
-            <Modal
-              handleModal={handleCancelLimitUpdate}
-              forOpen={dailyLimitModal}
-            >
-              <ModalContent
-                handleCancelDelete={handleCancelLimitUpdate}
-                handleConfirmDelete={handleConfirmLimitUpdate}
-              >
-                Are you sure you want to update the Max Limit to {maxLimit}?
-              </ModalContent>
-            </Modal>
-            {/* <Modal
-              handleModal={() => setVerification(false)}
-              forOpen={verification}
-            >
-              <DynamicForm
-                sections={VerificationformFields(showPassword)}
-                onSubmit={handleVerification}
-                defaultValues={formData || {}}
-                isEditMode={formData ? true : false}
-                handleCancel={() => setVerification(false)}
-                isLoading={isLoading}
-              />
-              {errorMessage && (
-                <p className="px-4 text-red-500 text-md mt-2">{errorMessage}</p>
-              )}
-            </Modal> */}
-            <Modal
-              handleModal={() => setVerificationDelete(false)}
-              forOpen={verificationDelete}
-            >
-              <DynamicForm
-                sections={VerificationformFields(showPassword)}
-                onSubmit={handleVerificationdelete}
-                defaultValues={formData || {}}
-                isEditMode={true}
-                handleCancel={() => setVerificationDelete(false)}
-                isLoading={isLoading}
-              />
-              {errorMessage && (
-                <p className="px-4 text-red-500 text-md mt-2">{errorMessage}</p>
-              )}
-            </Modal>
-            <Modal
-              handleModal={() => setVerificationFreeze(false)}
-              forOpen={verificationFreeze}
-            >
-              <DynamicForm
-                sections={VerificationformFields(showPassword)}
-                onSubmit={handleVerificationFreeze}
-                defaultValues={{ password: '' }}
-                isEditMode={true}
-                handleCancel={() => setVerificationFreeze(false)}
-                isLoading={isLoading}
-              />
-              {errorMessage && (
-                <p className="px-4 text-red-500 text-md mt-2">{errorMessage}</p>
-              )}
-            </Modal>
-            <AssignMerchantModal
-              title={'Assign Merchants'}
-              forOpen={addMerchant}
-              handleModal={addMerchantModal}
-              userOptions={merchantsOptions}
-              merchants={selectedBankId.merchants}
-              merchantsCodes={merchantCodes}
-              onSubmit={handleSubmitData}
-            />
-            {exportModalState && (
-              <Modal
-                handleModal={() =>
-                  setExportModalState((prev) => ({
-                    ...prev,
-                    open: !prev.open,
-                  }))
-                }
-                forOpen={exportModalState.open}
-                title="Export Bank Account"
-              >
-                <div className="py-2 my-2 mb-4">
-                  <Litepicker
-                    value={selectedFilterDates}
-                    onChange={(e) => {
-                      setSelectedFilterDates(e.target.value);
-                    }}
-                    enforceRange={false}
-                    options={{
-                      autoApply: false,
-                      singleMode: false,
-                      numberOfMonths: 1,
-                      numberOfColumns: 1,
-                      showWeekNumbers: true,
-                      startDate: selectedFilterDates.split(' - ')[0],
-                      endDate: selectedFilterDates.split(' - ')[1],
-                      dropdowns: {
-                        minYear: 1990,
-                        maxYear: null,
-                        months: true,
-                        years: true,
-                      },
-                    }}
-                    placeholder="Select a date range"
-                    className="w-full pl-9 rounded-[0.5rem] group-[.mode--light]:!bg-white/[0.12] group-[.mode--light]:!text-slate-200 group-[.mode--light]:!border-transparent dark:group-[.mode--light]:!bg-darkmode-900/30 dark:!box"
-                  />
-                </div>
-
-                <div className="flex flex-row gap-4 my-4 pt-6">
-                  <Button onClick={() => handleDownload('PDF')}>
-                    Export as PDF
-                  </Button>
-                  <Button onClick={() => handleDownload('CSV')}>
-                    Export as CSV
-                  </Button>
-                  <Button onClick={() => handleDownload('XLSX')}>
-                    Export as XLSX
-                  </Button>
-                </div>
-              </Modal>
-            )}
           </div>
         </div>
-        <div className="flex flex-col p-5 box box--stacked mt-4">
-          <div className="flex flex-col gap-8 mt-3.5 rounded-lg">
-            <div className="flex flex-col ">
-              <Tab.Group
-                selectedIndex={parentTab}
-                onChange={handleParentTabChange}
-              >
-                <Tab.List className="flex border-b-0 bg-transparent relative">
-                  <Tab className="relative flex-1">
-                    {({ selected }) => (
-                      <Tab.Button
-                        className={`w-full py-2 flex items-center justify-center transition-all duration-200 relative ${
-                          selected
-                            ? 'bg-white dark:bg-darkmode-700 text-slate-900 dark:text-white border-t-4 border-l-4 border-r-4 border-gray-100 dark:border-darkmode-400 rounded-tl-xl rounded-tr-xl shadow-sm'
-                            : 'bg-slate-50 dark:bg-darkmode-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-darkmode-700'
-                        }`}
-                        as="button"
-                        onClick={() => handleDataTabChange('PayIn')}
-                        style={selected ? {
-                          position: 'relative',
-                          zIndex: 10
-                        } : {}}
-                      >
-                        <Lucide
-                          icon="BadgeIndianRupee"
-                          className="w-5 h-5 mr-2"
-                        />
-                        PayIn
-                      </Tab.Button>
-                    )}
-                  </Tab>
-                  <Tab className="relative flex-1">
-                    {({ selected }) => (
-                      <Tab.Button
-                        className={`w-full py-2 flex items-center justify-center transition-all duration-200 relative ${
-                          selected
-                            ? 'bg-white dark:bg-darkmode-700 text-slate-900 dark:text-white border-t-4 border-l-4 border-r-4 border-gray-100 dark:border-darkmode-400 rounded-tl-xl rounded-tr-xl shadow-sm'
-                            : 'bg-slate-50 dark:bg-darkmode-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-darkmode-700'
-                        }`}
-                        as="button"
-                        onClick={() => handleDataTabChange('PayOut')}
-                        style={selected ? {
-                          position: 'relative',
-                          zIndex: 10
-                        } : {}}
-                      >
-                        <Lucide
-                          icon="ArrowRightCircle"
-                          className="w-5 h-5 mr-2"
-                        />
-                        PayOut
-                      </Tab.Button>
-                    )}
-                  </Tab>
-                </Tab.List>
-                <div className="flex flex-col border-b border-l border-r border-gray-100 dark:border-darkmode-400 border-t-4 border-t-gray-100 dark:border-t-darkmode-400 p-5 sm:items-center sm:flex-row gap-y-2">
-                  <div>
-                    <div className="relative">
-                      <Lucide
-                        icon="Search"
-                        className="absolute inset-y-0 left-0 z-10 w-4 h-4 my-auto ml-3 stroke-[1.3] text-slate-500"
+
+        {/* All Modals - remain the same */}
+        <Modal handleModal={handleCancelDelete} forOpen={deleteModal}>
+          <ModalContent
+            handleCancelDelete={handleCancelDelete}
+            handleConfirmDelete={handleConfirmDelete}
+          >
+            Are you sure you want to delete this bank?
+          </ModalContent>
+        </Modal>
+        <Modal handleModal={handleCancelFreeze} forOpen={freezeModal}>
+          <ModalContent
+            handleCancelDelete={handleCancelFreeze}
+            handleConfirmDelete={() =>
+              formData && handleConfirmFreeze(formData)
+            }
+          >
+            Are you sure you want to Freeze this bank?
+          </ModalContent>
+        </Modal>
+        <Modal
+          handleModal={handleCancelLimitUpdate}
+          forOpen={dailyLimitModal}
+        >
+          <ModalContent
+            handleCancelDelete={handleCancelLimitUpdate}
+            handleConfirmDelete={handleConfirmLimitUpdate}
+          >
+            Are you sure you want to update the Max Limit to {maxLimit}?
+          </ModalContent>
+        </Modal>
+        <Modal
+          handleModal={() => setVerificationDelete(false)}
+          forOpen={verificationDelete}
+        >
+          <DynamicForm
+            sections={VerificationformFields(showPassword)}
+            onSubmit={handleVerificationdelete}
+            defaultValues={formData || {}}
+            isEditMode={true}
+            handleCancel={() => setVerificationDelete(false)}
+            isLoading={isLoading}
+          />
+          {errorMessage && (
+            <p className="px-4 text-red-500 text-md mt-2">{errorMessage}</p>
+          )}
+        </Modal>
+        <Modal
+          handleModal={() => setVerificationFreeze(false)}
+          forOpen={verificationFreeze}
+        >
+          <DynamicForm
+            sections={VerificationformFields(showPassword)}
+            onSubmit={handleVerificationFreeze}
+            defaultValues={{ password: '' }}
+            isEditMode={true}
+            handleCancel={() => setVerificationFreeze(false)}
+            isLoading={isLoading}
+          />
+          {errorMessage && (
+            <p className="px-4 text-red-500 text-md mt-2">{errorMessage}</p>
+          )}
+        </Modal>
+        <AssignMerchantModal
+          title={'Assign Merchants'}
+          forOpen={addMerchant}
+          handleModal={addMerchantModal}
+          userOptions={merchantsOptions}
+          merchants={selectedBankId.merchants}
+          merchantsCodes={merchantCodes}
+          onSubmit={handleSubmitData}
+        />
+        {exportModalState && (
+          <Modal
+            handleModal={() =>
+              setExportModalState((prev) => ({
+                ...prev,
+                open: !prev.open,
+              }))
+            }
+            forOpen={exportModalState.open}
+            title="Export Bank Account"
+          >
+            <div className="py-2 my-2 mb-4">
+              <Litepicker
+                value={selectedFilterDates}
+                onChange={(e) => {
+                  setSelectedFilterDates(e.target.value);
+                }}
+                enforceRange={false}
+                options={{
+                  autoApply: false,
+                  singleMode: false,
+                  numberOfMonths: 1,
+                  numberOfColumns: 1,
+                  showWeekNumbers: true,
+                  startDate: selectedFilterDates.split(' - ')[0],
+                  endDate: selectedFilterDates.split(' - ')[1],
+                  dropdowns: {
+                    minYear: 1990,
+                    maxYear: null,
+                    months: true,
+                    years: true,
+                  },
+                }}
+                placeholder="Select a date range"
+                className="w-full pl-9 rounded-[0.5rem]"
+              />
+            </div>
+            <div className="flex flex-row gap-4 my-4 pt-6">
+              <Button onClick={() => handleDownload('PDF')} className="bg-gradient-to-r from-theme-1 to-theme-2 text-white border-0">
+                Export as PDF
+              </Button>
+              <Button onClick={() => handleDownload('CSV')} className="bg-gradient-to-r from-theme-1 to-theme-2 text-white border-0">
+                Export as CSV
+              </Button>
+              <Button onClick={() => handleDownload('XLSX')} className="bg-gradient-to-r from-theme-1 to-theme-2 text-white border-0">
+                Export as XLSX
+              </Button>
+            </div>
+          </Modal>
+        )}
+        {selectedVendorExport && (
+          <Modal
+            handleModal={() => {
+              setSelectedVendorExport((prev) => !prev);
+            }}
+            forOpen={selectedVendorExport}
+            title="Export Bank Details"
+          >
+            <div className="py-2 my-2 mb-4">
+              <Litepicker
+                value={selectedFilterDates || ''}
+                onChange={(e) => {
+                  setSelectedFilterDates(e.target.value);
+                }}
+                enforceRange={false}
+                options={{
+                  autoApply: false,
+                  singleMode: false,
+                  numberOfColumns: 1,
+                  numberOfMonths: 1,
+                  showWeekNumbers: true,
+                  dropdowns: {
+                    minYear: 1990,
+                    maxYear: null,
+                    months: true,
+                    years: true,
+                  },
+                  startDate: date,
+                  endDate: date,
+                }}
+                placeholder="Select a date range"
+                className="w-full pl-9 rounded-[0.5rem]"
+              />
+            </div>
+            <div className="my-2 py-2 flex flex-col justify-center">
+              <div className="flex flex-row">
+                <MultiSelect
+                  codes={vendorCodes}
+                  selectedFilter={selectedFilterVendorExport}
+                  setSelectedFilter={(value: any[]) => {
+                    setSelectedFilterVendorExport(value);
+                  }}
+                  placeholder="Select Vendor Codes ..."
+                />
+              </div>
+              {selectedMethod === 'PayIn' ? (
+                <div className="flex flex-row mt-4">
+                  <MultiSelect
+                    codes={[
+                      { label: 'Used', value: 'used' },
+                      { label: 'Unused', value: 'unused' },
+                      { label: 'Internal Transfer', value: '/internalTransfer' },
+                      { label: 'Repeated', value: '/repeated' },
+                      { label: 'Freezed', value: '/freezed' },
+                    ]}
+                    selectedFilter={selectedStatus}
+                    setSelectedFilter={(value: any[]) => {
+                      setSelectedStatus(value);
+                    }}
+                    placeholder="Select Status ..."
+                  />
+                </div>
+              ) : (
+                <div className="flex flex-row mt-4">
+                  <MultiSelect
+                    codes={[
+                      { label: 'Approved', value: 'APPROVED' },
+                      { label: 'Reversed', value: 'REVERSED' },
+                    ]}
+                    selectedFilter={selectedStatus}
+                    setSelectedFilter={(value: any[]) => {
+                      setSelectedStatus(value);
+                    }}
+                    placeholder="Select Status ..."
+                  />
+                </div>
+              )}
+            </div>
+            <div className="flex flex-row gap-4 my-4 pt-6">
+              <Button onClick={() => handleDownload('PDF')} className="bg-gradient-to-r from-theme-1 to-theme-2 text-white border-0">
+                Export as PDF
+              </Button>
+              <Button onClick={() => handleDownload('CSV')} className="bg-gradient-to-r from-theme-1 to-theme-2 text-white border-0">
+                Export as CSV
+              </Button>
+              <Button onClick={() => handleDownload('XLSX')} className="bg-gradient-to-r from-theme-1 to-theme-2 text-white border-0">
+                Export as XLSX
+              </Button>
+            </div>
+          </Modal>
+        )}
+
+        {/* Tab Container */}
+        <div className="rounded-2xl bg-white/10 border border-white/15 shadow-2xl backdrop-blur-xl overflow-hidden">
+          <Tab.Group
+            selectedIndex={parentTab}
+            onChange={handleParentTabChange}
+          >
+            <Tab.List className="flex border-b border-white/10 bg-white/5">
+              <Tab className="relative flex-1">
+                {({ selected }) => (
+                  <Tab.Button
+                    className={`w-full py-3 sm:py-4 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base md:text-lg font-medium transition-all duration-300 relative ${
+                      selected
+                        ? 'text-white bg-gradient-to-r from-theme-1/20 via-theme-2/20 to-emerald-500/20 border-b-2 border-theme-1'
+                        : 'text-white/60 hover:text-white hover:bg-white/5'
+                    }`}
+                    as="button"
+                    onClick={() => handleDataTabChange('PayIn')}
+                  >
+                    <div className={`flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl ${
+                      selected 
+                        ? 'bg-gradient-to-r from-theme-1 to-theme-2 shadow-lg shadow-theme-1/30' 
+                        : 'bg-white/10'
+                    }`}>
+                      <Lucide 
+                        icon="BadgeIndianRupee" 
+                        className={`w-4 h-4 sm:w-5 sm:h-5 ${selected ? 'text-white' : 'text-white/70'}`} 
                       />
-                      <FormInput
-                        type="text"
-                        placeholder="Search Banks..."
-                        className="pl-9 sm:w-64 rounded-[0.5rem]"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                      />
-                      {searchQuery && (
-                        <Lucide
-                          icon="X"
-                          className="absolute inset-y-0 right-0 z-10 w-4 h-4 my-auto mr-3 stroke-[1.3] text-slate-500 cursor-pointer"
-                          onClick={() => setSearchQuery('')}
-                        />
-                      )}
                     </div>
-                  </div>
-                  <div className="flex flex-col sm:flex-row gap-x-3 gap-y-2 sm:ml-auto">
-                    <Menu>
-                      <Menu.Button
-                        as={Button}
-                        variant="outline-secondary"
-                        className="w-full sm:w-auto mx-3"
-                        onClick={() => {
-                          setSelectedVendorExport(true);
-                          setSelectedFilterVendorExport('');
-                          setSelectedStatus('');
-                        }}
-                      >
-                        <Lucide
-                          icon="Download"
-                          className="stroke-[1.3] w-4 h-4 mr-2"
-                        />
-                        Export
-                      </Menu.Button>
-                      {selectedVendorExport && (
-                        <Modal
-                          handleModal={() => {
-                            setSelectedVendorExport((prev) => !prev);
-                          }}
-                          forOpen={selectedVendorExport}
-                          title="Export Bank Details"
-                        >
-                          <div className="py-2 my-2 mb-4">
-                            <Litepicker
-                              value={selectedFilterDates || ''}
-                              onChange={(e) => {
-                                setSelectedFilterDates(e.target.value);
-                              }}
-                              enforceRange={false}
-                              options={{
-                                autoApply: false,
-                                singleMode: false,
-                                numberOfColumns: 1,
-                                numberOfMonths: 1,
-                                showWeekNumbers: true,
-                                dropdowns: {
-                                  minYear: 1990,
-                                  maxYear: null,
-                                  months: true,
-                                  years: true,
-                                },
-                                startDate: date,
-                                endDate: date,
-                              }}
-                              placeholder="Select a date range"
-                              className="w-full pl-9 rounded-[0.5rem] group-[.mode--light]:!bg-white/[0.12] group-[.mode--light]:!text-slate-200 group-[.mode--light]:!border-transparent dark:group-[.mode--light]:!bg-darkmode-900/30 dark:!box"
-                            />
-                          </div>
+                    <span>PayIn</span>
+                    {selected && (
+                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-theme-1 via-theme-2 to-emerald-500"></div>
+                    )}
+                  </Tab.Button>
+                )}
+              </Tab>
+              <Tab className="relative flex-1">
+                {({ selected }) => (
+                  <Tab.Button
+                    className={`w-full py-3 sm:py-4 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base md:text-lg font-medium transition-all duration-300 relative ${
+                      selected
+                        ? 'text-white bg-gradient-to-r from-theme-1/20 via-theme-2/20 to-emerald-500/20 border-b-2 border-theme-1'
+                        : 'text-white/60 hover:text-white hover:bg-white/5'
+                    }`}
+                    as="button"
+                    onClick={() => handleDataTabChange('PayOut')}
+                  >
+                    <div className={`flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl ${
+                      selected 
+                        ? 'bg-gradient-to-r from-theme-1 to-theme-2 shadow-lg shadow-theme-1/30' 
+                        : 'bg-white/10'
+                    }`}>
+                      <Lucide 
+                        icon="ArrowRightCircle" 
+                        className={`w-4 h-4 sm:w-5 sm:h-5 ${selected ? 'text-white' : 'text-white/70'}`} 
+                      />
+                    </div>
+                    <span>PayOut</span>
+                    {selected && (
+                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-theme-1 via-theme-2 to-emerald-500"></div>
+                    )}
+                  </Tab.Button>
+                )}
+              </Tab>
+            </Tab.List>
 
-                          <div className="my-2 py-2 flex flex-col justify-center">
-                            <div className="flex flex-row">
-                              <MultiSelect
-                                codes={vendorCodes}
-                                selectedFilter={selectedFilterVendorExport}
-                                setSelectedFilter={(value: any[]) => {
-                                  setSelectedFilterVendorExport(value);
-                                }}
-                                placeholder="Select Vendor Codes ..."
-                                // disabled={selectedFilter?.length > 0}
-                              />
-                            </div>
-                            {selectedMethod === 'PayIn' ? (
-                              <div className="flex flex-row mt-4">
-                                <MultiSelect
-                                  codes={[
-                                    { label: 'Used', value: 'used' },
-                                    { label: 'Unused', value: 'unused' },
-                                    {
-                                      label: 'Internal Transfer',
-                                      value: '/internalTransfer',
-                                    },
-                                    { label: 'Repeated', value: '/repeated' },
-                                    { label: 'Freezed', value: '/freezed' },
-                                  ]}
-                                  selectedFilter={selectedStatus}
-                                  setSelectedFilter={(value: any[]) => {
-                                    setSelectedStatus(value);
-                                  }}
-                                  placeholder="Select Status ..."
-                                  // disabled={selectedFilter?.length > 0}
-                                />
-                              </div>
-                            ) : (
-                              <div className="flex flex-row mt-4">
-                                <MultiSelect
-                                  codes={[
-                                    { label: 'Approved', value: 'APPROVED' },
-                                    { label: 'Reversed', value: 'REVERSED' },
-                                  ]}
-                                  selectedFilter={selectedStatus}
-                                  setSelectedFilter={(value: any[]) => {
-                                    setSelectedStatus(value);
-                                  }}
-                                  placeholder="Select Status ..."
-                                  // disabled={selectedFilter?.length > 0}
-                                />
-                              </div>
-                            )}
-                          </div>
-
-                          <div className="flex flex-row gap-4 my-4 pt-6">
-                            <Button onClick={() => handleDownload('PDF')}>
-                              Export as PDF
-                            </Button>
-                            <Button onClick={() => handleDownload('CSV')}>
-                              Export as CSV
-                            </Button>
-                            <Button onClick={() => handleDownload('XLSX')}>
-                              Export as XLSX
-                            </Button>
-                          </div>
-                        </Modal>
-                      )}
-                      <Menu.Button
-                        as={Button}
-                        variant="outline-secondary"
-                        className="w-full sm:w-auto"
-                        onClick={handleRefresh}
-                      >
-                        <Lucide
-                          icon="RefreshCw"
-                          className="stroke-[1.3] w-4 h-4 mr-2"
-                        />
-                        Refresh
-                      </Menu.Button>
-                    </Menu>
-                    <Menu>
-                      <Menu.Button
-                        as={Button}
-                        variant="outline-secondary"
-                        className="w-full sm:w-auto"
-                        onClick={handleReset}
-                      >
-                        <Lucide
-                          icon="RotateCcw"
-                          className="stroke-[1.3] w-4 h-4 mr-2"
-                        />
-                        Reset
-                      </Menu.Button>
-                    </Menu>
+            {/* Search and Actions Bar */}
+            <div className="p-4 sm:p-6 border-b border-white/10">
+              <div className="flex flex-col sm:items-center sm:flex-row gap-y-3">
+                <div>
+                  <div className="relative">
+                    <Lucide
+                      icon="Search"
+                      className="absolute inset-y-0 left-0 z-10 w-4 h-4 my-auto ml-3 stroke-[1.3] text-white/50"
+                    />
+                    <FormInput
+                      type="text"
+                      placeholder="Search Banks..."
+                      className="pl-9 sm:w-64 rounded-xl bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-theme-1/50 focus:ring-theme-1/30"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                    {searchQuery && (
+                      <Lucide
+                        icon="X"
+                        className="absolute inset-y-0 right-0 z-10 w-4 h-4 my-auto mr-3 stroke-[1.3] text-white/50 cursor-pointer hover:text-white"
+                        onClick={() => setSearchQuery('')}
+                      />
+                    )}
                   </div>
                 </div>
-                <Tab.Group
-                  selectedIndex={selectedSubTab ? 0 : 1}
-                  onChange={(index) => handleSubTabChange(index === 0)}
-                >
-                  <Tab.List variant="tabs">
-                    <Tab>
-                      <Tab.Button
-                        className="w-full py-2 flex items-center justify-center"
-                        as="button"
-                      >
-                        <Lucide icon="CheckCircle" className="w-4 h-4 mr-2" />
-                        Active {selectedMethod} Bank
-                      </Tab.Button>
-                    </Tab>
-                    <Tab>
-                      <Tab.Button
-                        className="w-full py-2 flex items-center justify-center"
-                        as="button"
-                      >
-                        <Lucide icon="XCircle" className="w-4 h-4 mr-2" />
-                        Inactive {selectedMethod} Bank
-                      </Tab.Button>
-                    </Tab>
-                  </Tab.List>
-                </Tab.Group>
-              </Tab.Group>
-              <div className="overflow-auto border-b border-l border-r xl:overflow-visible">
+                <div className="flex flex-col sm:flex-row gap-x-3 gap-y-2 sm:ml-auto">
+                  <Menu>
+                    <Menu.Button
+                      as={Button}
+                      variant="outline-secondary"
+                      className="w-full sm:w-auto bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30"
+                      onClick={() => {
+                        setSelectedVendorExport(true);
+                        setSelectedFilterVendorExport('');
+                        setSelectedStatus('');
+                      }}
+                    >
+                      <Lucide
+                        icon="Download"
+                        className="stroke-[1.3] w-4 h-4 mr-2"
+                      />
+                      Export
+                    </Menu.Button>
+                  </Menu>
+                  <Menu>
+                    <Menu.Button
+                      as={Button}
+                      variant="outline-secondary"
+                      className="w-full sm:w-auto bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30"
+                      onClick={handleRefresh}
+                    >
+                      <Lucide
+                        icon="RefreshCw"
+                        className="stroke-[1.3] w-4 h-4 mr-2"
+                      />
+                      Refresh
+                    </Menu.Button>
+                  </Menu>
+                  <Menu>
+                    <Menu.Button
+                      as={Button}
+                      variant="outline-secondary"
+                      className="w-full sm:w-auto bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30"
+                      onClick={handleReset}
+                    >
+                      <Lucide
+                        icon="RotateCcw"
+                        className="stroke-[1.3] w-4 h-4 mr-2"
+                      />
+                      Reset
+                    </Menu.Button>
+                  </Menu>
+                </div>
+              </div>
+            </div>
+
+            {/* Sub Tabs - Active/Inactive */}
+            <Tab.Group
+              selectedIndex={selectedSubTab ? 0 : 1}
+              onChange={(index) => handleSubTabChange(index === 0)}
+            >
+              <Tab.List className="flex border-b border-white/10 bg-white/5">
+                <Tab className="relative flex-1">
+                  {({ selected }) => (
+                    <Tab.Button
+                      className={`w-full py-3 flex items-center justify-center gap-2 text-sm font-medium transition-all duration-300 ${
+                        selected
+                          ? 'text-white bg-gradient-to-r from-emerald-500/20 to-green-500/20'
+                          : 'text-white/60 hover:text-white hover:bg-white/5'
+                      }`}
+                      as="button"
+                    >
+                      <Lucide icon="CheckCircle" className="w-4 h-4" />
+                      Active {selectedMethod} Bank
+                      {selected && (
+                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-emerald-500 to-green-500"></div>
+                      )}
+                    </Tab.Button>
+                  )}
+                </Tab>
+                <Tab className="relative flex-1">
+                  {({ selected }) => (
+                    <Tab.Button
+                      className={`w-full py-3 flex items-center justify-center gap-2 text-sm font-medium transition-all duration-300 ${
+                        selected
+                          ? 'text-white bg-gradient-to-r from-red-500/20 to-orange-500/20'
+                          : 'text-white/60 hover:text-white hover:bg-white/5'
+                      }`}
+                      as="button"
+                    >
+                      <Lucide icon="XCircle" className="w-4 h-4" />
+                      Inactive {selectedMethod} Bank
+                      {selected && (
+                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-red-500 to-orange-500"></div>
+                      )}
+                    </Tab.Button>
+                  )}
+                </Tab>
+              </Tab.List>
+            </Tab.Group>
+
+            {/* Table Section */}
+            <div className="p-4 sm:p-6">
+              <div className="overflow-auto xl:overflow-visible">
                 {allBankDetails.loading ? (
-                  <div className="flex justify-center items-center w-full h-screen">
+                  <div className="flex justify-center items-center w-full h-96">
                     <LoadingIcon
                       icon="ball-triangle"
                       className="w-[5%] h-auto"
@@ -1939,7 +1970,7 @@ const BankAccount: React.FC = () => {
                       role &&
                       [
                         Role.VENDOR,
-                          Role.SUB_VENDOR,
+                        Role.SUB_VENDOR,
                         Role.VENDOR_ADMIN,
                         Role.VENDOR_OPERATIONS,
                       ].includes(role)
@@ -1970,7 +2001,6 @@ const BankAccount: React.FC = () => {
                         onMouseEnter?: () => void;
                         hover?: boolean;
                       }> = [
-                        //show icons role wise
                         {
                           label: 'Download',
                           icon: 'Download',
@@ -2000,7 +2030,6 @@ const BankAccount: React.FC = () => {
                               setNewUserModal(true);
                               setaddMerchant(false);
                               setAddMerchantFlag(false);
-                              // setVerification(true);
                             },
                           },
                           {
@@ -2025,7 +2054,6 @@ const BankAccount: React.FC = () => {
                           },
                         );
                       }
-
                       return items;
                     }}
                     actionButtonItems={(row: any) => [
@@ -2051,7 +2079,7 @@ const BankAccount: React.FC = () => {
                 )}
               </div>
             </div>
-          </div>
+          </Tab.Group>
         </div>
       </div>
     </div>

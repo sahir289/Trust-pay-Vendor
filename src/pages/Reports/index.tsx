@@ -17,13 +17,6 @@ function Main() {
   }
   return (
     <>
-      <div className="flex flex-col min-h-10 w-full px-2 sm:px-4 py-2">
-        <div className="flex justify-between items-center">
-          <div className="text-lg sm:text-xl md:text-2xl font-medium group-[.mode--light]:text-white">
-            Reports
-          </div>
-        </div>
-      </div>
       <div className="grid grid-cols-12 gap-y-4 sm:gap-y-6 md:gap-y-10 gap-x-3 sm:gap-x-6 mt-2">
         <div className="col-span-12">
           {role === Role.VENDOR && (
