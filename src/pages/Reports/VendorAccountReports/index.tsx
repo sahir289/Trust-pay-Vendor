@@ -576,13 +576,37 @@ const VendorAccountReports: React.FC<VendorAccountReportsProps> = ({
   };
 
   return (
-    <>
-      <div className="col-span-12">
-        <div className="flex w-full flex-col py-4 sm:py-10 px-2 sm:px-6">
-          <div className="flex w-full flex-col gap-3 sm:gap-y-7 px-2 sm:px-4 py-2 rounded-lg">
-            <div className="p-3 sm:p-5 w-full flex flex-col sm:flex-row mt-2 sm:mt-3.5 box box--stacked gap-3 sm:gap-0 sm:justify-between">
-              <div className="w-full sm:mr-2 sm:w-[70%]">
-                <label className="block text-xs sm:text-sm mb-2 px-1 sm:px-2">
+    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4 sm:p-6 lg:p-8 shadow-2xl border border-white/10 min-h-screen">
+      {/* Background gradient overlay */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.15),transparent_30%),radial-gradient(circle_at_85%_10%,rgba(14,165,233,0.12),transparent_28%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.12),transparent_24%)]"></div>
+
+      <div className="relative z-10">
+        {/* Header Section */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 border rounded-2xl border-white/20 bg-white/10 shrink-0">
+              <Lucide
+                icon="FileBarChart"
+                className="w-5 h-5 sm:w-6 sm:h-6 text-white"
+              />
+            </div>
+            <div>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold text-white">
+                Vendor Reports
+              </h1>
+              <p className="text-white/60 text-sm hidden sm:block">
+                View and export vendor account reports
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Filter Section Card */}
+        <div className="rounded-2xl bg-white/10 border border-white/15 shadow-2xl backdrop-blur-xl overflow-hidden mb-6">
+          <div className="p-4 sm:p-6">
+            <div className="flex flex-col lg:flex-row gap-4 items-end">
+              <div className="w-full lg:w-[50%]">
+                <label className="block text-xs sm:text-sm mb-2 px-1 text-white/70">
                   Vendor Codes
                 </label>
                 <MultiSelect
@@ -593,7 +617,7 @@ const VendorAccountReports: React.FC<VendorAccountReportsProps> = ({
                   onChange={handleSelectedVendors}
                 />
               </div>
-              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 sm:mt-3 w-full sm:w-auto">
+              <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
                 <Litepicker
                   value={selectedFilterDates}
                   onChange={(e) => {
@@ -618,16 +642,16 @@ const VendorAccountReports: React.FC<VendorAccountReportsProps> = ({
                   }}
                   enforceRange={false}
                   placeholder="Select a date range"
-                  className="w-full px-2 sm:px-3 py-2 sm:py-1 h-9 sm:h-10 text-[10px] xs:text-xs sm:text-sm border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 h-10 text-xs sm:text-sm rounded-xl bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-theme-1/50 focus:ring-theme-1/30"
                 />
                 <div className="flex flex-row gap-2 sm:gap-3">
-                  <button
-                    className={`px-3 sm:px-4 w-full sm:w-35 h-9 sm:h-10 text-xs sm:text-sm rounded-lg ${
+                  <Button
+                    className={`px-4 w-full sm:w-auto h-10 text-xs sm:text-sm rounded-xl ${
                       selectedFilter.length &&
                       selectedFilterDates &&
                       vendorCode.length
-                        ? 'bg-primary text-white'
-                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        ? 'bg-gradient-to-r from-theme-1 to-theme-2 text-white border-0 shadow-lg shadow-theme-1/30'
+                        : 'bg-white/10 text-white/50 cursor-not-allowed border-white/20'
                     }`}
                     disabled={
                       !selectedFilter.length ||
@@ -648,37 +672,44 @@ const VendorAccountReports: React.FC<VendorAccountReportsProps> = ({
                       handleSearch(selectedFilter, selectedFilterDates);
                     }}
                   >
+                    <Lucide icon="Search" className="w-4 h-4 mr-2" />
                     Search
-                  </button>
+                  </Button>
                   <Menu>
                     <Menu.Button
                       as={Button}
-                      rounded
-                      variant="primary"
-                      className="px-3 sm:px-4 w-full sm:w-35 h-9 sm:h-10 text-xs sm:text-sm border-primary/50 rounded-lg"
+                      variant="outline-secondary"
+                      className="px-4 w-full sm:w-auto h-10 text-xs sm:text-sm rounded-xl bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30"
                     >
-                      Download
-                      <Lucide
-                        icon="ChevronDown"
-                        className="stroke-[1.3] w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-2"
-                      />
+                      <Lucide icon="Download" className="w-4 h-4 mr-2" />
+                      Export
+                      <Lucide icon="ChevronDown" className="w-4 h-4 ml-2" />
                     </Menu.Button>
-                    <Menu.Items className="w-40">
-                      <Menu.Item onClick={() => handleDownload('CSV')}>
+                    <Menu.Items className="w-40 bg-slate-800 border border-white/20 rounded-xl">
+                      <Menu.Item
+                        onClick={() => handleDownload('CSV')}
+                        className="text-white hover:bg-white/10"
+                      >
                         <Lucide
                           icon="FileText"
                           className="stroke-[1.3] w-4 h-4 mr-2"
                         />
                         CSV
                       </Menu.Item>
-                      <Menu.Item onClick={() => handleDownload('XLSX')}>
+                      <Menu.Item
+                        onClick={() => handleDownload('XLSX')}
+                        className="text-white hover:bg-white/10"
+                      >
                         <Lucide
                           icon="FileSpreadsheet"
                           className="stroke-[1.3] w-4 h-4 mr-2"
                         />
                         XLSX
                       </Menu.Item>
-                      <Menu.Item onClick={() => handleDownload('PDF')}>
+                      <Menu.Item
+                        onClick={() => handleDownload('PDF')}
+                        className="text-white hover:bg-white/10"
+                      >
                         <Lucide
                           icon="FileText"
                           className="stroke-[1.3] w-4 h-4 mr-2"
@@ -692,13 +723,13 @@ const VendorAccountReports: React.FC<VendorAccountReportsProps> = ({
             </div>
           </div>
         </div>
-      </div>
-      <div className="grid grid-cols-12 gap-y-10 gap-x-6">
-        <div className="col-span-12">
-          <div className="mt-3.5">
-            <div className="flex flex-col rounded-lg">
+
+        {/* Table Section Card */}
+        <div className="rounded-2xl bg-white/10 border border-white/15 shadow-2xl backdrop-blur-xl overflow-hidden">
+          <div className="p-4 sm:p-6">
+            <div className="overflow-auto xl:overflow-visible">
               {isLoaded ? (
-                <div className="flex justify-center items-center w-full h-screen">
+                <div className="flex justify-center items-center w-full h-96">
                   <LoadingIcon icon="ball-triangle" className="w-[5%] h-auto" />
                 </div>
               ) : (
@@ -740,6 +771,8 @@ const VendorAccountReports: React.FC<VendorAccountReportsProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Modals */}
       {editModalOpen && (
         <Modal
           handleModal={handleEditCancel}
@@ -770,7 +803,7 @@ const VendorAccountReports: React.FC<VendorAccountReportsProps> = ({
           <p className="px-4 text-red-500 text-md mt-2">{errorMessage}</p>
         )}
       </Modal>
-    </>
+    </div>
   );
 };
 

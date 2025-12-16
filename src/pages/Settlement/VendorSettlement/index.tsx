@@ -320,11 +320,7 @@ function VendorSettlement({ refreshSettlement }: VendorSettlementProps) {
         let  response = await getAllSettlements(queryString);
           dispatch(getSettlements(response.data.settlements));
           dispatch(getMerchantSettlementCount(response.data.totalCount));
-        // } else {
-        //   response = await getAllSettlementsBySearchApi(queryString);
-        //   dispatch(getSettlements(response.settlements));
-        //   dispatch(getMerchantSettlementCount(response.totalCount));
-        // }
+
         isFetching.current = false;
       } catch {
         isFetching.current = false;
@@ -340,39 +336,6 @@ function VendorSettlement({ refreshSettlement }: VendorSettlementProps) {
     },
     [pagination, dispatch],
   );
-
-  // const fetchCount = useCallback(async () => {
-  //     let filters = {};
-  //     if (
-  //       filterStateRef.current.selectedFilter.length ||
-  //       filterStateRef.current.selectedStatus ||
-  //       (filterStateRef.current.selectedColumn &&
-  //         filterStateRef.current.filterValue)
-  //     ) {
-  //       filters = buildQueryParams(
-  //         {}, // Empty pagination to exclude page and limit
-  //         filterStateRef.current.selectedFilter,
-  //         filterStateRef.current.selectedFilterDates,
-  //         filterStateRef.current.selectedStatus,
-  //         filterStateRef.current.selectedColumn,
-  //         filterStateRef.current.filterValue,
-  //         undefined,
-  //         'filtersObject',
-  //         false, // Exclude dates
-  //       );
-  //     }
-  //   try {
-  //     // const getCountData = await getCount('Settlement', 'VENDOR', filters);
-  //     dispatch(getMerchantSettlementCount(getCountData.count));
-  //   } catch {
-  //     dispatch(
-  //       addAllNotification({
-  //         status: Status.ERROR,
-  //         message: 'Error fetching settlement count'
-  //       })
-  //     );
-  //   }
-  // }, [dispatch]);
 
   useEffect(() => {
     if (debouncedSearchQuery) {
@@ -439,46 +402,6 @@ function VendorSettlement({ refreshSettlement }: VendorSettlementProps) {
     }
   }, [newSettlementModal]);
 
-  // useEffect(() => {
-  //   const fetchCount = async () => {
-  //     try {
-  //       let filters = {};
-  //       if (
-  //         selectedFilter.length ||
-  //         selectedStatus ||
-  //         (selectedColumn && filterValue)
-  //       ) {
-  //         filters = buildQueryParams(
-  //           {},
-  //           selectedFilter,
-  //           selectedFilterDates,
-  //           selectedStatus,
-  //           selectedColumn,
-  //           filterValue,
-  //           undefined,
-  //           'filtersObject',
-  //           false,
-  //         );
-  //       }
-  //       const getCountData = await getCount('Settlement', 'VENDOR', filters);
-  //       dispatch(getMerchantSettlementCount(getCountData.count));
-  //     } catch {
-  //       dispatch(
-  //         addAllNotification({
-  //           status: Status.ERROR,
-  //           message: 'Error fetching settlement count'
-  //         })
-  //       );
-  //     }
-  //   };
-  //   fetchCount();
-  // }, [
-  //   dispatch,
-  //   selectedFilter,
-  //   selectedStatus,
-  //   selectedColumn,
-  //   filterValue,
-  // ]);
 
   const handleEditModal = (data: any) => {
     if (data?.config?.reference_id && data.method !== 'INTERNAL_QR_TRANSFER' && data.method !== 'INTERNAL_BANK_TRANSFER') {
@@ -937,68 +860,93 @@ dispatch(
   };
 
   return (
-    <div className="grid grid-cols-12 gap-y-10 gap-x-6">
-      <Modal
-        handleModal={settlementModal}
-        forOpen={newSettlementModal}
-        title={''}
-      >
-        <DynamicForm
-          sections={editSettlementFormFields(internalUTR)}
-          onSubmit={handleSubmitData}
-          defaultValues={getDefaultValues(formData)}
-          isEditMode={formData ? true : false}
-          handleCancel={settlementModal}
-          isLoading={isLoading}
-        />
-      </Modal>
+    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4 sm:p-6 lg:p-8 shadow-2xl border border-white/10 min-h-screen">
 
-      <Modal handleModal={deleteModal} forOpen={newdeleteModal} title="">
-        <DynamicForm
-          sections={deleteSettlementFormFields()}
-          onSubmit={handleDeleteSettlement}
-          defaultValues={formData || {}}
-          isEditMode={true}
-          handleCancel={rejectSettlement}
-          isLoading={isLoading}
-        />
-      </Modal>
+      <div className="relative z-10">
+        {/* Header Section */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 border rounded-2xl border-white/20 bg-white/10 shrink-0">
+              <Lucide
+                icon="Landmark"
+                className="w-5 h-5 sm:w-6 sm:h-6 text-white"
+              />
+            </div>
+            <div>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold text-white">
+                Vendor Settlements
+              </h1>
+              <p className="text-white/60 text-sm hidden sm:block">
+                Manage vendor settlement transactions
+              </p>
+            </div>
+          </div>
+        </div>
 
-      <Modal
-        handleModal={resetModal}
-        forOpen={newResetSettlementModal}
-        title={''}
-      >
-        <DynamicForm
-          sections={resetSettlementFormFields()}
-          onSubmit={handleResetData}
-          defaultValues={formData || {}}
-          isEditMode={true}
-          handleCancel={resetSettlement}
-          isLoading={isLoading}
-        />
-      </Modal>
-      <div className="col-span-12">
-        <div className="mt-3.5">
-          <div className="flex flex-col">
-            <div className="flex flex-col p-5 sm:items-center sm:flex-row gap-y-2">
+        {/* Modals */}
+        <Modal
+          handleModal={settlementModal}
+          forOpen={newSettlementModal}
+          title={''}
+        >
+          <DynamicForm
+            sections={editSettlementFormFields(internalUTR)}
+            onSubmit={handleSubmitData}
+            defaultValues={getDefaultValues(formData)}
+            isEditMode={formData ? true : false}
+            handleCancel={settlementModal}
+            isLoading={isLoading}
+          />
+        </Modal>
+
+        <Modal handleModal={deleteModal} forOpen={newdeleteModal} title="">
+          <DynamicForm
+            sections={deleteSettlementFormFields()}
+            onSubmit={handleDeleteSettlement}
+            defaultValues={formData || {}}
+            isEditMode={true}
+            handleCancel={rejectSettlement}
+            isLoading={isLoading}
+          />
+        </Modal>
+
+        <Modal
+          handleModal={resetModal}
+          forOpen={newResetSettlementModal}
+          title={''}
+        >
+          <DynamicForm
+            sections={resetSettlementFormFields()}
+            onSubmit={handleResetData}
+            defaultValues={formData || {}}
+            isEditMode={true}
+            handleCancel={resetSettlement}
+            isLoading={isLoading}
+          />
+        </Modal>
+
+        {/* Main Content Card */}
+        <div className="rounded-2xl bg-white/10 border border-white/15 shadow-2xl backdrop-blur-xl overflow-hidden">
+          <div className="p-4 sm:p-6">
+            {/* Search and Actions Bar */}
+            <div className="flex flex-col sm:items-center sm:flex-row gap-y-3 mb-6">
               <div>
                 <div className="relative">
                   <Lucide
                     icon="Search"
-                    className="absolute inset-y-0 left-0 z-10 w-4 h-4 my-auto ml-3 stroke-[1.3] text-slate-500"
+                    className="absolute inset-y-0 left-0 z-10 w-4 h-4 my-auto ml-3 stroke-[1.3] text-white/50"
                   />
                   <FormInput
                     type="text"
                     placeholder="Search transactions..."
-                    className="pl-9 sm:w-64 rounded-[0.5rem]"
+                    className="pl-9 sm:w-64 rounded-xl bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-theme-1/50 focus:ring-theme-1/30"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
                   {searchQuery && (
                     <Lucide
                       icon="X"
-                      className="absolute inset-y-0 right-0 z-10 w-4 h-4 my-auto mr-3 stroke-[1.3] text-slate-500 cursor-pointer"
+                      className="absolute inset-y-0 right-0 z-10 w-4 h-4 my-auto mr-3 stroke-[1.3] text-white/50 cursor-pointer hover:text-white"
                       onClick={() => setSearchQuery('')}
                     />
                   )}
@@ -1009,7 +957,7 @@ dispatch(
                   <Menu.Button
                     as={Button}
                     variant="outline-secondary"
-                    className="w-full sm:w-auto"
+                    className="w-full sm:w-auto bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30"
                     onClick={handleRefresh}
                   >
                     <Lucide
@@ -1023,7 +971,7 @@ dispatch(
                   <Menu.Button
                     as={Button}
                     variant="outline-secondary"
-                    className="w-full sm:w-auto"
+                    className="w-full sm:w-auto bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30"
                     onClick={handleReset}
                   >
                     <Lucide
@@ -1037,7 +985,7 @@ dispatch(
                   <Menu.Button
                     as={Button}
                     variant="outline-secondary"
-                    className="w-full sm:w-auto"
+                    className="w-full sm:w-auto bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30"
                     onClick={() => setExportModalOpen(true)}
                   >
                     <Lucide
@@ -1094,7 +1042,6 @@ dispatch(
                           <MultiSelect
                             codes={vendorCodes}
                             selectedFilter={exportSelectedFilter}
-                            // onChange={setSelectedFilter}
                             setSelectedFilter={(value: VendorCode[]) => {
                               setExportSelectedFilter(value);
                             }}
@@ -1131,13 +1078,22 @@ dispatch(
                         </div>
                       </div>
                       <div className="flex flex-row gap-4 my-4 pt-6">
-                        <Button onClick={() => handleDownload('PDF')}>
+                        <Button 
+                          onClick={() => handleDownload('PDF')}
+                          className="bg-gradient-to-r from-theme-1 to-theme-2 text-white border-0"
+                        >
                           Export as PDF
                         </Button>
-                        <Button onClick={() => handleDownload('CSV')}>
+                        <Button 
+                          onClick={() => handleDownload('CSV')}
+                          className="bg-gradient-to-r from-theme-1 to-theme-2 text-white border-0"
+                        >
                           Export as CSV
                         </Button>
-                        <Button onClick={() => handleDownload('XLSX')}>
+                        <Button 
+                          onClick={() => handleDownload('XLSX')}
+                          className="bg-gradient-to-r from-theme-1 to-theme-2 text-white border-0"
+                        >
                           Export as XLSX
                         </Button>
                       </div>
@@ -1150,7 +1106,7 @@ dispatch(
                       <Popover.Button
                         as={Button}
                         variant="outline-secondary"
-                        className="w-full sm:w-auto"
+                        className="w-full sm:w-auto bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30"
                       >
                         <Lucide
                           icon="ArrowDownWideNarrow"
@@ -1212,7 +1168,6 @@ dispatch(
                                   setFilterValue('');
                                 }}
                               >
-     
                                 <option value="">Select a column</option>
                                 {(role === Role.ADMIN
                                   ? Columns.SETTLEMENT
@@ -1288,9 +1243,11 @@ dispatch(
                 </Popover>
               </div>
             </div>
+
+            {/* Table Section */}
             <div className="overflow-auto xl:overflow-visible">
               {isPageLoading ? (
-                <div className="flex justify-center items-center w-full h-screen">
+                <div className="flex justify-center items-center w-full h-96">
                   <LoadingIcon icon="ball-triangle" className="w-[5%] h-auto" />
                 </div>
               ) : (
@@ -1350,14 +1307,16 @@ dispatch(
           </div>
         </div>
       </div>
+
+      {/* Drawer */}
       {drawerOpen && (
         <Drawer open={drawerOpen} position="bottom">
-          <div className="flex justify-between items-center mx-8 ">
+          <div className="flex justify-between items-center mx-8">
             <div>
-              <span className="ml-4 text-lg">
+              <span className="ml-4 text-lg text-white">
                 Total: {totalSettlementAmount}
               </span>
-              <span className="ml-4">{selectedRows.length} rows selected</span>
+              <span className="ml-4 text-white/70">{selectedRows.length} rows selected</span>
             </div>
           </div>
         </Drawer>

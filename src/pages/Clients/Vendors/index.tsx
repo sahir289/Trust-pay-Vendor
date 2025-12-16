@@ -667,8 +667,32 @@ function Main() {
   }, [dispatch]);
 
   return (
-    <div className="grid grid-cols-12 gap-y-10 gap-x-6">
-      <div className="col-span-12">
+    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4 sm:p-6 lg:p-8 shadow-2xl border border-white/10 min-h-screen">
+      {/* Background gradient overlay */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.15),transparent_30%),radial-gradient(circle_at_85%_10%,rgba(14,165,233,0.12),transparent_28%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.12),transparent_24%)]"></div>
+
+      <div className="relative z-10">
+        {/* Header Section */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 border rounded-2xl border-white/20 bg-white/10 shrink-0">
+              <Lucide
+                icon="Users"
+                className="w-5 h-5 sm:w-6 sm:h-6 text-white"
+              />
+            </div>
+            <div>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold text-white">
+                Vendors
+              </h1>
+              <p className="text-white/60 text-sm hidden sm:block">
+                Manage vendor accounts and settings
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* All Modals */}
         <div className="flex flex-col sm:flex-row gap-x-3 gap-y-2 md:ml-auto">
           <Modal
             handleModal={() => {
@@ -680,7 +704,6 @@ function Main() {
             <DynamicForm
               sections={VendorformFields(
                 vendorToEdit ? true : false,
-                // If editing from expanded row, it's likely a sub-vendor
                 isEditFromExpandedRow
                   ? Role.SUB_VENDOR
                   : vendorToEdit?.designation_name,
@@ -851,26 +874,29 @@ function Main() {
             />
           </Modal>
         </div>
-        <div className="flex flex-col gap-8 mt-3.5">
-          <div className="flex flex-col">
-            <div className="flex flex-col p-5 sm:items-center sm:flex-row gap-y-2">
+
+        {/* Main Content Card */}
+        <div className="rounded-2xl bg-white/10 border border-white/15 shadow-2xl backdrop-blur-xl overflow-hidden">
+          <div className="p-4 sm:p-6">
+            {/* Search and Actions Bar */}
+            <div className="flex flex-col sm:items-center sm:flex-row gap-y-3 mb-6">
               <div>
                 <div className="relative">
                   <Lucide
                     icon="Search"
-                    className="absolute inset-y-0 left-0 z-10 w-4 h-4 my-auto ml-3 stroke-[1.3] text-slate-500"
+                    className="absolute inset-y-0 left-0 z-10 w-4 h-4 my-auto ml-3 stroke-[1.3] text-white/50"
                   />
                   <FormInput
                     type="text"
                     placeholder="Search vendors..."
-                    className="pl-9 sm:w-64 rounded-[0.5rem]"
+                    className="pl-9 sm:w-64 rounded-xl bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-theme-1/50 focus:ring-theme-1/30"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
                   {searchQuery && (
                     <Lucide
                       icon="X"
-                      className="absolute inset-y-0 right-0 z-10 w-4 h-4 my-auto mr-3 stroke-[1.3] text-slate-500 cursor-pointer"
+                      className="absolute inset-y-0 right-0 z-10 w-4 h-4 my-auto mr-3 stroke-[1.3] text-white/50 cursor-pointer hover:text-white"
                       onClick={() => setSearchQuery('')}
                     />
                   )}
@@ -881,7 +907,7 @@ function Main() {
                   <Menu.Button
                     as={Button}
                     variant="outline-secondary"
-                    className="w-full sm:w-auto"
+                    className="w-full sm:w-auto bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30"
                     onClick={handleRefresh}
                   >
                     <Lucide
@@ -895,7 +921,7 @@ function Main() {
                   <Menu.Button
                     as={Button}
                     variant="outline-secondary"
-                    className="w-full sm:w-auto"
+                    className="w-full sm:w-auto bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30"
                     onClick={handleReset}
                   >
                     <Lucide
@@ -907,9 +933,11 @@ function Main() {
                 </Menu>
               </div>
             </div>
+
+            {/* Table Section */}
             <div className="overflow-auto xl:overflow-visible">
               {allvendor.loading ? (
-                <div className="flex justify-center items-center w-full h-screen">
+                <div className="flex justify-center items-center w-full h-96">
                   <LoadingIcon icon="ball-triangle" className="w-[5%] h-auto" />
                 </div>
               ) : (

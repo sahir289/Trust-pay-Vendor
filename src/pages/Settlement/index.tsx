@@ -1,8 +1,6 @@
 /* eslint-disable no-undef */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { Tab } from '@/components/Base/Headless';
-import Lucide from '@/components/Base/Lucide';
 import React, { useEffect, useState } from 'react';
 // import { withLazyLoading } from '@/utils/lazyStrategies';
 import Modal from '../../components/Modal/modals';
@@ -12,7 +10,6 @@ import {
   addSettlement,
   setRefreshSettlement,
 } from '@/redux-toolkit/slices/settlement/settlementSlice';
-import { setParentTab } from '@/redux-toolkit/slices/common/tabs/tabSlice';
 import { useAppDispatch } from '@/redux-toolkit/hooks/useAppDispatch';
 import { useAppSelector } from '@/redux-toolkit/hooks/useAppSelector';
 import { selectDarkMode } from '@/redux-toolkit/slices/common/darkMode/darkModeSlice';
@@ -35,13 +32,7 @@ import { getBeneficiaryAccountSlice } from '@/redux-toolkit/slices/beneficiaryAc
 import { selectAllBeneficiaryAccounts } from '@/redux-toolkit/slices/beneficiaryAccounts/beneficiaryAccountsSelectors';
 import { addAllNotification } from '@/redux-toolkit/slices/AllNoti/allNotifications';
 
-// Normal imports instead of lazy loading
-import MerchantSettlement from '@/pages/Settlement/MerchantSettlement/index';
 import VendorSettlement from '@/pages/Settlement/VendorSettlement/index';
-
-// Commented out lazy loading approach:
-// const MerchantSettlement = withLazyLoading<{ refreshSettlement: boolean }>(() => import('@/pages/Settlement/MerchantSettlement/index'), { chunkName: 'MerchantSettlement' });
-// const VendorSettlement = withLazyLoading<{ refreshSettlement: boolean }>(() => import('@/pages/Settlement/VendorSettlement/index'), { chunkName: 'VendorSettlement' });
 
 interface Beneficiary {
   id?: string;
@@ -71,21 +62,15 @@ function Main() {
   const parentTab = useAppSelector(getParentTabs);
   const [newSettlementModal, setNewSettlementModal] = useState(false);
   const refreshSettlement = useAppSelector(getRefreshSettlement);
-  const getInitialTitle = (role: RoleType | null, parentTab: number) => {
-    if (role === Role.ADMIN) {
-      return parentTab === 0 ? 'Merchant Settlement' : 'Vendor Settlement';
-    }
-    if (role === Role.MERCHANT) {
-      return 'Merchant Settlement';
-    }
-    return 'Vendor Settlement';
+  const getInitialTitle = () => {
+    return '';
   };
   useEffect(() => {
     if (role === Role.ADMIN) {
       setTitle(parentTab === 0 ? 'Merchant Settlement' : 'Vendor Settlement');
     }
   }, [parentTab]);
-  const [title, setTitle] = useState(getInitialTitle(role, parentTab));
+  const [title, setTitle] = useState(getInitialTitle());
   const [selectedMethodLabel, setSelectedMethodLabel] = useState<string>('');
   const [code, setCode] = useState<string>('');
   const [amount, setAmount] = useState<number>(1);
@@ -455,12 +440,6 @@ function Main() {
     }
   };
 
-  const handleParentTabChange = (index: number) => {
-    setSelectedMethodLabel('');
-    dispatch(setParentTab(index));
-    setTitle(index === 0 ? 'Merchant Settlement' : 'Vendor Settlement');
-  };
-
   return (
     <div className="grid grid-cols-12 gap-y-4 sm:gap-y-6 md:gap-y-10 gap-x-3 sm:gap-x-6">
       <div className="col-span-12">
@@ -559,81 +538,6 @@ function Main() {
             />
           </Modal>
         </div>
-        {role === Role.ADMIN && (
-          <div className="relative flex flex-col col-span-12 lg:col-span-12 xl:col-span-12 gap-y-4 sm:gap-y-7">
-            <div className="flex flex-col p-3 sm:p-4 md:p-5 box box--stacked">
-              <Tab.Group
-                selectedIndex={parentTab}
-                onChange={handleParentTabChange}
-              >
-                <Tab.List className="flex border-b-0 bg-transparent relative">
-                  <Tab className="relative flex-1">
-                    {({ selected }) => (
-                      <Tab.Button
-                        className={`w-full py-2 sm:py-3 flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm md:text-base transition-all duration-200 relative ${
-                          selected
-                            ? 'bg-white dark:bg-darkmode-700 text-slate-900 dark:text-white border-t-4 border-l-4 border-r-4 border-gray-100 dark:border-darkmode-400 rounded-tl-xl rounded-tr-xl shadow-sm'
-                            : 'bg-slate-50 dark:bg-darkmode-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-darkmode-700'
-                        }`}
-                        as="button"
-                        style={selected ? {
-                          position: 'relative',
-                          zIndex: 10
-                        } : {}}
-                      >
-                        <Lucide
-                          icon="CreditCard"
-                          className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.5]"
-                        />
-                        <span className="hidden sm:inline">Merchant Settlement</span>
-                        <span className="sm:hidden">Merchant</span>
-                      </Tab.Button>
-                    )}
-                  </Tab>
-                  <Tab className="relative flex-1">
-                    {({ selected }) => (
-                      <Tab.Button
-                        className={`w-full py-2 sm:py-3 flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm md:text-base transition-all duration-200 relative ${
-                          selected
-                            ? 'bg-white dark:bg-darkmode-700 text-slate-900 dark:text-white border-t-4 border-l-4 border-r-4 border-gray-100 dark:border-darkmode-400 rounded-tl-xl rounded-tr-xl shadow-sm'
-                            : 'bg-slate-50 dark:bg-darkmode-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-darkmode-700'
-                        }`}
-                        as="button"
-                        style={selected ? {
-                          position: 'relative',
-                          zIndex: 10
-                        } : {}}
-                      >
-                        <Lucide
-                          icon="Store"
-                          className="w-5 h-5 ml-px stroke-[2.5]"
-                        />
-                        &nbsp; Vendor Settlement
-                      </Tab.Button>
-                    )}
-                  </Tab>
-                </Tab.List>
-                <Tab.Panels className="border-b border-l border-r border-gray-100 dark:border-darkmode-400 border-t-4 border-t-gray-100 dark:border-t-darkmode-400">
-                  <Tab.Panel className="py-5 leading-relaxed">
-                    <MerchantSettlement
-                      refreshSettlement={refreshSettlement}
-                    />
-                  </Tab.Panel>
-                  <Tab.Panel className="py-5 leading-relaxed">
-                    <VendorSettlement refreshSettlement={refreshSettlement} />
-                  </Tab.Panel>
-                </Tab.Panels>
-              </Tab.Group>
-            </div>
-          </div>
-        )}
-        {role === Role.MERCHANT && (
-          <div className="relative flex flex-col col-span-12 lg:col-span-12 xl:col-span-12 gap-y-7">
-            <div className="flex flex-col p-5 box box--stacked">
-              <MerchantSettlement refreshSettlement={refreshSettlement} />
-            </div>
-          </div>
-        )}
         {role === Role.VENDOR && (
           <div className="relative flex flex-col col-span-12 lg:col-span-12 xl:col-span-12 gap-y-7">
             <div className="flex flex-col p-5 box box--stacked">
