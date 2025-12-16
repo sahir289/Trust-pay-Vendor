@@ -539,11 +539,11 @@ function Main() {
           </Modal>
         </div>
         {role === Role.VENDOR && (
-          <div className="relative flex flex-col col-span-12 lg:col-span-12 xl:col-span-12 gap-y-7">
-            <div className="flex flex-col p-5 box box--stacked">
+          // <div className="relative flex flex-col col-span-12 lg:col-span-12 xl:col-span-12 gap-y-7">
+          //   <div className="flex flex-col p-5 box box--stacked">
               <VendorSettlement refreshSettlement={refreshSettlement} />
-            </div>
-          </div>
+          //   {/* </div>
+          // </div> */}
         )}
       </div>
     </div>
