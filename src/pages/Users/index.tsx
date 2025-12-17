@@ -605,13 +605,31 @@ const Users: React.FC = () => {
     }
   };
   return (
-    <div className="grid grid-cols-12 gap-y-4 sm:gap-y-6 md:gap-y-10 gap-x-3 sm:gap-x-6">
-      <div className="col-span-12">
-        <div className="flex flex-col md:min-h-10 gap-y-3 md:items-center md:flex-row px-2 sm:px-0">
-          <div className="text-lg sm:text-xl md:text-2xl font-medium group-[.mode--light]:text-white">
-            Users
+    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4 sm:p-6 lg:p-8 shadow-2xl border border-white/10 min-h-screen">
+      {/* Background gradient overlay */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.15),transparent_30%),radial-gradient(circle_at_85%_10%,rgba(14,165,233,0.12),transparent_28%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.12),transparent_24%)]"></div>
+
+      <div className="relative z-10">
+        {/* Header Section */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 border rounded-2xl border-white/20 bg-white/10 shrink-0">
+              <Lucide
+                icon="Users"
+                className="w-5 h-5 sm:w-6 sm:h-6 text-white"
+              />
+            </div>
+            <div>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold text-white">
+                Users
+              </h1>
+              <p className="text-white/60 text-sm hidden sm:block">
+                Manage user accounts and permissions
+              </p>
+            </div>
           </div>
-          <div className="flex flex-col sm:flex-row gap-x-3 gap-y-2 md:ml-auto">
+
+          <div className="flex flex-col sm:flex-row gap-x-3 gap-y-2">
             <Modal
               handleModal={userModal}
               forOpen={newUserModal}
@@ -690,87 +708,91 @@ const Users: React.FC = () => {
               />
             </Modal>
           </div>
-          <Modal
-            handleModal={handlePasswordModal}
-            forOpen={passwordModal}
-            title="Verify Password"
-          >
-            <DynamicForm
-              sections={VerificationformFields(showPassword)}
-              onSubmit={handlePasswordSubmit}
-              defaultValues={{ password: '' }}
-              isEditMode={false}
-              handleCancel={handlePasswordModal}
-              isLoading={isLoading}
-            />
-            {errorMessage && (
-              <p className="px-4 text-red-500 text-md mt-2">{errorMessage}</p>
-            )}
-          </Modal>
-          <Modal
-            handleModal={handleEditCancel}
-            forOpen={editUserModal}
-            title="Edit User's Details"
-          >
-            <DynamicForm
-              sections={emailFormFields}
-              onSubmit={handleEditSubmit}
-              defaultValues={{
-                email: userToEdit?.email,
-                contact_no: userToEdit?.contact_no || '',
-              }}
-              isEditMode={true}
-              handleCancel={handleEditCancel}
-              isLoading={isLoading}
-            />
-            {errorMessage && (
-              <p className="px-4 text-red-500 text-md mt-2">{errorMessage}</p>
-            )}
-          </Modal>
-          <Modal
-            handleModal={() => setEditVerification(false)}
-            forOpen={editVerification}
-            title="Verify Password"
-          >
-            <DynamicForm
-              sections={VerificationformFields(showPassword)}
-              onSubmit={handleEditVerification}
-              defaultValues={{ password: '' }}
-              isEditMode={false}
-              handleCancel={() => {
-                setEditVerification(false);
-                setErrorMessage(null);
-                setUserToEdit(null);
-                setFormData(null);
-              }}
-              isLoading={isLoading}
-            />
-            {errorMessage && (
-              <p className="px-4 text-red-500 text-md mt-2">{errorMessage}</p>
-            )}
-          </Modal>
         </div>
 
-        <div className="flex flex-col gap-4 sm:gap-6 md:gap-8 mt-3.5">
-          <div className="flex flex-col box box--stacked">
-            <div className="flex flex-col p-3 sm:p-4 md:p-5 sm:items-center sm:flex-row gap-y-2">
+        {/* Modals */}
+        <Modal
+          handleModal={handlePasswordModal}
+          forOpen={passwordModal}
+          title="Verify Password"
+        >
+          <DynamicForm
+            sections={VerificationformFields(showPassword)}
+            onSubmit={handlePasswordSubmit}
+            defaultValues={{ password: '' }}
+            isEditMode={false}
+            handleCancel={handlePasswordModal}
+            isLoading={isLoading}
+          />
+          {errorMessage && (
+            <p className="px-4 text-red-500 text-md mt-2">{errorMessage}</p>
+          )}
+        </Modal>
+        <Modal
+          handleModal={handleEditCancel}
+          forOpen={editUserModal}
+          title="Edit User's Details"
+        >
+          <DynamicForm
+            sections={emailFormFields}
+            onSubmit={handleEditSubmit}
+            defaultValues={{
+              email: userToEdit?.email,
+              contact_no: userToEdit?.contact_no || '',
+            }}
+            isEditMode={true}
+            handleCancel={handleEditCancel}
+            isLoading={isLoading}
+          />
+          {errorMessage && (
+            <p className="px-4 text-red-500 text-md mt-2">{errorMessage}</p>
+          )}
+        </Modal>
+        <Modal
+          handleModal={() => setEditVerification(false)}
+          forOpen={editVerification}
+          title="Verify Password"
+        >
+          <DynamicForm
+            sections={VerificationformFields(showPassword)}
+            onSubmit={handleEditVerification}
+            defaultValues={{ password: '' }}
+            isEditMode={false}
+            handleCancel={() => {
+              setEditVerification(false);
+              setErrorMessage(null);
+              setUserToEdit(null);
+              setFormData(null);
+            }}
+            isLoading={isLoading}
+          />
+          {errorMessage && (
+            <p className="px-4 text-red-500 text-md mt-2">{errorMessage}</p>
+          )}
+        </Modal>
+
+        {/* Main Content Card */}
+        <div className="rounded-2xl bg-white/10 border border-white/15 shadow-2xl backdrop-blur-xl overflow-hidden">
+          <div className="p-4 sm:p-6">
+            {/* Search and Actions Bar */}
+            <div className="flex flex-col sm:items-center sm:flex-row gap-y-3 mb-6">
               <div className="w-full sm:w-auto">
                 <div className="relative">
                   <Lucide
                     icon="Search"
-                    className="absolute inset-y-0 left-0 z-10 w-4 h-4 my-auto ml-3 stroke-[1.3] text-slate-500"
+                    className="absolute inset-y-0 left-0 z-10 w-4 h-4 my-auto ml-3 stroke-[1.3] text-white/50"
                   />
                   <FormInput
                     type="text"
                     placeholder="Search users..."
-                    className="pl-9 w-full sm:w-64 rounded-[0.5rem] text-sm sm:text-base"
+                    className="pl-9 w-full sm:w-64 rounded-xl bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-theme-1/50 focus:ring-theme-1/30 text-sm sm:text-base"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
                   {searchQuery && (
                     <Lucide
                       icon="X"
-                      className="absolute inset-y-0 right-0 z-10 w-4 h-4 my-auto mr-3 stroke-[1.3] text-slate-500 cursor-pointer"
+                      className="absolute inset-y-0 right-0 z-10 w-4 h-4 my-auto mr-3 stroke-[1.3] text-white/50 cursor-pointer hover:text-white"
                       onClick={() => setSearchQuery('')}
                     />
                   )}
@@ -781,7 +803,7 @@ const Users: React.FC = () => {
                   <Menu.Button
                     as={Button}
                     variant="outline-secondary"
-                    className="w-full sm:w-auto text-xs sm:text-sm"
+                    className="w-full sm:w-auto bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30 text-xs sm:text-sm"
                     onClick={handleRefresh}
                   >
                     <Lucide
@@ -795,7 +817,7 @@ const Users: React.FC = () => {
                   <Menu.Button
                     as={Button}
                     variant="outline-secondary"
-                    className="w-full sm:w-auto text-xs sm:text-sm"
+                    className="w-full sm:w-auto bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30 text-xs sm:text-sm"
                     onClick={() => {
                       if (
                         searchQuery ||
@@ -815,9 +837,11 @@ const Users: React.FC = () => {
                 </Menu>
               </div>
             </div>
+
+            {/* Table Section */}
             <div className="overflow-auto xl:overflow-visible">
               {allUsers.loading ? (
-                <div className="flex justify-center items-center w-full h-screen">
+                <div className="flex justify-center items-center w-full h-96">
                   <LoadingIcon icon="ball-triangle" className="w-[5%] h-auto" />
                 </div>
               ) : (
@@ -845,6 +869,8 @@ const Users: React.FC = () => {
                 />
               )}
             </div>
+
+            {/* Notification */}
             {notificationMessage && (
               <div className="text-center">
                 <Notification

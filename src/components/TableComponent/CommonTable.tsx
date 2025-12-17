@@ -158,23 +158,25 @@ const CommonTable: React.FC<CommonTableProps> = ({
   const getStatusStyles = (status: string) => {
     const statusStyles: Record<
       string,
-      { color: string; icon: keyof typeof icons }
+      { color: string; bgColor: string; icon: keyof typeof icons }
     > = {
-      IMG_PENDING: { color: 'text-yellow-500', icon: 'Globe' },
-      PENDING: { color: 'text-yellow-500', icon: 'Globe' },
-      FAILED: { color: 'text-red-500', icon: 'XCircle' },
-      DROPPED: { color: 'text-red-500', icon: 'XCircle' },
-      REJECTED: { color: 'text-red-500', icon: 'XCircle' },
-      REVERSED: { color: 'text-orange-500', icon: 'XCircle' },
-      BANK_MISMATCH: { color: 'text-orange-500', icon: 'FileWarning' },
-      DUPLICATE: { color: 'text-orange-500', icon: 'FileWarning' },
-      DISPUTE: { color: 'text-orange-500', icon: 'FileWarning' },
-      ASSIGNED: { color: 'text-blue-500', icon: 'ListChecks' },
-      SUCCESS: { color: 'text-green-500', icon: 'CheckCircle' },
-      APPROVED: { color: 'text-green-500', icon: 'CheckCircle' },
+      IMG_PENDING: { color: 'text-amber-700', bgColor: 'bg-amber-100 dark:bg-amber-900/40', icon: 'Globe' },
+      PENDING: { color: 'text-amber-700 dark:text-amber-400', bgColor: 'bg-amber-100 dark:bg-amber-900/40', icon: 'Clock' },
+      FAILED: { color: 'text-red-700 dark:text-red-400', bgColor: 'bg-red-100 dark:bg-red-900/40', icon: 'XCircle' },
+      DROPPED: { color: 'text-red-700 dark:text-red-400', bgColor: 'bg-red-100 dark:bg-red-900/40', icon: 'XCircle' },
+      REJECTED: { color: 'text-rose-700 dark:text-rose-400', bgColor: 'bg-rose-100 dark:bg-rose-900/40', icon: 'Ban' },
+      REVERSED: { color: 'text-orange-700 dark:text-orange-400', bgColor: 'bg-orange-100 dark:bg-orange-900/40', icon: 'RotateCcw' },
+      BANK_MISMATCH: { color: 'text-orange-700 dark:text-orange-400', bgColor: 'bg-orange-100 dark:bg-orange-900/40', icon: 'AlertTriangle' },
+      DUPLICATE: { color: 'text-orange-700 dark:text-orange-400', bgColor: 'bg-orange-100 dark:bg-orange-900/40', icon: 'Copy' },
+      DISPUTE: { color: 'text-purple-700 dark:text-purple-400', bgColor: 'bg-purple-100 dark:bg-purple-900/40', icon: 'AlertOctagon' },
+      ASSIGNED: { color: 'text-blue-700 dark:text-blue-400', bgColor: 'bg-blue-100 dark:bg-blue-900/40', icon: 'UserCheck' },
+      SUCCESS: { color: 'text-emerald-700 dark:text-emerald-400', bgColor: 'bg-emerald-100 dark:bg-emerald-900/40', icon: 'CheckCircle2' },
+      APPROVED: { color: 'text-green-700 dark:text-green-400', bgColor: 'bg-green-100 dark:bg-green-900/40', icon: 'CheckCircle' },
+      INITIATED: { color: 'text-sky-700 dark:text-sky-400', bgColor: 'bg-sky-100 dark:bg-sky-900/40', icon: 'Loader' },
     };
-    return statusStyles[status] || { color: 'text-gray-500', icon: 'Info' };
+    return statusStyles[status] || { color: 'text-gray-700 dark:text-gray-400', bgColor: 'bg-gray-100 dark:bg-gray-800', icon: 'Info' };
   };
+
   const roleData = localStorage.getItem('userData');
   let user_name = '';
   if (roleData) {
@@ -503,8 +505,11 @@ const CommonTable: React.FC<CommonTableProps> = ({
   };
 
   return (
-    <>
-      <div className="overflow-responsive table-responsive w-full">
+    <div className="relative w-full min-h-full rounded-3xl overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-3 sm:p-5 border border-white/10 shadow-2xl">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.16),transparent_28%),radial-gradient(circle_at_80%_0%,rgba(14,165,233,0.14),transparent_24%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.14),transparent_22%)]"></div>
+      <div className="absolute inset-0 backdrop-blur-sm"></div>
+      <div className="relative z-10 space-y-5">
+        <div className="overflow-x-auto shadow-2xl rounded-2xl border border-white/15 dark:border-darkmode-500 bg-white/85 dark:bg-darkmode-800/90 table-responsive w-full backdrop-blur">
         {fullScreenImage && (
           <Modal
             handleModal={() => setFullScreenImage(null)}
@@ -1003,7 +1008,9 @@ const CommonTable: React.FC<CommonTableProps> = ({
                                                 minimumFractionDigits: 0,
                                                 maximumFractionDigits: 0,
                                               }).format(
-                                                Math.round(vendorCommission),
+                                                Math.round(
+                                                  vendorCommission,
+                                                ),
                                               )
                                             : '₹ 0';
                                         })()}
@@ -1030,7 +1037,9 @@ const CommonTable: React.FC<CommonTableProps> = ({
                                                 minimumFractionDigits: 0,
                                                 maximumFractionDigits: 0,
                                               }).format(
-                                                Math.round(mediatorCommission),
+                                                Math.round(
+                                                  mediatorCommission,
+                                                ),
                                               )
                                             : '₹ 0';
                                         })()}
@@ -1223,11 +1232,7 @@ const CommonTable: React.FC<CommonTableProps> = ({
                             </Tippy>
                           </div>
                         ) : col.type === 'status' ? (
-                          <div
-                            className={`flex items-center ${
-                              getStatusStyles(row[col.key]).color
-                            }`}
-                          >
+                          <div className="flex items-center">
                             {['FAILED', 'PENDING', 'REJECTED'].includes(
                               row[col.key],
                             ) ? (
@@ -1247,21 +1252,25 @@ const CommonTable: React.FC<CommonTableProps> = ({
                                     : row[col.key]
                                 }
                               >
-                                <div className="flex items-center">
+                                <div
+                                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold shadow-sm border ${getStatusStyles(row[col.key]).bgColor} ${getStatusStyles(row[col.key]).color} border-current/20`}
+                                >
                                   <Lucide
                                     icon={getStatusStyles(row[col.key]).icon}
-                                    className="w-5 h-5 ml-px stroke-[2.5] mr-2"
+                                    className="w-3.5 h-3.5 stroke-[2.5]"
                                   />
-                                  {row[col.key]}
+                                  <span>{row[col.key]}</span>
                                 </div>
                               </CustomTooltip>
                             ) : (
-                              <div className="flex items-center">
+                              <div
+                                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold shadow-sm border ${getStatusStyles(row[col.key]).bgColor} ${getStatusStyles(row[col.key]).color} border-current/20`}
+                              >
                                 <Lucide
                                   icon={getStatusStyles(row[col.key]).icon}
-                                  className="w-5 h-5 ml-px stroke-[2.5] mr-2"
+                                  className="w-3.5 h-3.5 stroke-[2.5]"
                                 />
-                                {row[col.key]}
+                                <span>{row[col.key]}</span>
                               </div>
                             )}
                           </div>
@@ -1758,7 +1767,7 @@ const CommonTable: React.FC<CommonTableProps> = ({
                                               : action.label === 'Reset'
                                               ? 'text-yellow-500'
                                               : action.icon === 'Eye'
-                                              ? 'text-pink-300'
+                                              ? 'text-orange-700'
                                               : action.label === 'Unrestrict'
                                               ? 'text-green-700 bg-none'
                                               : 'text-gray-500 bg-gray-100 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-darkmode-500'
@@ -2199,7 +2208,8 @@ const CommonTable: React.FC<CommonTableProps> = ({
           </FormSelect>
         </div>
       )}
-    </>
+      </div>
+    </div>
   );
 };
 

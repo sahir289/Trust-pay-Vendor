@@ -100,11 +100,6 @@ const InProgressPayOut: React.FC<AllPayOutProps> = ({
   setCallMerchant,
   setCallVendor,
 }) => {
-  // const params = useAppSelector(getPaginationData) as {
-  //   page: number;
-  //   limit: number;
-  //   status?: string;
-  // };
   const [totalPayoutAmount, setTotalPayoutAmount] = useState<number>(0);
   const [payOutData, setPayOutData] = useState<PayOutData>({});
   const [payOutType, setPayOutType] = useState('');
@@ -117,9 +112,6 @@ const InProgressPayOut: React.FC<AllPayOutProps> = ({
   const [selectedSubTab, setSelectedSubTab] = useState<string>(
     Status.INITIATED,
   );
-  // const [merchantCodes, setMerchantCodes] = useState<string[]>([]);
-  // const [merchantCodesData, setMerchantCodesData] = useState<any[]>([]);
-  // const [vendorCodes, setVendorCodes] = useState<string[]>([]);
   const allPayoutReports = useAppSelector(selectPayoutReports);
   const [selectedFilter, setSelectedFilter] = useState<string[]>([]);
   const [selectedFilterVendor, setSelectedFilterVendor] = useState<string[]>(
@@ -140,11 +132,9 @@ const InProgressPayOut: React.FC<AllPayOutProps> = ({
   const pagination = useAppSelector(getPaginationData);
   const [utrId, setUtrId] = useState<string>('');
   const [merchantOrderId, setMerchantOrderId] = useState<string>('');
-  // const [nickName, setNickName] = useState<string>('');
   const [debouncedUtrId, setDebouncedUtrId] = useState<string>('');
   const [debouncedMerchantOrderId, setDebouncedMerchantOrderId] =
     useState<string>('');
-  // const [debouncedNickName, setDebouncedNickName] = useState<string>('');
   const [isReset, setIsReset] = useState(false);
   const [batchWithdrawalModal, setBatchWithdrawalModal] = useState(false);
 
@@ -263,55 +253,6 @@ const InProgressPayOut: React.FC<AllPayOutProps> = ({
     setCallMerchant(true);
     // setCallVendor(true);
   };
-  // const handleGetAllMerchantCodes = useCallback(async () => {
-  //   const res = await getAllMerchantCodes();
-  //   setMerchantCodes(
-  //     res.map((el: any) => ({
-  //       label: el.label,
-  //       value: el.value,
-  //     })),
-  //   );
-  //   setMerchantCodesData(
-  //     res.map((el: any) => ({
-  //       label: el.label,
-  //       value: el.merchant_id,
-  //     })),
-  //   );
-  // }, [role]);
-
-  // useEffect(() => {
-  //   if (role !== Role.VENDOR) {
-  //     handleGetAllMerchantCodes();
-  //   }
-  // }, [handleGetAllMerchantCodes]);
-
-  // const handleGetAllVendorCodes = useCallback(async () => {
-  //   const res = await getAllVendorCodes();
-  //   setVendorCodes(
-  //     res.map((el: any) => ({
-  //       label: el.label,
-  //       value: el.value,
-  //     })),
-  //   );
-  //   dispatch(getVendorCodes(res));
-  // }, [dispatch, role]);
-
-  // useEffect(() => {
-  //   if (role !== Role.MERCHANT) {
-  //     handleGetAllVendorCodes();
-  //   }
-  // }, [handleGetAllVendorCodes]);
-
-  // useEffect(() => {
-  //   if (role) {
-  //     if (role !== Role.VENDOR) {
-  //       handleGetAllMerchantCodes();
-  //     }
-  //     if (role !== Role.MERCHANT) {
-  //       handleGetAllVendorCodes();
-  //     }
-  //   }
-  // }, [role, handleGetAllMerchantCodes, handleGetAllVendorCodes]);
 
   type ExportFormat = 'PDF' | 'CSV' | 'XLSX';
 
@@ -393,22 +334,6 @@ const InProgressPayOut: React.FC<AllPayOutProps> = ({
       );
 
       if (selectedMerchantReports.length > 0) {
-        // interface Column {
-        //   key: string;
-        //   label: string;
-        //   type?: string;
-        //   objectKey?: string | string[];
-        // }
-
-        // let columns: Array<Column>;
-
-        // if (role === "ADMIN") {
-        //   columns = isMerchantExport ? Columns.PAYIN : Columns.PAYIN_PROGRESS;
-        // } else if (role === "MERCHANT") {
-        //   columns = Columns.PAYIN_PROGRESS_MERCHANT;
-        // } else {
-        //   columns = Columns.PAYIN_PROGRESS_VENDOR;
-        // }
 
         const fieldMappings = {
           sno: 'SNO',
@@ -483,26 +408,6 @@ const InProgressPayOut: React.FC<AllPayOutProps> = ({
     }
   };
 
-  // const vendorCodes = useAppSelector(selectAllVendorCodes);
-  // console.log(vendorCodes, "vendorCodes")
-  // const fetchvendorCodes = async () => {
-  //   const vendorCodesList = await getAllVendorCodes();
-  //   const data = vendorCodesList?.map(
-  //     ({ vendor_id, ...rest }: { vendor_id: string; [key: string]: any }) => ({
-  //       ...rest,
-  //       value: vendor_id,
-  //     }),
-  //   );
-  //   if (vendorCodesList) {
-  //     dispatch(getVendorCodes(data));
-  //   }
-  // };
-  // useEffect(() => {
-  //   if (role !== null && role !== Role.MERCHANT) {
-  //     vendorModal ? fetchvendorCodes() : null;
-  //   }
-  // }, [vendorModal]);
-
   const handleRetrieve = async (row: any) => {
     const payoutData = {
       vendor_id: null, // Ensure payout is created without vendor_id
@@ -572,17 +477,6 @@ const InProgressPayOut: React.FC<AllPayOutProps> = ({
     },
     [dispatch],
   );
-
-  // useEffect(() => {
-  //   getPayOutData();
-  // }, [JSON.stringify(params)]);
-
-  // useEffect(() => {
-  //   if (refreshPayOut) {
-  //     getPayOutData();
-  //     dispatch(setRefreshPayOut(false));
-  //   }
-  // }, [refreshPayOut, dispatch]);
 
   const getPayOutData = useCallback(
     async (
@@ -772,13 +666,6 @@ const InProgressPayOut: React.FC<AllPayOutProps> = ({
     }
   }, [refreshPayOut, getPayOutData, selectedFilterData, dispatch]);
 
-  // const debouncedFetchBankAccounts = useCallback(
-  //   debounce((query: string) => {
-  //     getPayOutData(query);
-  //   }, 500),
-  //   [getPayOutData, debouncedSearchQuery],
-  // );
-
   const payOuts = useAppSelector(getAllPayOutData);
 
   const handlePayOutChange = async (data: any) => {
@@ -943,12 +830,6 @@ const InProgressPayOut: React.FC<AllPayOutProps> = ({
       (payout) => payout && payout.id && selectedRows.includes(payout.id),
     );
     const payoutIds = selectedPayOuts.map((payout) => payout.id);
-    // const selectedPayOuts = selectedRows.map(
-    //   (index) => payOuts.payout[Number(index)],
-    // );
-    // const payoutIds = selectedPayOuts
-    //   .filter((p) => p && p?.id)
-    //   .map((p) => p?.id);
     const updatedData = {
       payouts_ids: payoutIds,
     };
@@ -978,8 +859,6 @@ const InProgressPayOut: React.FC<AllPayOutProps> = ({
     const selectedPayOuts = payOuts.payout.filter(
       (payout) => payout && payout.id && selectedRows.includes(payout.id),
     );
-    // const payoutIds = selectedPayOuts.map((payout) => payout.id);
-    // const selectedPayOuts = selectedRows.map((index) => payOuts.payout[Number(index)]);
     for (const payOut of selectedPayOuts) {
       if (payOut) {
         const updatedData = { vendor_id: vendorCode };
@@ -1023,7 +902,6 @@ const InProgressPayOut: React.FC<AllPayOutProps> = ({
 
   const handleBatchWithdrawal = async () => {
     setIsLoading(true);
-    // const selectedPayOuts = selectedRows.map((index) => payOuts.payout[Number(index)]);
     const selectedPayOuts = payOuts.payout.filter(
       (payout) => payout && payout.id && selectedRows.includes(payout.id),
     );
@@ -1207,28 +1085,6 @@ const InProgressPayOut: React.FC<AllPayOutProps> = ({
                       )}
                     </div>
                   )}
-                  {/* {(role === Role.ADMIN || role === Role.VENDOR) && (
-                    <div className="relative flex-1">
-                      <Lucide
-                        icon="Search"
-                        className="absolute inset-y-0 left-0 z-10 w-4 h-4 my-auto ml-3 stroke-[1.3] text-slate-500"
-                      />
-                      <FormInput
-                        type="text"
-                        placeholder="From Bank..."
-                        className="pl-9 sm:w-64 rounded-[0.5rem]"
-                        value={nickName}
-                        onChange={(e) => setNickName(e.target.value)}
-                      />
-                      {nickName && (
-                        <Lucide
-                          icon="X"
-                          className="absolute inset-y-0 right-0 z-10 w-4 h-4 my-auto mr-3 stroke-[1.3] text-slate-500 cursor-pointer"
-                          onClick={() => setNickName('')}
-                        />
-                      )}
-                    </div>
-                  )} */}
 
                   <div className="flex flex-col sm:flex-row flex-wrap gap-2 w-full sm:w-auto sm:ml-auto">
                     {(role === Role.ADMIN ||
@@ -1333,9 +1189,6 @@ const InProgressPayOut: React.FC<AllPayOutProps> = ({
                           {role === Role.ADMIN ? (
                             <div className="my-2 py-2 flex flex-col justify-center">
                               <div className="flex flex-row">
-                                {/* <div className="px-2 flex">
-                                Select Merchant :{' '}
-                              </div> */}
                                 <MultiSelect
                                   codes={merchantCodes}
                                   selectedFilter={selectedFilter}
@@ -1350,7 +1203,6 @@ const InProgressPayOut: React.FC<AllPayOutProps> = ({
                               </div>
                               <div className="p-2 flex justify-center">OR</div>
                               <div className="flex flex-row">
-                                {/* <div className="px-2 flex ">Select Vendor : </div> */}
                                 <MultiSelect
                                   codes={vendorCodes}
                                   selectedFilter={selectedFilterVendor}

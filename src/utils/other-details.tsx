@@ -31,33 +31,71 @@ const FieldRenderer: React.FC<{
 
   return (
     <div 
-      className={`group relative transition-all duration-200 hover:shadow-md rounded-lg sm:rounded-xl p-2 sm:p-4 
-        bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700
-        ${isLong ? 'col-span-12 sm:col-span-6' : 'col-span-6'}
-        `}
+      className={`group relative transition-all duration-300 hover:shadow-2xl rounded-2xl overflow-hidden
+      ${isLong ? 'col-span-12' : 'col-span-12 sm:col-span-6'}
+      `}
     >
-      <span className="block text-[10px] sm:text-xs font-medium text-gray-600 dark:text-gray-400 mb-1 sm:mb-1.5 tracking-wide uppercase">
+      {/* Animated gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-800/50 via-slate-900/50 to-slate-800/50 
+      opacity-100"></div>
+      
+      {/* Decorative corner glow */}
+      <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-theme-1/20 to-theme-2/20 
+      rounded-full blur-2xl opacity-50 group-hover:opacity-75 transition-opacity"></div>
+      
+      <div className="relative p-5 sm:p-6 border border-white/10 
+      rounded-2xl bg-slate-900/80 backdrop-blur-md
+      hover:border-theme-1/50 hover:bg-slate-900/90 transition-all duration-300
+      shadow-lg shadow-black/20">
+      
+      {/* Single row layout with key, value, and copy button */}
+      <div className="flex items-center justify-between gap-3">
+      {/* Key label */}
+      <div className="flex items-center gap-2 flex-shrink-0">
+        <div className="w-1 h-6 rounded-full bg-gradient-to-b from-theme-1 to-theme-2"></div>
+        <span className="text-xs sm:text-sm font-bold text-white/70 tracking-wider uppercase whitespace-nowrap">
         {keyName}
-      </span>
-      <div className="relative flex items-center">
-        <span className="flex-1 text-xs sm:text-sm text-gray-900 dark:text-gray-100 
-          bg-white dark:bg-gray-950 px-2 sm:px-3 py-1.5 sm:py-2 rounded-md sm:rounded-lg border 
-          border-gray-200 dark:border-gray-800 font-mono break-all overflow-hidden">
-          {value}
         </span>
-        <button
-          onClick={handleCopy}
-          className="absolute right-1 sm:right-2 opacity-0 group-hover:opacity-100 transition-opacity 
-            p-1 sm:p-1.5 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 
-            bg-gray-100 hover:bg-gray-200 dark:bg-gray-900/90 dark:hover:bg-gray-800 rounded shadow-sm"
-          title="Copy to clipboard"
-        >
-          <Clipboard size={14} className="sm:w-4 sm:h-4" />
-          {copied && (
-            <span className="absolute -top-7 sm:-top-8 left-1/2 -translate-x-1/2 bg-gray-900 dark:bg-gray-800 text-white 
-              text-[10px] sm:text-xs py-0.5 sm:py-1 px-1.5 sm:px-2 rounded whitespace-nowrap shadow-lg">Copied!</span>
-          )}
-        </button>
+      </div>
+      
+      {/* Value with glow effect */}
+      <div className="relative flex-1 min-w-0">
+        <div className="absolute -inset-1 bg-gradient-to-r from-theme-1/30 via-theme-2/30 to-theme-1/30 
+        rounded-xl blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        
+        <span className="relative block text-sm sm:text-base text-white/90 
+        bg-white/5 backdrop-blur-sm
+        px-4 py-2.5 rounded-xl
+        border-l-4 border-theme-1
+        font-semibold truncate
+        shadow-inner hover:bg-white/10 transition-all duration-300">
+        {value}
+        </span>
+      </div>
+      
+      {/* Copy button */}
+      <button
+        onClick={handleCopy}
+        className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-all duration-300
+        p-2.5 text-white/70 hover:text-white
+        bg-white/5 hover:bg-white/10
+        rounded-xl shadow-sm hover:shadow-lg border border-white/10 hover:border-white/20
+        hover:scale-110 active:scale-95 transform"
+        title="Copy to clipboard"
+      >
+        <Clipboard size={16} className="sm:w-[18px] sm:h-[18px]" />
+      </button>
+      </div>
+      
+      {copied && (
+      <div className="absolute -top-14 left-1/2 -translate-x-1/2 z-50
+      bg-gradient-to-r from-theme-1 to-theme-2 text-white 
+      text-xs font-bold py-2.5 px-6 
+      rounded-full shadow-2xl shadow-theme-1/50 whitespace-nowrap
+      animate-bounce flex items-center gap-2 border border-white/20">
+        <span className="text-base">✓</span> Copied!
+      </div>
+      )}
       </div>
     </div>
   );
@@ -90,7 +128,7 @@ const NestedObjectRenderer: React.FC<{
         )}
       </button>
       <div 
-        className={`transition-all duration-300 ${isOpen ? 'p-4' : 'h-0 p-0 overflow-hidden'}`}
+        className={`transition-all duration-300 ${isOpen ? 'p-4 max-h-[60vh] overflow-y-auto' : 'h-0 p-0 overflow-hidden'}`}
       >
         <div className="space-y-4">{renderObjectData(value, displayKey)}</div>
       </div>
@@ -141,7 +179,7 @@ const ArrayRenderer: React.FC<{
         )}
       </button>
       <div
-        className={`transition-all duration-300 ${isOpen ? 'p-4' : 'h-0 p-0 overflow-hidden'}`}
+        className={`transition-all duration-300 ${isOpen ? 'p-4 max-h-[60vh] overflow-y-auto' : 'h-0 p-0 overflow-hidden'}`}
       >
         <div className="space-y-8">
           {/* Countries Section */}
@@ -266,17 +304,25 @@ const renderObjectData = (
         i++;
       } else if (React.isValidElement(value)) {
         rows.push(
-          <div key={`row-${i}`} className="grid grid-cols-12 gap-2 sm:gap-4 mb-2 sm:mb-4">
-            <div className="col-span-12 sm:col-span-6 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg sm:rounded-xl p-2 sm:p-4">
-              <span className="block text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 mb-1 sm:mb-1.5 tracking-wide">
-                {key}
+          <div key={`row-${i}`} className="grid grid-cols-12 gap-3 sm:gap-4 mb-3 sm:mb-4">
+            <div className="col-span-12 sm:col-span-6 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 backdrop-blur-sm border border-indigo-500/20 rounded-2xl p-4 sm:p-5 hover:border-indigo-400/40 hover:shadow-lg hover:shadow-indigo-500/10 transition-all duration-300 group">
+              <span className="block text-[10px] sm:text-xs font-semibold text-indigo-400/80 mb-2 sm:mb-2.5 tracking-widest uppercase">
+          {key}
               </span>
-              <div className="flex items-center text-xs sm:text-sm">{value}</div>
+                <div className="relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/5 via-purple-500/5 to-pink-500/5 animate-pulse"></div>
+                <div className="relative flex items-center justify-between p-3 sm:p-4 bg-gray-900/40 dark:bg-gray-950/60 backdrop-blur-md rounded-xl border border-indigo-500/30 dark:border-indigo-400/20 shadow-lg shadow-indigo-500/5">
+                  <div className="flex-1 text-sm sm:text-base font-semibold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 group-hover:from-indigo-300 group-hover:via-purple-300 group-hover:to-pink-300 transition-all duration-300">
+                  {value}
+                  </div>
+                  <div className="ml-3 w-2 h-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 animate-pulse shadow-lg shadow-indigo-500/50"></div>
+                </div>
+                </div>
             </div>
           </div>
         );
         i++;
-      } else {
+            } else {
         const displayValue = formatDisplayValue(value);
         const isLong = isLongField(key, value);
 
@@ -298,10 +344,10 @@ const renderObjectData = (
               if ( !isNextObject && !isNextArray) {
               const nextDisplayValue = formatDisplayValue(nextValue);
               rows.push(
-                <div key={`row-${i}`} className="grid grid-cols-12 gap-2 sm:gap-4 mb-2 sm:mb-4">
-                  <FieldRenderer keyName={key} value={displayValue} isLong={false} />
-                  <FieldRenderer keyName={nextKey} value={nextDisplayValue} isLong={false} />
-                </div>
+          <div key={`row-${i}`} className="grid grid-cols-12 gap-4 sm:gap-5 mb-4 sm:mb-5">
+            <FieldRenderer keyName={key} value={displayValue} isLong={false} />
+            <FieldRenderer keyName={nextKey} value={nextDisplayValue} isLong={false} />
+          </div>
               );
               i += 2;
               continue;
@@ -310,39 +356,39 @@ const renderObjectData = (
         }
 
         rows.push(
-          <div key={`row-${i}`} className="grid grid-cols-12 gap-2 sm:gap-4 mb-2 sm:mb-4">
+          <div key={`row-${i}`} className="grid grid-cols-12 gap-4 sm:gap-5 mb-4 sm:mb-5">
             <FieldRenderer keyName={key} value={displayValue} isLong={isLong} />
           </div>
         );
         i++;
-      }
-    }
-  } else {
-    const keys = Object.keys(data);
+            }
+          }
+        } else {
+          const keys = Object.keys(data);
 
-    if (parentKey === '' && keys.length === 1 && keys[0]?.toLowerCase() === 'config') {
-      const configKey = keys[0];
-      return renderObjectData(data[configKey] as DataType, '');
-    }
+          if (parentKey === '' && keys.length === 1 && keys[0]?.toLowerCase() === 'config') {
+            const configKey = keys[0];
+            return renderObjectData(data[configKey] as DataType, '');
+          }
 
-    let i = 0;
-    while (i < keys.length) {
-      const key = safeKey(keys[i]);
-      const value = data[key];
-      const isObject = typeof value === 'object' && value !== null && !Array.isArray(value);
+          let i = 0;
+          while (i < keys.length) {
+            const key = safeKey(keys[i]);
+            const value = data[key];
+            const isObject = typeof value === 'object' && value !== null && !Array.isArray(value);
 
-      if (key.toLowerCase() === 'config' && isObject) {
+            if (key.toLowerCase() === 'config' && isObject) {
         rows.push(...renderObjectData(value as DataType, parentKey));
         i++;
         continue;
-      }
+            }
 
-      if (key.toLowerCase() === 'submerchants' && isObject) {
+            if (key.toLowerCase() === 'submerchants' && isObject) {
         i++;
         continue;
-      }
+            }
 
-      if (Array.isArray(value)) {
+            if (Array.isArray(value)) {
         rows.push(
           <ArrayRenderer
             key={key}
@@ -351,7 +397,7 @@ const renderObjectData = (
             parentKey={parentKey}
           />
         );
-      } else if (typeof value === 'object' && value !== null) {
+            } else if (typeof value === 'object' && value !== null) {
         rows.push(
           <NestedObjectRenderer
             key={key}
@@ -360,7 +406,7 @@ const renderObjectData = (
             parentKey={parentKey}
           />
         );
-      } else {
+            } else {
         const displayValue = formatDisplayValue(value);
         const isLong = isLongField(key, value);
 
@@ -374,9 +420,9 @@ const renderObjectData = (
           if (!isLongField(nextKey, nextValue) && !isNextObject && !isNextArray) {
             const nextDisplayValue = formatDisplayValue(nextValue);
             rows.push(
-              <div key={`row-${i}`} className="grid grid-cols-12 gap-2 sm:gap-4 mb-2 sm:mb-4">
-                <FieldRenderer keyName={key} value={displayValue} isLong={false} />
-                <FieldRenderer keyName={nextKey} value={nextDisplayValue} isLong={false} />
+              <div key={`row-${i}`} className="grid grid-cols-12 gap-4 sm:gap-5 mb-4 sm:mb-5">
+          <FieldRenderer keyName={key} value={displayValue} isLong={false} />
+          <FieldRenderer keyName={nextKey} value={nextDisplayValue} isLong={false} />
               </div>
             );
             i += 2;
@@ -385,7 +431,7 @@ const renderObjectData = (
         }
 
         rows.push(
-          <div key={`row-${i}`} className="grid grid-cols-12 gap-2 sm:gap-4 mb-2 sm:mb-4">
+          <div key={`row-${i}`} className="grid grid-cols-12 gap-4 sm:gap-5 mb-4 sm:mb-5">
             <FieldRenderer keyName={key} value={displayValue} isLong={isLong} />
           </div>
         );

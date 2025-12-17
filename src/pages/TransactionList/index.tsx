@@ -277,85 +277,120 @@ function Main() {
   }, [parentTab]);
   return (
     <>
-      <div className="flex flex-col min-h-10 w-full px-2 sm:px-4">
-        <div className="flex justify-between items-center gap-2">
-          <div className="text-lg sm:text-xl md:text-2xl font-medium group-[.mode--light]:text-white">
-            {title}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4 sm:p-6 lg:p-8 shadow-2xl border border-white/10 min-h-screen">
+        {/* Background gradient overlay */}
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.15),transparent_30%),radial-gradient(circle_at_85%_10%,rgba(14,165,233,0.12),transparent_28%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.12),transparent_24%)]"></div>
+        
+        <div className="relative z-10">
+          {/* Header Section */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 border rounded-2xl border-white/20 bg-white/10 shrink-0">
+                <Lucide
+                  icon={title === 'PayIns' ? 'BadgeIndianRupee' : 'ArrowRightCircle'}
+                  className="w-5 h-5 sm:w-6 sm:h-6 text-white"
+                />
+              </div>
+              <div>
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold text-white">
+                  {title}
+                </h1>
+                <p className="text-white/60 text-sm hidden sm:block">
+                  Manage your {title.toLowerCase()} transactions
+                </p>
+              </div>
+            </div>
+            
+            {role !== Role.VENDOR && (
+              <Modal
+                handleModal={transactionModal}
+                forOpen={newTransactionModal}
+                buttonTitle={`Add ${title}`}
+              >
+                <DynamicForm
+                  sections={
+                    title === 'PayIns'
+                      ? getTransactionFormFields(merchantOptions, role ?? '', oneTime, handleOneTimeChange).PAYIN
+                      : getTransactionFormFields(merchantOptions, role ?? '', oneTime, handleOneTimeChange).PAYOUT
+                  }
+                  onSubmit={handleCreate}
+                  defaultValues={{ ...formValues, ot: oneTime }}
+                  isEditMode={false}
+                  handleCancel={transactionModal}
+                  isLoading={isLoading}
+                />
+              </Modal>
+            )}
           </div>
-          {role !== Role.VENDOR && (
-            <Modal
-              handleModal={transactionModal}
-              forOpen={newTransactionModal}
-              buttonTitle={`Add ${title}`}
-            >
-              <DynamicForm
-                sections={
-                  title === 'PayIns'
-                    ? getTransactionFormFields(merchantOptions, role ?? '', oneTime, handleOneTimeChange).PAYIN
-                    : getTransactionFormFields(merchantOptions, role ?? '', oneTime, handleOneTimeChange).PAYOUT
-                }
-                onSubmit={handleCreate}
-                defaultValues={{ ...formValues, ot: oneTime }}
-                isEditMode={false}
-                handleCancel={transactionModal}
-                isLoading={isLoading}
-              />
-            </Modal>
-          )}
-        </div>
-      </div>
-      <div className="grid grid-cols-12 gap-3 sm:gap-6 mt-2">
-        <div className="col-span-12">
-          <div className="p-3 sm:p-4 md:p-5 box box--stacked">
+
+          {/* Tab Container */}
+          <div className="rounded-2xl bg-white/10 border border-white/15 shadow-2xl backdrop-blur-xl overflow-hidden">
             <Tab.Group
               selectedIndex={parentTab}
               onChange={handleParentTabChange}
             >
-              <Tab.List className="flex border-b-0 bg-transparent relative">
+              <Tab.List className="flex border-b border-white/10 bg-white/5">
                 <Tab className="relative flex-1">
                   {({ selected }) => (
                     <Tab.Button
-                      className={`w-full py-2 sm:py-3 flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm md:text-base transition-all duration-200 relative ${
+                      className={`w-full py-3 sm:py-4 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base md:text-lg font-medium transition-all duration-300 relative ${
                         selected
-                          ? 'bg-white dark:bg-darkmode-700 text-slate-900 dark:text-white border-t-4 border-l-4 border-r-4 border-gray-100 dark:border-darkmode-400 rounded-tl-xl rounded-tr-xl shadow-sm'
-                          : 'bg-slate-50 dark:bg-darkmode-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-darkmode-700'
+                          ? 'text-white bg-gradient-to-r from-theme-1/20 via-theme-2/20 to-emerald-500/20 border-b-2 border-theme-1'
+                          : 'text-white/60 hover:text-white hover:bg-white/5'
                       }`}
                       as="button"
-                      style={selected ? {
-                        position: 'relative',
-                        zIndex: 10
-                      } : {}}
                     >
-                      <Lucide icon="BadgeIndianRupee" className="w-4 h-4 sm:w-5 sm:h-5" />
-                      Payins
+                      <div className={`flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl ${
+                        selected 
+                          ? 'bg-gradient-to-r from-theme-1 to-theme-2 shadow-lg shadow-theme-1/30' 
+                          : 'bg-white/10'
+                      }`}>
+                        <Lucide 
+                          icon="BadgeIndianRupee" 
+                          className={`w-4 h-4 sm:w-5 sm:h-5 ${selected ? 'text-white' : 'text-white/70'}`} 
+                        />
+                      </div>
+                      <span>Payins</span>
+                      {selected && (
+                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-theme-1 via-theme-2 to-emerald-500"></div>
+                      )}
                     </Tab.Button>
                   )}
                 </Tab>
                 <Tab className="relative flex-1">
                   {({ selected }) => (
                     <Tab.Button
-                      className={`w-full py-2 sm:py-3 flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm md:text-base transition-all duration-200 relative ${
+                      className={`w-full py-3 sm:py-4 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base md:text-lg font-medium transition-all duration-300 relative ${
                         selected
-                          ? 'bg-white dark:bg-darkmode-700 text-slate-900 dark:text-white border-t-4 border-l-4 border-r-4 border-gray-100 dark:border-darkmode-400 rounded-tl-xl rounded-tr-xl shadow-sm'
-                          : 'bg-slate-50 dark:bg-darkmode-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-darkmode-700'
+                          ? 'text-white bg-gradient-to-r from-theme-1/20 via-theme-2/20 to-emerald-500/20 border-b-2 border-theme-1'
+                          : 'text-white/60 hover:text-white hover:bg-white/5'
                       }`}
                       as="button"
-                      style={selected ? {
-                        position: 'relative',
-                        zIndex: 10
-                      } : {}}
                     >
-                      <Lucide icon="ArrowRightCircle" className="w-4 h-4 sm:w-5 sm:h-5" />
-                      Payouts
+                      <div className={`flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl ${
+                        selected 
+                          ? 'bg-gradient-to-r from-theme-1 to-theme-2 shadow-lg shadow-theme-1/30' 
+                          : 'bg-white/10'
+                      }`}>
+                        <Lucide 
+                          icon="ArrowRightCircle" 
+                          className={`w-4 h-4 sm:w-5 sm:h-5 ${selected ? 'text-white' : 'text-white/70'}`} 
+                        />
+                      </div>
+                      <span>Payouts</span>
+                      {selected && (
+                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-theme-1 via-theme-2 to-emerald-500"></div>
+                      )}
                     </Tab.Button>
                   )}
                 </Tab>
               </Tab.List>
-              <Tab.Panels className="border-b border-l border-r border-gray-100 dark:border-darkmode-400 border-t-4 border-t-gray-100 dark:border-t-darkmode-400">
-                <Tab.Panel className="p-2 sm:p-4 md:p-5">
+
+              <Tab.Panels className="p-4 sm:p-6">
+                <Tab.Panel>
                   <PayInComponent />
                 </Tab.Panel>
-                <Tab.Panel className="p-2 sm:p-4 md:p-5">
+                <Tab.Panel>
                   <PayOut />
                 </Tab.Panel>
               </Tab.Panels>

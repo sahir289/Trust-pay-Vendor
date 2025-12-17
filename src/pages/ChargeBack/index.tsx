@@ -603,8 +603,51 @@ function ChargeBack() {
   };
 
   return (
-    <div className="grid grid-cols-12 gap-y-10 gap-x-6">
-      <div className="col-span-12">
+    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4 sm:p-6 lg:p-8 shadow-2xl border border-white/10 min-h-screen">
+      {/* Background gradient overlay */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.15),transparent_30%),radial-gradient(circle_at_85%_10%,rgba(14,165,233,0.12),transparent_28%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.12),transparent_24%)]"></div>
+
+      <div className="relative z-10">
+        {/* Header Section */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 border rounded-2xl border-white/20 bg-white/10 shrink-0">
+              <Lucide
+                icon="AlertTriangle"
+                className="w-5 h-5 sm:w-6 sm:h-6 text-white"
+              />
+            </div>
+            <div>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold text-white">
+                ChargeBacks
+              </h1>
+              <p className="text-white/60 text-sm hidden sm:block">
+                Manage chargeback transactions
+              </p>
+            </div>
+          </div>
+
+          {role &&
+            ![Role.MERCHANT, Role.SUB_MERCHANT, Role.VENDOR].includes(role) && (
+              <Modal
+                handleModal={chargebackModal}
+                forOpen={newUserModal}
+                buttonTitle={`Add ChargeBack`}
+                // buttonClassName="px-5 py-3 rounded-xl bg-gradient-to-r from-theme-1 via-theme-2 to-emerald-500 text-white font-semibold shadow-lg shadow-theme-2/30 hover:shadow-theme-2/50 transition-all duration-200 flex items-center gap-2"
+              >
+                <DynamicForm
+                  sections={ChargeBacksFormFields}
+                  onSubmit={handleSubmitData}
+                  defaultValues={formData || {}}
+                  isEditMode={formData ? true : false}
+                  handleCancel={chargebackModal}
+                  isLoading={isLoading}
+                />
+              </Modal>
+            )}
+        </div>
+
+        {/* Edit Modal */}
         {editModalOpen && (
           <Modal
             handleModal={() => setEditModalOpen(false)}
@@ -621,48 +664,29 @@ function ChargeBack() {
             />
           </Modal>
         )}
-        <div className="flex items-center h-10 justify-between">
-          <div className="text-lg font-medium group-[.mode--light]:text-white">
-            ChargeBacks
-          </div>
-          {role &&
-            ![Role.MERCHANT, Role.SUB_MERCHANT, Role.VENDOR].includes(role) && (
-              <Modal
-                handleModal={chargebackModal}
-                forOpen={newUserModal}
-                buttonTitle={`Add ChargeBack`}
-              >
-                <DynamicForm
-                  sections={ChargeBacksFormFields}
-                  onSubmit={handleSubmitData}
-                  defaultValues={formData || {}}
-                  isEditMode={formData ? true : false}
-                  handleCancel={chargebackModal}
-                  isLoading={isLoading}
-                />
-              </Modal>
-            )}
-        </div>
-        <div className="mt-3.5">
-          <div className="flex flex-col box box--stacked">
-            <div className="flex flex-col p-5 sm:items-center sm:flex-row gap-y-2">
+
+        {/* Main Content Card */}
+        <div className="rounded-2xl bg-white/10 border border-white/15 shadow-2xl backdrop-blur-xl overflow-hidden">
+          <div className="p-4 sm:p-6">
+            {/* Search and Actions Bar */}
+            <div className="flex flex-col sm:items-center sm:flex-row gap-y-3 mb-6">
               <div>
                 <div className="relative">
                   <Lucide
                     icon="Search"
-                    className="absolute inset-y-0 left-0 z-10 w-4 h-4 my-auto ml-3 stroke-[1.3] text-slate-500"
+                    className="absolute inset-y-0 left-0 z-10 w-4 h-4 my-auto ml-3 stroke-[1.3] text-white/50"
                   />
                   <FormInput
                     type="text"
                     placeholder="Search ChargeBacks..."
-                    className="pl-9 sm:w-64 rounded-[0.5rem]"
+                    className="pl-9 sm:w-64 rounded-xl bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-theme-1/50 focus:ring-theme-1/30"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
                   {searchQuery && (
                     <Lucide
                       icon="X"
-                      className="absolute inset-y-0 right-0 z-10 w-4 h-4 my-auto mr-3 stroke-[1.3] text-slate-500 cursor-pointer"
+                      className="absolute inset-y-0 right-0 z-10 w-4 h-4 my-auto mr-3 stroke-[1.3] text-white/50 cursor-pointer hover:text-white"
                       onClick={() => setSearchQuery('')}
                     />
                   )}
@@ -673,7 +697,7 @@ function ChargeBack() {
                   <Menu.Button
                     as={Button}
                     variant="outline-secondary"
-                    className="w-full sm:w-auto"
+                    className="w-full sm:w-auto bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30"
                     onClick={handleRefresh}
                   >
                     <Lucide
@@ -687,7 +711,7 @@ function ChargeBack() {
                   <Menu.Button
                     as={Button}
                     variant="outline-secondary"
-                    className="w-full sm:w-auto"
+                    className="w-full sm:w-auto bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30"
                     onClick={handleReset}
                   >
                     <Lucide
@@ -701,7 +725,7 @@ function ChargeBack() {
                   <Menu.Button
                     as={Button}
                     variant="outline-secondary"
-                    className="w-full sm:w-auto"
+                    className="w-full sm:w-auto bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30"
                     onClick={() => {
                       setExportModalOpen(true);
                       setSelectedFilterExport([]);
@@ -746,11 +770,11 @@ function ChargeBack() {
                               months: true,
                               years: true,
                             },
-                            startDate: date, //today date
-                            endDate: date, //today date
+                            startDate: date,
+                            endDate: date,
                           }}
                           placeholder="Select a date range"
-                          className="w-full pl-9 rounded-[0.5rem] group-[.mode--light]:!bg-white/[0.12] group-[.mode--light]:!text-slate-200 group-[.mode--light]:!border-transparent dark:group-[.mode--light]:!bg-darkmode-900/30 dark:!box"
+                          className="w-full pl-9 rounded-[0.5rem]"
                         />
                       </div>
 
@@ -805,13 +829,22 @@ function ChargeBack() {
                       </div>
 
                       <div className="flex flex-row gap-4 my-4 pt-6">
-                        <Button onClick={() => handleDownload('PDF')}>
+                        <Button 
+                          onClick={() => handleDownload('PDF')}
+                          className="bg-gradient-to-r from-theme-1 to-theme-2 text-white border-0"
+                        >
                           Export as PDF
                         </Button>
-                        <Button onClick={() => handleDownload('CSV')}>
+                        <Button 
+                          onClick={() => handleDownload('CSV')}
+                          className="bg-gradient-to-r from-theme-1 to-theme-2 text-white border-0"
+                        >
                           Export as CSV
                         </Button>
-                        <Button onClick={() => handleDownload('XLSX')}>
+                        <Button 
+                          onClick={() => handleDownload('XLSX')}
+                          className="bg-gradient-to-r from-theme-1 to-theme-2 text-white border-0"
+                        >
                           Export as XLSX
                         </Button>
                       </div>
@@ -824,7 +857,7 @@ function ChargeBack() {
                       <Popover.Button
                         as={Button}
                         variant="outline-secondary"
-                        className="w-full sm:w-auto"
+                        className="w-full sm:w-auto bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30"
                       >
                         <Lucide
                           icon="ArrowDownWideNarrow"
@@ -940,9 +973,11 @@ function ChargeBack() {
                 </Popover>
               </div>
             </div>
+
+            {/* Table Section */}
             <div className="overflow-auto xl:overflow-visible">
               {isPageLoading ? (
-                <div className="flex justify-center items-center w-full h-screen">
+                <div className="flex justify-center items-center w-full h-96">
                   <LoadingIcon icon="ball-triangle" className="w-[5%] h-auto" />
                 </div>
               ) : (

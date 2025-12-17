@@ -738,27 +738,6 @@ const InReviewPayIn: React.FC<AllPayInProps> = ({
             <div className="flex flex-col overflow-x-hidden">
               <div className="flex flex-col py-5 gap-y-2 mx-3">
                 <div className="flex flex-col sm:flex-row flex-wrap gap-2 w-full">
-                  {/* Commented out original search input */}
-                  {/* <div className="relative">
-                    <Lucide
-                      icon="Search"
-                      className="absolute inset-y-0 left-0 z-10 w-4 h-4 my-auto ml-3 stroke-[1.3] text-slate-500"
-                    />
-                    <FormInput
-                      type="text"
-                      placeholder="Search In-Progress PayIns..."
-                      className="pl-9 sm:w-64 rounded-[0.5rem]"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                    {searchQuery && (
-                      <Lucide
-                        icon="X"
-                        className="absolute inset-y-0 right-0 z-10 w-4 h-4 my-auto mr-3 stroke-[1.3] text-slate-500 cursor-pointer"
-                        onClick={() => setSearchQuery('')}
-                      />
-                    )}
-                  </div> */}
 
                   {/* New search inputs (from AllPayIn) */}
                   {(role === Role.ADMIN || role === Role.MERCHANT) && (

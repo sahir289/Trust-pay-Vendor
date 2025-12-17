@@ -5,7 +5,6 @@
 import Lucide from '@/components/Base/Lucide';
 import { Menu, Popover, Tab } from '@/components/Base/Headless';
 import { FormInput, FormSelect } from '@/components/Base/Form';
-// import { getCount } from '@/redux-toolkit/slices/common/apis/commonAPI';
 import Button from '@/components/Base/Button';
 import CustomTable from '@/components/TableComponent/CommonTable';
 import { DataEntryOptions, Role, Status } from '@/constants';
@@ -37,7 +36,6 @@ import {
   getBankResponsesReports,
   resetBankResponse,
   updateBankResponse,
-  // getBankResponseBySearchApi,
   importBankResponse,
 } from '@/redux-toolkit/slices/dataEntries/dataEntryAPI';
 import {
@@ -237,25 +235,6 @@ const AddDataHistory: React.FC<AddDataHistoryProps> = ({ selectedIndex }) => {
     if (nickName || utr || amount) {
       return true;
     }
-
-    // Check filters from FilterState
-    // const hasFilterStateValues = Boolean(
-    //   filters.is_used ||
-    //   filters.bank_id ||
-    //   filters.status ||
-    //   filters.amount ||
-    //   filters.utr ||
-    //   filters.upi_short_code ||
-    //   filters.updated_at ||
-    //   filters.updated_by
-    // );
-
-    // // Check additional filters from component state
-    // const hasAdditionalFilters = Boolean(
-    //   selectedColumn && filterValue
-    // );
-
-    // return hasFilterStateValues || hasAdditionalFilters;
   };
 
   const getBankResponseData = useCallback(
@@ -942,163 +921,187 @@ const AddDataHistory: React.FC<AddDataHistoryProps> = ({ selectedIndex }) => {
   ]);
 
   return (
-    <div className="grid grid-cols-12 gap-y-10 gap-x-6">
+    <div className="grid grid-cols-12 gap-y-6 gap-x-4">
       <div className="col-span-12">
-        <div className="mt-3.5">
-          <div className="flex flex-col">
-            <div className="flex flex-col p-2 sm:p-4 md:p-5 sm:items-center sm:flex-row gap-y-2">
-              <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                <div className="relative w-full sm:w-auto sm:flex-shrink-0">
+        <div className="flex flex-col">
+          {/* Search and Actions Bar */}
+          <div className="flex flex-col sm:items-center sm:flex-row gap-y-3 mb-6">
+            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+              <div className="relative w-full sm:w-auto sm:flex-shrink-0">
+                <Lucide
+                  icon="Search"
+                  className="absolute inset-y-0 left-0 z-10 w-4 h-4 my-auto ml-3 stroke-[1.3] text-white/50"
+                />
+                <FormInput
+                  type="text"
+                  placeholder="UTR..."
+                  className="w-full pl-9 pr-9 sm:w-40 lg:w-48 rounded-xl bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-theme-1/50 focus:ring-theme-1/30 text-xs sm:text-sm"
+                  value={utr}
+                  onChange={(e) => setUtr(e.target.value)}
+                />
+                {utr && (
                   <Lucide
-                    icon="Search"
-                    className="absolute inset-y-0 left-0 z-10 w-3.5 h-3.5 sm:w-4 sm:h-4 my-auto ml-3 stroke-[1.3] text-slate-500"
+                    icon="X"
+                    className="absolute inset-y-0 right-0 z-10 w-4 h-4 my-auto mr-3 stroke-[1.3] text-white/50 cursor-pointer hover:text-white"
+                    onClick={() => {
+                      setUtr('');
+                      sessionStorage.setItem('searchInAddData', 'false');
+                    }}
                   />
-                  <FormInput
-                    type="text"
-                    placeholder="UTR..."
-                    className="w-full pl-9 pr-9 sm:w-40 lg:w-48 rounded-[0.5rem] text-xs sm:text-sm"
-                    value={utr}
-                    onChange={(e) => setUtr(e.target.value)}
-                  />
-                  {utr && (
-                    <Lucide
-                      icon="X"
-                      className="absolute inset-y-0 right-0 z-10 w-3.5 h-3.5 sm:w-4 sm:h-4 my-auto mr-3 stroke-[1.3] text-slate-500 cursor-pointer"
-                      onClick={() => {
-                        setUtr('');
-                        sessionStorage.setItem('searchInAddData', 'false');
-                      }}
-                    />
-                  )}
-                </div>
-                <div className="relative w-full sm:w-auto sm:flex-shrink-0">
-                  <Lucide
-                    icon="Search"
-                    className="absolute inset-y-0 left-0 z-10 w-3.5 h-3.5 sm:w-4 sm:h-4 my-auto ml-3 stroke-[1.3] text-slate-500"
-                  />
-                  <FormInput
-                    type="text"
-                    placeholder="Bank Name..."
-                    className="w-full pl-9 pr-9 sm:w-40 lg:w-48 rounded-[0.5rem] text-xs sm:text-sm"
-                    value={nickName}
-                    onChange={(e) => setNickName(e.target.value)}
-                  />
-                  {nickName && (
-                    <Lucide
-                      icon="X"
-                      className="absolute inset-y-0 right-0 z-10 w-3.5 h-3.5 sm:w-4 sm:h-4 my-auto mr-3 stroke-[1.3] text-slate-500 cursor-pointer"
-                      onClick={() => {
-                        setNickName('');
-                        sessionStorage.setItem('searchInAddData', 'false');
-                      }}
-                    />
-                  )}
-                </div>
-                <div className="relative w-full sm:w-auto sm:flex-shrink-0">
-                  <Lucide
-                    icon="Search"
-                    className="absolute inset-y-0 left-0 z-10 w-3.5 h-3.5 sm:w-4 sm:h-4 my-auto ml-3 stroke-[1.3] text-slate-500"
-                  />
-                  <FormInput
-                    type="text"
-                    placeholder="Amount..."
-                    className="w-full pl-9 pr-9 sm:w-40 lg:w-48 rounded-[0.5rem] text-xs sm:text-sm"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                  />
-                  {nickName && (
-                    <Lucide
-                      icon="X"
-                      className="absolute inset-y-0 right-0 z-10 w-4 h-4 my-auto mr-3 stroke-[1.3] text-slate-500 cursor-pointer"
-                      onClick={() => {
-                        setAmount('');
-                        sessionStorage.setItem('searchInAddData', 'false');
-                      }}
-                    />
-                  )}
-                </div>
+                )}
               </div>
-              <div className="flex flex-col sm:flex-row gap-x-3 gap-y-2 sm:ml-auto">
-                <Menu>
-                  <Menu.Button
-                    as={Button}
-                    variant="outline-secondary"
-                    className="w-full sm:w-auto"
-                    onClick={handleRefresh}
-                  >
-                    <Lucide
-                      icon="RefreshCw"
-                      className="stroke-[1.3] w-4 h-4 mr-2"
-                    />
-                    Refresh
-                  </Menu.Button>
-                </Menu>
-                <Menu>
-                  <Menu.Button
-                    as={Button}
-                    variant="outline-secondary"
-                    className="w-full sm:w-auto"
-                    onClick={handleReset}
-                  >
-                    <Lucide
-                      icon="RotateCcw"
-                      className="stroke-[1.3] w-4 h-4 mr-2"
-                    />
-                    Reset
-                  </Menu.Button>
-                </Menu>
-                <Menu>
-                  <Menu.Button
-                    as={Button}
-                    variant="outline-secondary"
-                    className="w-full sm:w-auto"
-                    onClick={() => setExportModalOpen(true)}
-                  >
-                    <Lucide
-                      icon="Download"
-                      className="stroke-[1.3] w-4 h-4 mr-2"
-                    />
-                    Export
-                  </Menu.Button>
-                </Menu>
-                <Popover className="inline-block">
-                  {({ close }: { close: () => void }) => (
-                    <>
-                      <Popover.Button
-                        as={Button}
-                        variant="outline-secondary"
-                        className="w-full sm:w-auto"
-                        onClick={() => setCallBank(true)}
+              <div className="relative w-full sm:w-auto sm:flex-shrink-0">
+                <Lucide
+                  icon="Search"
+                  className="absolute inset-y-0 left-0 z-10 w-4 h-4 my-auto ml-3 stroke-[1.3] text-white/50"
+                />
+                <FormInput
+                  type="text"
+                  placeholder="Bank Name..."
+                  className="w-full pl-9 pr-9 sm:w-40 lg:w-48 rounded-xl bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-theme-1/50 focus:ring-theme-1/30 text-xs sm:text-sm"
+                  value={nickName}
+                  onChange={(e) => setNickName(e.target.value)}
+                />
+                {nickName && (
+                  <Lucide
+                    icon="X"
+                    className="absolute inset-y-0 right-0 z-10 w-4 h-4 my-auto mr-3 stroke-[1.3] text-white/50 cursor-pointer hover:text-white"
+                    onClick={() => {
+                      setNickName('');
+                      sessionStorage.setItem('searchInAddData', 'false');
+                    }}
+                  />
+                )}
+              </div>
+              <div className="relative w-full sm:w-auto sm:flex-shrink-0">
+                <Lucide
+                  icon="Search"
+                  className="absolute inset-y-0 left-0 z-10 w-4 h-4 my-auto ml-3 stroke-[1.3] text-white/50"
+                />
+                <FormInput
+                  type="text"
+                  placeholder="Amount..."
+                  className="w-full pl-9 pr-9 sm:w-40 lg:w-48 rounded-xl bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-theme-1/50 focus:ring-theme-1/30 text-xs sm:text-sm"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                />
+                {amount && (
+                  <Lucide
+                    icon="X"
+                    className="absolute inset-y-0 right-0 z-10 w-4 h-4 my-auto mr-3 stroke-[1.3] text-white/50 cursor-pointer hover:text-white"
+                    onClick={() => {
+                      setAmount('');
+                      sessionStorage.setItem('searchInAddData', 'false');
+                    }}
+                  />
+                )}
+              </div>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-x-3 gap-y-2 sm:ml-auto">
+              <Menu>
+                <Menu.Button
+                  as={Button}
+                  variant="outline-secondary"
+                  className="w-full sm:w-auto bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30"
+                  onClick={handleRefresh}
+                >
+                  <Lucide
+                    icon="RefreshCw"
+                    className="stroke-[1.3] w-4 h-4 mr-2"
+                  />
+                  Refresh
+                </Menu.Button>
+              </Menu>
+              <Menu>
+                <Menu.Button
+                  as={Button}
+                  variant="outline-secondary"
+                  className="w-full sm:w-auto bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30"
+                  onClick={handleReset}
+                >
+                  <Lucide
+                    icon="RotateCcw"
+                    className="stroke-[1.3] w-4 h-4 mr-2"
+                  />
+                  Reset
+                </Menu.Button>
+              </Menu>
+              <Menu>
+                <Menu.Button
+                  as={Button}
+                  variant="outline-secondary"
+                  className="w-full sm:w-auto bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30"
+                  onClick={() => setExportModalOpen(true)}
+                >
+                  <Lucide
+                    icon="Download"
+                    className="stroke-[1.3] w-4 h-4 mr-2"
+                  />
+                  Export
+                </Menu.Button>
+              </Menu>
+              <Popover className="inline-block">
+                {({ close }: { close: () => void }) => (
+                  <>
+                    <Popover.Button
+                      as={Button}
+                      variant="outline-secondary"
+                      className="w-full sm:w-auto bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30"
+                      onClick={() => setCallBank(true)}
+                    >
+                      <Lucide
+                        icon="ArrowDownWideNarrow"
+                        className="stroke-[1.3] w-4 h-4 mr-2"
+                      />
+                      Filter
+                    </Popover.Button>
+                    <Popover.Panel placement="bottom-end">
+                      {/* ...existing filter panel code... */}
+                      <form
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                          applyFilter();
+                          close();
+                        }}
                       >
-                        <Lucide
-                          icon="ArrowDownWideNarrow"
-                          className="stroke-[1.3] w-4 h-4 mr-2"
-                        />
-                        Filter
-                      </Popover.Button>
-                      <Popover.Panel placement="bottom-end">
-                        <form
-                          onSubmit={(e) => {
-                            e.preventDefault();
-                            applyFilter();
-                            close();
-                          }}
-                        >
-                          <div className="p-2">
+                        <div className="p-2">
+                          <div className="mt-3">
+                            <div className="text-left text-slate-500">
+                              Bank
+                            </div>
+                            <FormSelect
+                              className="flex-1 mt-2"
+                              value={selectedFilterBank}
+                              onChange={(e) => {
+                                const newValue = e.target.value;
+                                setSelectedFilterBank(newValue);
+                              }}
+                            >
+                              <option value="">Select a Bank</option>
+                              {Object.entries(bankOptions).map(
+                                ([key, value]) => (
+                                  <option key={key} value={value.value}>
+                                    {value.label}
+                                  </option>
+                                ),
+                              )}
+                            </FormSelect>
+                          </div>
+                          {role && role === Role.ADMIN && (
                             <div className="mt-3">
                               <div className="text-left text-slate-500">
-                                Bank
+                                Status
                               </div>
                               <FormSelect
                                 className="flex-1 mt-2"
-                                value={selectedFilterBank}
+                                value={selectedStatus}
                                 onChange={(e) => {
                                   const newValue = e.target.value;
-                                  setSelectedFilterBank(newValue);
+                                  setSelectedStatus(newValue);
                                 }}
                               >
-                                <option value="">Select a Bank</option>
-                                {Object.entries(bankOptions).map(
+                                <option value="">Select a status</option>
+                                {Object.entries(DataEntryOptions).map(
                                   ([key, value]) => (
                                     <option key={key} value={value.value}>
                                       {value.label}
@@ -1107,203 +1110,198 @@ const AddDataHistory: React.FC<AddDataHistoryProps> = ({ selectedIndex }) => {
                                 )}
                               </FormSelect>
                             </div>
-                            {role && role === Role.ADMIN && (
+                          )}
+                          <div className="mt-3">
+                            <div className="text-left text-slate-500">
+                              Additional Filters
+                            </div>
+                            <FormSelect
+                              className="flex-1 mt-2"
+                              value={selectedColumn}
+                              onChange={(e) => {
+                                setSelectedColumn(e.target.value);
+                                setFilterValue('');
+                              }}
+                            >
+                              <option value="">Select a column</option>
+                              {(designation === Role.TRANSACTIONS
+                                ? Columns.BANK_RESPONSE_TRANSACTIONS
+                                : [
+                                    Role.VENDOR,
+                                    Role.VENDOR_OPERATIONS,
+                                  ].includes(role ?? '')
+                                ? Columns.BANK_RESPONSE_VENDOR
+                                : Columns.BANK_RESPONSE
+                              )
+                                .filter(
+                                  (col) =>
+                                    col.key !== 'nick_name' &&
+                                    col.key !== 'is_used' &&
+                                    col.key !== 'sno' &&
+                                    col.key !== 'more_details' &&
+                                    col.key !== 'vendor_code' &&
+                                    col.key !== 'actions',
+                                )
+                                .map((col) => (
+                                  <option key={col.key} value={col.key}>
+                                    {col.label}
+                                  </option>
+                                ))}
+                            </FormSelect>
+                            {selectedColumn && (
                               <div className="mt-3">
                                 <div className="text-left text-slate-500">
-                                  Status
+                                  Value for{' '}
+                                  {
+                                    (designation === Role.TRANSACTIONS
+                                      ? Columns.BANK_RESPONSE_TRANSACTIONS
+                                      : Columns.BANK_RESPONSE
+                                    ).find(
+                                      (col) => col.key === selectedColumn,
+                                    )?.label
+                                  }
                                 </div>
-                                <FormSelect
-                                  className="flex-1 mt-2"
-                                  value={selectedStatus}
-                                  onChange={(e) => {
-                                    const newValue = e.target.value;
-                                    setSelectedStatus(newValue);
-                                  }}
-                                >
-                                  <option value="">Select a status</option>
-                                  {Object.entries(DataEntryOptions).map(
-                                    ([key, value]) => (
-                                      <option key={key} value={value.value}>
-                                        {value.label}
-                                      </option>
-                                    ),
-                                  )}
-                                </FormSelect>
+                                <FormInput
+                                  type="text"
+                                  className="mt-2"
+                                  value={filterValue}
+                                  onChange={(e) =>
+                                    setFilterValue(e.target.value)
+                                  }
+                                  placeholder={`Enter value for ${selectedColumn}`}
+                                />
                               </div>
                             )}
-                            <div className="mt-3">
-                              <div className="text-left text-slate-500">
-                                Additional Filters
-                              </div>
-                              <FormSelect
-                                className="flex-1 mt-2"
-                                value={selectedColumn}
-                                onChange={(e) => {
-                                  setSelectedColumn(e.target.value);
-                                  setFilterValue('');
-                                }}
-                              >
-                                <option value="">Select a column</option>
-                                {(designation === Role.TRANSACTIONS
-                                  ? Columns.BANK_RESPONSE_TRANSACTIONS
-                                  : [
-                                      Role.VENDOR,
-                                      Role.VENDOR_OPERATIONS,
-                                    ].includes(role ?? '')
-                                  ? Columns.BANK_RESPONSE_VENDOR
-                                  : Columns.BANK_RESPONSE
-                                )
-                                  .filter(
-                                    (col) =>
-                                      col.key !== 'nick_name' &&
-                                      col.key !== 'is_used' &&
-                                      col.key !== 'sno' &&
-                                      col.key !== 'more_details' &&
-                                      col.key !== 'vendor_code' &&
-                                      col.key !== 'actions',
-                                  )
-                                  .map((col) => (
-                                    <option key={col.key} value={col.key}>
-                                      {col.label}
-                                    </option>
-                                  ))}
-                              </FormSelect>
-                              {selectedColumn && (
-                                <div className="mt-3">
-                                  <div className="text-left text-slate-500">
-                                    Value for{' '}
-                                    {
-                                      (designation === Role.TRANSACTIONS
-                                        ? Columns.BANK_RESPONSE_TRANSACTIONS
-                                        : Columns.BANK_RESPONSE
-                                      ).find(
-                                        (col) => col.key === selectedColumn,
-                                      )?.label
-                                    }
-                                  </div>
-                                  <FormInput
-                                    type="text"
-                                    className="mt-2"
-                                    value={filterValue}
-                                    onChange={(e) =>
-                                      setFilterValue(e.target.value)
-                                    }
-                                    placeholder={`Enter value for ${selectedColumn}`}
-                                  />
-                                </div>
-                              )}
-                            </div>
-                            <div className="flex items-center mt-4">
-                              <Button
-                                variant="secondary"
-                                onClick={() => {
-                                  setSelectedColumn('');
-                                  setFilterValue('');
-                                  setSelectedStatus('');
-                                  close();
-                                }}
-                                className="w-32 ml-auto"
-                              >
-                                Close
-                              </Button>
-                              <Button
-                                variant="primary"
-                                type="submit"
-                                className="w-32 ml-2"
-                              >
-                                Apply
-                              </Button>
-                            </div>
                           </div>
-                        </form>
-                      </Popover.Panel>
-                    </>
-                  )}
-                </Popover>
-              </div>
+                          <div className="flex items-center mt-4">
+                            <Button
+                              variant="secondary"
+                              onClick={() => {
+                                setSelectedColumn('');
+                                setFilterValue('');
+                                setSelectedStatus('');
+                                close();
+                              }}
+                              className="w-32 ml-auto"
+                            >
+                              Close
+                            </Button>
+                            <Button
+                              variant="primary"
+                              type="submit"
+                              className="w-32 ml-2"
+                            >
+                              Apply
+                            </Button>
+                          </div>
+                        </div>
+                      </form>
+                    </Popover.Panel>
+                  </>
+                )}
+              </Popover>
             </div>
-            <div className="mb-4 border-b border-slate-200/60 dark:border-darkmode-400">
+          </div>
+
+          {/* Data Tabs - All Data / Updated Data */}
+          {role && ![Role.VENDOR, Role.VENDOR_OPERATIONS].includes(role) && (
+            <div className="mb-6">
               <Tab.Group
                 selectedIndex={activeDataTab}
                 onChange={setActiveDataTab}
               >
-                <Tab.List variant="tabs">
-                  {role &&
-                    ![Role.VENDOR, Role.VENDOR_OPERATIONS].includes(role) && (
-                      <>
-                        <Tab>
-                          <Tab.Button
-                            className="w-full py-2 flex items-center justify-center"
-                            as="button"
-                            onClick={handleViewAllData}
-                          >
-                            <Lucide icon="Database" className="w-4 h-4 mr-2" />
-                            All Data
-                          </Tab.Button>
-                        </Tab>
-                        <Tab>
-                          <Tab.Button
-                            className="w-full py-2 flex items-center justify-center"
-                            as="button"
-                            onClick={handleViewUpdatedData}
-                          >
-                            <Lucide icon="Clock" className="w-4 h-4 mr-2" />
-                            Updated Data
-                          </Tab.Button>
-                        </Tab>
-                      </>
+                <Tab.List className="flex border-b border-white/10 bg-white/5 rounded-t-xl">
+                  <Tab className="relative flex-1">
+                    {({ selected }) => (
+                      <Tab.Button
+                        className={`w-full py-3 flex items-center justify-center gap-2 text-sm font-medium transition-all duration-300 ${
+                          selected
+                            ? 'text-white bg-gradient-to-r from-theme-1/20 to-theme-2/20'
+                            : 'text-white/60 hover:text-white hover:bg-white/5'
+                        }`}
+                        as="button"
+                        onClick={handleViewAllData}
+                      >
+                        <Lucide icon="Database" className="w-4 h-4" />
+                        All Data
+                        {selected && (
+                          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-theme-1 to-theme-2"></div>
+                        )}
+                      </Tab.Button>
                     )}
+                  </Tab>
+                  <Tab className="relative flex-1">
+                    {({ selected }) => (
+                      <Tab.Button
+                        className={`w-full py-3 flex items-center justify-center gap-2 text-sm font-medium transition-all duration-300 ${
+                          selected
+                            ? 'text-white bg-gradient-to-r from-theme-1/20 to-theme-2/20'
+                            : 'text-white/60 hover:text-white hover:bg-white/5'
+                        }`}
+                        as="button"
+                        onClick={handleViewUpdatedData}
+                      >
+                        <Lucide icon="Clock" className="w-4 h-4" />
+                        Updated Data
+                        {selected && (
+                          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-theme-1 to-theme-2"></div>
+                        )}
+                      </Tab.Button>
+                    )}
+                  </Tab>
                 </Tab.List>
               </Tab.Group>
             </div>
-            <div className="overflow-auto xl:overflow-visible">
-              {isPageLoading && isLoad ? (
-                <div className="flex justify-center items-center w-full h-screen">
-                  <LoadingIcon icon="ball-triangle" className="w-[5%] h-auto" />
-                </div>
-              ) : (
-                <CustomTable
-                  columns={
-                    [Role.TRANSACTIONS, Role.OPERATIONS].includes(
-                      designation || '',
-                    )
-                      ? Columns.BANK_RESPONSE_TRANSACTIONS
-                      : [Role.VENDOR, Role.VENDOR_OPERATIONS].includes(
-                          role || '',
-                        )
-                      ? Columns.BANK_RESPONSE_VENDOR
-                      : Columns.BANK_RESPONSE
+          )}
+
+          {/* Table Section */}
+          <div className="overflow-auto xl:overflow-visible">
+            {isPageLoading && isLoad ? (
+              <div className="flex justify-center items-center w-full h-96">
+                <LoadingIcon icon="ball-triangle" className="w-[5%] h-auto" />
+              </div>
+            ) : (
+              <CustomTable
+                columns={
+                  [Role.TRANSACTIONS, Role.OPERATIONS].includes(
+                    designation || '',
+                  )
+                    ? Columns.BANK_RESPONSE_TRANSACTIONS
+                    : [Role.VENDOR, Role.VENDOR_OPERATIONS].includes(
+                        role || '',
+                      )
+                    ? Columns.BANK_RESPONSE_VENDOR
+                    : Columns.BANK_RESPONSE
+                }
+                data={{
+                  rows: bankResponses?.bankResponse || [],
+                  totalCount: bankResponses.totalCount,
+                }}
+                currentPage={Number(pagination?.page) || 1}
+                pageSize={Number(pagination?.limit) || 20}
+                onPageChange={handlePageChange}
+                onPageSizeChange={handlePageSizeChange}
+                source="BankResponse"
+                handleEditModal={handleEditModal}
+                actionMenuItems={(row: BankResponseRow) => {
+                  const items: {
+                    label: string;
+                    icon: 'RotateCcw';
+                    onClick: () => void;
+                    previousAmount?: number | string;
+                  }[] = [];
+                  if (row?.status === Status.BOT_SUCCESS) {
+                    items.push({
+                      label: 'Reset',
+                      icon: 'RotateCcw',
+                      onClick: () => resetModal({ ...row }),
+                      previousAmount: row.amount,
+                    });
                   }
-                  data={{
-                    rows: bankResponses?.bankResponse || [],
-                    totalCount: bankResponses.totalCount,
-                  }}
-                  currentPage={Number(pagination?.page) || 1}
-                  pageSize={Number(pagination?.limit) || 20}
-                  onPageChange={handlePageChange}
-                  onPageSizeChange={handlePageSizeChange}
-                  source="BankResponse"
-                  handleEditModal={handleEditModal}
-                  actionMenuItems={(row: BankResponseRow) => {
-                    const items: {
-                      label: string;
-                      icon: 'RotateCcw';
-                      onClick: () => void;
-                      previousAmount?: number | string;
-                    }[] = [];
-                    if (row?.status === Status.BOT_SUCCESS) {
-                      items.push({
-                        label: 'Reset',
-                        icon: 'RotateCcw',
-                        onClick: () => resetModal({ ...row }),
-                        previousAmount: row.amount,
-                      });
-                    }
-                    return items;
-                  }}
-                />
-              )}
-            </div>
+                  return items;
+                }}
+              />
+            )}
           </div>
         </div>
       </div>

@@ -157,6 +157,165 @@
     }
   }
 }
+
+/* Sidebar hover animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(99, 102, 241, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+  }
+}
+
+.sidebar-container .menu-item.active .menu-icon-wrapper {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.sidebar-container:hover {
+  box-shadow: 
+    0 0 60px rgba(79, 70, 229, 0.1),
+    0 0 100px rgba(14, 165, 233, 0.05);
+}
+
+/* Smooth menu item transitions */
+.sidebar-container .menu-list li {
+  animation: slideIn 0.3s ease-out forwards;
+}
+
+.sidebar-container .menu-list li:nth-child(1) { animation-delay: 0.02s; }
+.sidebar-container .menu-list li:nth-child(2) { animation-delay: 0.04s; }
+.sidebar-container .menu-list li:nth-child(3) { animation-delay: 0.06s; }
+.sidebar-container .menu-list li:nth-child(4) { animation-delay: 0.08s; }
+.sidebar-container .menu-list li:nth-child(5) { animation-delay: 0.10s; }
+.sidebar-container .menu-list li:nth-child(6) { animation-delay: 0.12s; }
+.sidebar-container .menu-list li:nth-child(7) { animation-delay: 0.14s; }
+.sidebar-container .menu-list li:nth-child(8) { animation-delay: 0.16s; }
+.sidebar-container .menu-list li:nth-child(9) { animation-delay: 0.18s; }
+.sidebar-container .menu-list li:nth-child(10) { animation-delay: 0.20s; }
+
+/* Glassmorphism enhancement */
+.sidebar-container {
+  background: linear-gradient(
+    135deg,
+    rgba(15, 23, 42, 0.95) 0%,
+    rgba(30, 41, 59, 0.9) 50%,
+    rgba(15, 23, 42, 0.95) 100%
+  );
+}
+
+/* Menu icon glow on hover */
+.menu-icon-wrapper:hover {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(14, 165, 233, 0.15)) !important;
+}
+
+/* Tailwind animate-in class support */
+.animate-in {
+  animation-duration: 0.2s;
+  animation-fill-mode: both;
+}
+
+.slide-in-from-top-2 {
+  animation-name: slideInFromTop;
+}
+
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Navbar animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.navbar {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.navbar .logo-container:hover .logo::before {
+  animation: shimmer 0.7s ease-in-out;
+}
+
+/* Dropdown animation */
+.dropdown-menu {
+  transform-origin: top right;
+}
+
+.fade-in {
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* Notification badge pulse */
+@keyframes badgePulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.notification-btn .animate-pulse {
+  animation: badgePulse 2s ease-in-out infinite;
+}
+
+/* Search bar focus state */
+.search-container:focus-within {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(99, 102, 241, 0.5) !important;
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+}
+
+/* Profile button active state */
+.profile-btn:active {
+  transform: scale(0.98);
+}
+
+/* Navbar glassmorphism enhancement */
+.navbar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
 .dark {
   .echo {
     .side-menu {

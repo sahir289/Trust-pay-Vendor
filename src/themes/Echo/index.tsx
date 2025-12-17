@@ -13,12 +13,9 @@ import { useAppDispatch } from '@/redux-toolkit/hooks/useAppDispatch';
 import { useAppSelector } from '@/redux-toolkit/hooks/useAppSelector';
 import { FormattedMenu, linkTo, nestedMenu } from './side-menu';
 import Lucide from '@/components/Base/Lucide';
-import users from '@/assets/images/users/users.svg';
+import users from '@/assets/images/users/user-244.png';
 import clsx from 'clsx';
 import SimpleBar from 'simplebar';
-// import SwitchAccount from '@/components/SwitchAccount';
-// import NotificationsPanel from '@/components/NotificationsPanel';
-// import ActivitiesPanel from '@/components/ActivitiesPanel';
 import { useAuth } from '@/components/context/AuthContext';
 import {
   logout,
@@ -41,10 +38,7 @@ import {
 } from '@/constants';
 import Modal from '../../components/Modal/modals';
 import DynamicForm from '@/components/CommonForm';
-import { getAllMerchants } from '@/redux-toolkit/slices/merchants/merchantAPI';
 import { triggerCrossTabLogout } from '@/utils/crossTabAuthSync';
-import { getPaginationData } from '@/redux-toolkit/slices/common/params/paramsSelector';
-import { getUsersById } from '@/redux-toolkit/slices/user/userAPI';
 import { addAllNotification } from '@/redux-toolkit/slices/AllNoti/allNotifications';
 const debounce = (func: Function, wait: number) => {
   let timeout: NodeJS.Timeout;
@@ -54,54 +48,6 @@ const debounce = (func: Function, wait: number) => {
   };
 };
 
-// Utility to build breadcrumb path from active menu
-// const buildBreadcrumbPath = (menuItems: Array<FormattedMenu | string>) => {
-//   const path: { title: string; to: string; active: boolean }[] = [];
-
-//   // Always start with Dashboard as the root
-//   path.push({ title: 'Home', to: '/auth/dashboard', active: false });
-
-//   const findActiveMenu = (
-//     items: Array<FormattedMenu | string>,
-//     currentPath: string[] = [],
-//   ) => {
-//     for (const item of items) {
-//       if (typeof item === 'string') continue;
-
-//       if (item.active) {
-//         path.push({
-//           title: item.title,
-//           to: item.pathname || currentPath.join('/'),
-//           active: true,
-//         });
-//         return true;
-//       }
-
-//       if (item.subMenu && item.activeDropdown) {
-//         const found = findActiveMenu(item.subMenu, [
-//           ...currentPath,
-//           item.pathname || '',
-//         ]);
-//         if (found) {
-//           if (!path.some((p) => p.title === item.title)) {
-//             path.splice(path.length - 1, 0, {
-//               title: item.title,
-//               to: item.pathname || currentPath.join('/'),
-//               active: false,
-//             });
-//           }
-//           return true;
-//         }
-//       }
-//     }
-//     return false;
-//   };
-
-//   findActiveMenu(menuItems);
-//   return path.length > 1
-//     ? path
-//     : [{ title: 'Dashboard', to: '/auth/dashboard', active: true }];
-// };
 
 function Main() {
   const dispatch = useAppDispatch();
@@ -116,12 +62,6 @@ function Main() {
   const [isSidebarFixed, setIsSidebarFixed] = useState(
     localStorage.getItem('isSidebarFixed') === 'true',
   );
-  // const [switchAccount, setSwitchAccount] = useState(false);
-  // const [notificationsPanel, setNotificationsPanel] = useState(false);
-  // const [activitiesPanel, setActivitiesPanel] = useState(false);
-  const [compactMenuOnHover, setCompactMenuOnHover] = useState(false);
-  // const [activeMobileMenu, setActiveMobileMenu] = useState(false);
-  console.log(setCompactMenuOnHover, "setCompactMenuOnHover");
   const location = useLocation();
   const navigate = useNavigate();
   const [formattedMenu, setFormattedMenu] = useState<
@@ -137,9 +77,7 @@ function Main() {
   };
   const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
   const [passwordError, setPasswordError] = useState('');
-  const [apiKey, setApiKey] = useState('your-api-key');
   const [isBlurred, setIsBlurred] = useState(true);
-  const pagination = useAppSelector(getPaginationData);
   const [verification, setVerification] = useState(false);
   const [, setVerified] = useState(false);
   const [showPassword] = useState(false);
@@ -148,58 +86,17 @@ function Main() {
   const [isOpen, setIsOpen] = useState(false);
   const verificationModalRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [companyName, setCompanyName] = useState<string>('');
-  const [uniqueId, setUniqueId] = useState<string>('');
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isSidebarHovered, setIsSidebarHovered] = useState(false);
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
-  console.log(apiKey, uniqueId, companyName, "company nAME")
 
   const toggleBlur = async (event: React.MouseEvent) => {
     event.stopPropagation();
-    if (isBlurred) {
-      if (userData?.designation === Role.ADMIN) {
-        const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-        if (userData?.designation === Role.ADMIN) {
-          const userInfo = await getUsersById(userData?.userId);
-          if (userInfo[0]) {
-            setUniqueId(userInfo?.[0]?.config?.unique_admin_id || '');
-          }
-        }
-      }
-      if (userData?.designation === Role.MERCHANT) {
-        const queryString = new URLSearchParams({
-          page: (pagination?.page || 1).toString(),
-          limit: (pagination?.limit || 10).toString(),
-        }).toString();
-        const response = await getAllMerchants(queryString);
-        setApiKey(response?.merchants[0].config?.keys?.private || '');
-      }
-    } else {
-      setApiKey('your-api-key');
-    }
     setIsBlurred(!isBlurred);
   };
 
-  // const displayNotificationCount = useCallback(
-  //   debounce(async () => {
-  //     try {
-  //       const count = await getNotificationsCount();
-  //       dispatch(setNotificationsCount(count));
-  //       dispatch(setIsSocketHit(false));
-  //     } catch (error) {
-  //       console.error('Failed to fetch notifications count', error);
-  //     }
-  //   }, 500),
-  //   [dispatch],
-  // );
-  // useEffect(() => {
-  // displayNotificationCount();
-  //   if (isRefreshCount) {
-  //     dispatch(setIsSocketHit(false));
-  //   }
-  // }, [isRefreshCount, dispatch]);
 
   const handleChangePassword = async (data: {
     password: string;
@@ -259,13 +156,6 @@ function Main() {
     localStorage.setItem('isSidebarFixed', isSidebarFixed.toString());
   }, [isSidebarFixed]);
 
-  useEffect(() => {
-    const storedCompanyName = localStorage.getItem('companyName');
-    if (storedCompanyName) {
-      setCompanyName(storedCompanyName);
-    }
-  }, []);
-
   // Modified useEffect to fetch company details
   useEffect(() => {
     const storedUserData = localStorage.getItem('userData');
@@ -286,7 +176,6 @@ function Main() {
                   'companyName',
                   companyDetails.data[0].full_name,
                 );
-                setCompanyName(companyDetails.data[0].full_name);
               }
               if (companyDetails.data[0]?.allowpayassist) {
                 localStorage.setItem(
@@ -352,7 +241,12 @@ function Main() {
     }
   };
 
-  //useEffect to change inbuilt height of simplebar by removing simplerbar-placeholder
+  // Determine if sidebar is expanded (hover only works when NOT fixed)
+  const isSidebarExpanded =
+    isSidebarFixed ||
+    (!compactMenu && !isSidebarFixed) ||
+    (isSidebarHovered && !isSidebarFixed && compactMenu);
+
   //sidebar scrollable due to increased height which isoccuring due to  in-build placeholder component in simplebar imported from simplebar
   useEffect(() => {
     const observer = new MutationObserver(() => {
@@ -491,18 +385,6 @@ function Main() {
     return () => document.removeEventListener('mousedown', handleOutsideClick);
   }, [isOpen, verification]);
 
-  // Determine if sidebar is expanded
-  const isSidebarExpanded =
-    isSidebarFixed || !compactMenu || (compactMenu && compactMenuOnHover);
-
-  // Build dynamic breadcrumb path
-  // const breadcrumbPath = buildBreadcrumbPath(formattedMenu);
-
-  // const handleVerificationClick = (event: React.MouseEvent) => {
-  //   event.preventDefault();
-  //   setVerification(true);
-  // };
-
   const handleVerification = async (passwordData: { password: string }) => {
     setIsLoading(true);
     try {
@@ -522,154 +404,524 @@ function Main() {
     <>
       <div
         className={clsx([
-          'echo group bg-gradient-to-b from-slate-200/70 to-slate-50 background relative min-h-screen dark:from-darkmode-800/[.95] dark:to-darkmode-900/[.95]',
-          "before:content-[''] before:h-[370px] before:w-screen before:bg-gradient-to-t before:from-theme-1/80 before:to-theme-2 [&.background--hidden]:before:opacity-0 before:transition-[opacity,height] before:ease-in-out before:duration-300 before:top-0 before:fixed",
-          "after:content-[''] after:h-[370px] after:w-screen [&.background--hidden]:after:opacity-0 after:transition-[opacity,height] after:ease-in-out after:duration-300 after:top-0 after:fixed after:bg-texture-white after:bg-contain after:bg-fixed after:bg-[center_-13rem] after:bg-no-repeat",
+          'echo group bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 relative min-h-screen',
+          "before:content-[''] before:h-[420px] before:w-screen before:bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.28),transparent_32%),radial-gradient(circle_at_80%_0%,rgba(14,165,233,0.22),transparent_26%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.18),transparent_24%)] before:top-0 before:fixed before:left-0 before:right-0 before:pointer-events-none",
           topBarActive && 'background--hidden',
         ])}
       >
+        {/* Enhanced Navbar */}
         <div
           className={clsx([
-            'navbar fixed top-0 left-0 right-0 z-40 h-16 bg-white shadow-md border-b border-gray-200',
-            'flex items-center justify-between px-6',
+            'navbar fixed top-0 left-0 right-0 z-40 h-16',
+            'bg-gradient-to-r from-slate-900/80 via-slate-800/70 to-slate-900/80',
+            'border-b border-white/10',
+            'shadow-[0_4px_30px_rgba(0,0,0,0.3)]',
+            'backdrop-blur-xl',
+            'flex items-center justify-between px-4 sm:px-6',
+            'transition-all duration-300',
+            topBarActive && 'shadow-[0_4px_40px_rgba(79,70,229,0.15)]',
           ])}
         >
-          <div className="navbar-left flex items-center space-x-4">
-            <div className="logo bg-gradient-to-r from-blue-500 to-purple-500 w-10 h-10 rounded-full flex items-center justify-center">
-              <span className="text-white font-bold">TP</span>
+          {/* Decorative gradient line at top */}
+          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
+          
+          {/* Subtle animated glow */}
+          <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/5 via-cyan-500/5 to-emerald-500/5 opacity-0 hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+          <div className="navbar-left flex items-center space-x-4 relative z-10">
+            {/* Enhanced Logo */}
+            <div className="logo-container group/logo relative">
+              <div className={clsx([
+                'logo w-11 h-11 rounded-2xl flex items-center justify-center',
+                'bg-gradient-to-br from-indigo-500 via-purple-500 to-cyan-500',
+                'shadow-lg shadow-indigo-500/40',
+                'transition-all duration-300',
+                'group-hover/logo:shadow-xl group-hover/logo:shadow-indigo-500/50',
+                'group-hover/logo:scale-105',
+                'relative overflow-hidden',
+              ])}>
+                {/* Animated shine effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/logo:translate-x-full transition-transform duration-700" />
+                <span className="text-white font-bold text-lg relative z-10">TP</span>
+              </div>
+              {/* Glow ring on hover */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500 rounded-2xl opacity-0 group-hover/logo:opacity-30 blur-md transition-opacity duration-300" />
             </div>
-            <span className="text-lg font-semibold text-gray-800">TrustPay</span>
+            
+            {/* Brand name with gradient */}
+            <div className="brand-name hidden sm:block">
+              <span className={clsx([
+                'text-xl font-bold',
+                'bg-gradient-to-r from-white via-indigo-200 to-cyan-200 bg-clip-text text-transparent',
+                'drop-shadow-[0_0_20px_rgba(99,102,241,0.3)]',
+              ])}>
+                TrustPay
+              </span>
+              <span className="block text-[10px] text-white/40 font-medium tracking-widest uppercase -mt-1">
+                Vendor Portal
+              </span>
+            </div>
+
+            {/* Divider */}
+            <div className="hidden md:block w-px h-8 bg-gradient-to-b from-transparent via-white/20 to-transparent mx-2" />
+
+            {/* Enhanced Toggle Button - Now acts as Pin/Unpin */}
             <button
-              className="toggle-sidebar-btn p-2 rounded-full hover:bg-gray-200"
+              className={clsx([
+                'toggle-sidebar-btn p-2.5 rounded-xl',
+                'bg-white/5 hover:bg-white/10',
+                'border border-white/10 hover:border-white/20',
+                'text-white/70 hover:text-white',
+                'transition-all duration-200',
+                'hover:shadow-lg hover:shadow-indigo-500/10',
+                'group/toggle',
+                // Highlight when pinned
+                isSidebarFixed &&
+                  'bg-indigo-500/20 border-indigo-400/30 text-indigo-300',
+              ])}
               onClick={(event) => {
                 event.preventDefault();
                 toggleSidebarMode(event);
               }}
+              title={
+                isSidebarFixed
+                  ? 'Unpin sidebar (enable hover)'
+                  : 'Pin sidebar (disable hover)'
+              }
             >
               <Lucide
-                icon={isSidebarExpanded ? 'ChevronLeft' : 'ChevronRight'}
-                className="w-5 h-5 text-gray-800"
+                icon={isSidebarFixed ? 'Pin' : 'PinOff'}
+                className={clsx([
+                  'w-5 h-5 transition-transform duration-200 group-hover/toggle:scale-110',
+                  isSidebarFixed && 'text-indigo-300',
+                ])}
               />
             </button>
           </div>
-          <div className="navbar-right flex items-center space-x-4">
+
+          {/* Center section - can add search or breadcrumb later */}
+          {/* <div className="navbar-center hidden lg:flex items-center flex-1 justify-center px-8">
+            <div className={clsx([
+              'search-container flex items-center gap-2 px-4 py-2 rounded-xl',
+              'bg-white/5 border border-white/10',
+              'text-white/40 text-sm',
+              'cursor-pointer hover:bg-white/10 hover:border-white/20',
+              'transition-all duration-200',
+              'max-w-md w-full',
+            ])}>
+              <Lucide icon="Search" className="w-4 h-4" />
+              <span>Quick search...</span>
+              <div className="ml-auto flex items-center gap-1">
+                <kbd className="px-1.5 py-0.5 text-[10px] bg-white/10 rounded border border-white/10">⌘</kbd>
+                <kbd className="px-1.5 py-0.5 text-[10px] bg-white/10 rounded border border-white/10">K</kbd>
+              </div>
+            </div>
+          </div> */}
+
+          <div className="navbar-right flex items-center space-x-2 sm:space-x-3 relative z-10">
+            {/* Notification Bell */}
+            {/* <button
+              className={clsx([
+                'notification-btn p-2.5 rounded-xl relative',
+                'bg-white/5 hover:bg-white/10',
+                'border border-white/10 hover:border-white/20',
+                'text-white/70 hover:text-white',
+                'transition-all duration-200',
+                'hover:shadow-lg hover:shadow-indigo-500/10',
+                'group/notif',
+              ])}
+              title="Notifications"
+            >
+              <Lucide
+                icon="Bell"
+                className="w-5 h-5 transition-transform duration-200 group-hover/notif:scale-110"
+              />
+
+              <span className={clsx([
+                'absolute -top-1 -right-1 w-5 h-5',
+                'bg-gradient-to-r from-rose-500 to-pink-500',
+                'rounded-full flex items-center justify-center',
+                'text-[10px] font-bold text-white',
+                'shadow-lg shadow-rose-500/40',
+                'animate-pulse',
+              ])}>
+                3
+              </span>
+            </button> */}
+
+            {/* Fullscreen Button */}
             <button
-              className="fullscreen-btn p-2 rounded-md hover:bg-gray-100"
+              className={clsx([
+                'fullscreen-btn p-2.5 rounded-xl',
+                'bg-white/5 hover:bg-white/10',
+                'border border-white/10 hover:border-white/20',
+                'text-white/70 hover:text-white',
+                'transition-all duration-200',
+                'hover:shadow-lg hover:shadow-indigo-500/10',
+                'group/fs',
+              ])}
               onClick={toggleFullscreen}
               title={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
             >
               <Lucide
                 icon={isFullscreen ? 'Minimize' : 'Maximize'}
-                className="w-6 h-6 text-gray-700"
+                className="w-5 h-5 transition-transform duration-200 group-hover/fs:scale-110"
               />
             </button>
+
+            {/* Divider */}
+            <div className="hidden sm:block w-px h-8 bg-gradient-to-b from-transparent via-white/20 to-transparent mx-1" />
+
+            {/* Profile Dropdown */}
             <div className="relative">
               <button
-                className="profile-btn w-10 h-10 rounded-full overflow-hidden border-2 border-gray-300 focus:outline-none"
+                className={clsx([
+                  'profile-btn flex items-center gap-3 p-1.5 pr-3 rounded-xl',
+                  'bg-white/5 hover:bg-white/10',
+                  'border border-white/10 hover:border-white/20',
+                  'transition-all duration-200',
+                  'hover:shadow-lg hover:shadow-indigo-500/10',
+                  'group/profile',
+                  isOpen && 'bg-white/10 border-white/20',
+                ])}
                 onClick={toggleDropdown}
               >
-                <img
-                  src={users || 'https://via.placeholder.com/40'}
-                  alt="Profile"
-                  className="w-full h-full object-cover"
+                {/* Avatar with status */}
+                <div className="relative">
+                  <div className={clsx([
+                    'w-9 h-9 rounded-lg overflow-hidden',
+                    'ring-2 ring-white/20 group-hover/profile:ring-indigo-400/50',
+                    'transition-all duration-200',
+                  ])}>
+                    <img
+                      src={users || 'https://via.placeholder.com/40'}
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  {/* Online status */}
+                  <span className={clsx([
+                    'absolute -bottom-0.5 -right-0.5 w-3 h-3',
+                    'bg-emerald-500 rounded-full',
+                    'border-2 border-slate-900',
+                    'shadow-lg shadow-emerald-500/50',
+                  ])} />
+                </div>
+                
+                {/* User info - hidden on small screens */}
+                <div className="hidden sm:block text-left">
+                  <p className="text-sm font-medium text-white/90 group-hover/profile:text-white transition-colors">
+                    {userData.name?.split(' ')[0] || 'User'}
+                  </p>
+                  <p className="text-[10px] text-white/50 group-hover/profile:text-white/60 transition-colors">
+                    {userData.designation || 'N/A'}
+                  </p>
+                </div>
+                
+                <Lucide
+                  icon="ChevronDown"
+                  className={clsx([
+                    'w-4 h-4 text-white/50 transition-transform duration-200',
+                    'hidden sm:block',
+                    isOpen && 'rotate-180',
+                  ])}
                 />
               </button>
+
+              {/* Enhanced Dropdown Menu */}
               {isOpen && (
-                <div className="dropdown-menu absolute right-0 mt-2 w-48 bg-white text-gray-800 rounded-md shadow-lg">
-                  <div className="px-4 py-3">
-                    <p className="text-sm font-medium">{userData.name}</p>
-                    <p className="text-xs text-gray-500">{userData.designation}</p>
+                <div className={clsx([
+                  'dropdown-menu absolute right-0 mt-2 w-64',
+                  'bg-gradient-to-b from-slate-800/95 to-slate-900/95',
+                  'text-white rounded-2xl',
+                  'shadow-2xl shadow-black/50',
+                  'border border-white/10',
+                  'backdrop-blur-xl',
+                  'overflow-hidden',
+                  'animate-in fade-in slide-in-from-top-2 duration-200',
+                ])}>
+                  {/* User header */}
+                  <div className="px-4 py-4 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-cyan-500/10">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-xl overflow-hidden ring-2 ring-white/20">
+                        <img
+                          src={users || 'https://via.placeholder.com/48'}
+                          alt="Profile"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-white">{userData.name}</p>
+                        <p className="text-xs text-white/60">{userData.designation}</p>
+                        <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 bg-emerald-500/20 rounded-full">
+                          <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full" />
+                          <span className="text-[10px] text-emerald-400 font-medium">Online</span>
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                  <hr />
-                  <button
-                    className="dropdown-item flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left"
-                    onClick={() => {
-                      setShowChangePasswordModal(true);
-                      setIsOpen(false);
-                    }}
-                  >
-                    <Lucide icon="Lock" className="w-4 h-4 mr-2" />
-                    Change Password
-                  </button>
-                  <button
-                    className="dropdown-item flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left"
-                    onClick={() => {
-                      HandleLogOut();
-                      setIsOpen(false);
-                    }}
-                  >
-                    <Lucide icon="Power" className="w-4 h-4 mr-2" />
-                    Logout
-                  </button>
+                  
+                  <div className="p-2">
+                    {/* Profile link */}
+                    {/* <button
+                      className={clsx([
+                        'dropdown-item flex items-center gap-3 px-3 py-2.5 w-full text-left rounded-xl',
+                        'text-white/70 hover:text-white',
+                        'hover:bg-white/5',
+                        'transition-all duration-200',
+                        'group/item',
+                      ])}
+                    >
+                      <div className="p-2 rounded-lg bg-white/5 group-hover/item:bg-indigo-500/20 transition-colors">
+                        <Lucide icon="User" className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <span className="text-sm font-medium">My Profile</span>
+                        <span className="block text-[10px] text-white/40">View and edit profile</span>
+                      </div>
+                    </button> */}
+
+                    {/* Change Password */}
+                    <button
+                      className={clsx([
+                        'dropdown-item flex items-center gap-3 px-3 py-2.5 w-full text-left rounded-xl',
+                        'text-white/70 hover:text-white',
+                        'hover:bg-white/5',
+                        'transition-all duration-200',
+                        'group/item',
+                      ])}
+                      onClick={() => {
+                        setShowChangePasswordModal(true);
+                        setIsOpen(false);
+                      }}
+                    >
+                      <div className="p-2 rounded-lg bg-white/5 group-hover/item:bg-amber-500/20 transition-colors">
+                        <Lucide icon="Lock" className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <span className="text-sm font-medium">Change Password</span>
+                        <span className="block text-[10px] text-white/40">Update your password</span>
+                      </div>
+                    </button>
+
+                    {/* Settings */}
+                    {/* <button
+                      className={clsx([
+                        'dropdown-item flex items-center gap-3 px-3 py-2.5 w-full text-left rounded-xl',
+                        'text-white/70 hover:text-white',
+                        'hover:bg-white/5',
+                        'transition-all duration-200',
+                        'group/item',
+                      ])}
+                    >
+                      <div className="p-2 rounded-lg bg-white/5 group-hover/item:bg-cyan-500/20 transition-colors">
+                        <Lucide icon="Settings" className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <span className="text-sm font-medium">Settings</span>
+                        <span className="block text-[10px] text-white/40">Preferences & config</span>
+                      </div>
+                    </button> */}
+                  </div>
+
+                  {/* Divider */}
+                  <div className="mx-3 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+
+                  {/* Logout */}
+                  <div className="p-2">
+                    <button
+                      className={clsx([
+                        'dropdown-item flex items-center gap-3 px-3 py-2.5 w-full text-left rounded-xl',
+                        'text-rose-400 hover:text-rose-300',
+                        'hover:bg-rose-500/10',
+                        'transition-all duration-200',
+                        'group/item',
+                      ])}
+                      onClick={() => {
+                        HandleLogOut();
+                        setIsOpen(false);
+                      }}
+                    >
+                      <div className="p-2 rounded-lg bg-rose-500/10 group-hover/item:bg-rose-500/20 transition-colors">
+                        <Lucide icon="LogOut" className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <span className="text-sm font-medium">Logout</span>
+                        <span className="block text-[10px] text-rose-400/60">Sign out of your account</span>
+                      </div>
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
           </div>
         </div>
+
+        {/* Sidebar */}
         <div
           className={clsx([
-            'sidebar-container fixed top-16 left-0 z-30 h-[calc(100%-4rem)] bg-white text-gray-800 shadow-lg',
-            isSidebarExpanded ? 'w-64' : 'w-24',
-            'transition-all duration-300',
+            'sidebar-container fixed top-16 left-0 z-30 h-[calc(100%-4rem)]',
+            'bg-gradient-to-b from-slate-900/95 via-slate-800/90 to-slate-900/95',
+            'text-white shadow-2xl backdrop-blur-xl',
+            'border-r border-white/10',
+            isSidebarExpanded ? 'w-72' : 'w-20',
+            'transition-all duration-300 ease-in-out overflow-hidden',
+            'hover:shadow-[0_0_40px_rgba(79,70,229,0.15)]',
+            // Show pin indicator when fixed
+            isSidebarFixed && 'border-r-indigo-500/30',
           ])}
+          onMouseEnter={() => {
+            // Only enable hover expansion when sidebar is NOT fixed
+            if (!isSidebarFixed && compactMenu) {
+              setIsSidebarHovered(true);
+            }
+          }}
+          onMouseLeave={() => {
+            if (!isSidebarFixed) {
+              setIsSidebarHovered(false);
+            }
+          }}
         >
-          {/* <div className="sidebar-header flex items-center justify-between px-4 py-3 border-b border-gray-300">
-          </div> */}
-          <div className="sidebar-menu mt-4">
-            <ul className="menu-list space-y-2">
+          {/* Decorative gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-cyan-500/5 pointer-events-none" />
+
+          {/* Animated border glow on hover - only show when hovering and not fixed */}
+          <div
+            className={clsx([
+              'absolute top-0 right-0 w-[2px] h-full',
+              'bg-gradient-to-b from-indigo-500/50 via-cyan-500/50 to-emerald-500/50',
+              'opacity-0 transition-opacity duration-300',
+              isSidebarHovered && !isSidebarFixed && 'opacity-100',
+            ])}
+          />
+
+          <div className="sidebar-menu mt-4 h-full relative z-10">
+            <ul className="menu-list space-y-1 px-3">
               {formattedMenu.map((menu, index) =>
                 typeof menu === 'string' ? (
                   <li
                     key={index}
-                    className="menu-divider text-gray-500 text-sm px-4"
+                    className={clsx([
+                      'menu-divider text-white/40 text-[10px] font-semibold px-3 py-2 uppercase tracking-widest',
+                      'transition-all duration-300',
+                      !isSidebarExpanded && 'opacity-0 h-0 py-0 overflow-hidden',
+                    ])}
                   >
-                    {/* {menu} */}
+                    {menu}
                   </li>
                 ) : (
-                  <li key={index}>
+                  <li key={index} className="group/item relative">
                     <a
                       href=""
                       className={clsx([
-                        'menu-item flex items-center px-4 py-2 rounded-md hover:bg-gray-200',
-                        menu.active && 'bg-gray-200',
+                        'menu-item flex items-center px-3 py-3 rounded-xl transition-all duration-200',
+                        'hover:bg-gradient-to-r hover:from-white/10 hover:to-white/5',
+                        'hover:shadow-lg hover:shadow-indigo-500/10',
+                        'hover:translate-x-1',
+                        'border border-transparent hover:border-white/10',
+                        menu.active && [
+                          'bg-gradient-to-r from-indigo-500/20 via-cyan-500/15 to-emerald-500/10',
+                          'shadow-lg shadow-indigo-500/20',
+                          'border-l-2 border-l-indigo-400',
+                        ],
                       ])}
                       onClick={(event) => {
                         event.preventDefault();
                         linkTo(menu, navigate);
                       }}
                     >
-                      <Lucide
-                        icon={menu.icon || 'Circle'}
-                        className="menu-icon w-5 h-5 text-gray-800"
-                      />
-                      {isSidebarExpanded && (
-                        <span className="menu-title ml-3">{menu.title}</span>
+                      <div className={clsx([
+                        'menu-icon-wrapper flex items-center justify-center w-10 h-10 rounded-lg',
+                        'transition-all duration-200',
+                        'bg-gradient-to-br from-white/5 to-transparent',
+                        menu.active && 'from-indigo-500/30 to-cyan-500/20 shadow-lg shadow-indigo-500/20',
+                        'group-hover/item:from-white/10 group-hover/item:to-white/5',
+                        'group-hover/item:shadow-md group-hover/item:shadow-white/5',
+                      ])}>
+                        <Lucide
+                          icon={menu.icon || 'Circle'}
+                          className={clsx([
+                            'w-5 h-5 transition-all duration-200',
+                            menu.active ? 'text-indigo-300' : 'text-white/70',
+                            'group-hover/item:text-white group-hover/item:scale-110',
+                          ])}
+                        />
+                      </div>
+                      
+                      {/* Menu title with animation */}
+                      <div className={clsx([
+                        'flex-1 ml-3 overflow-hidden transition-all duration-300',
+                        isSidebarExpanded ? 'opacity-100 max-w-full' : 'opacity-0 max-w-0',
+                      ])}>
+                        <span className={clsx([
+                          'menu-title text-sm font-medium whitespace-nowrap',
+                          menu.active ? 'text-white' : 'text-white/80',
+                          'group-hover/item:text-white',
+                        ])}>
+                          {menu.title}
+                        </span>
+                      </div>
+
+                      {/* Arrow for submenu */}
+                      {menu.subMenu && isSidebarExpanded && (
+                        <Lucide
+                          icon={menu.activeDropdown ? 'ChevronDown' : 'ChevronRight'}
+                          className={clsx([
+                            'w-4 h-4 text-white/50 transition-transform duration-200',
+                            menu.activeDropdown && 'rotate-0',
+                          ])}
+                        />
                       )}
                     </a>
-                    {menu.subMenu && menu.activeDropdown && (
-                      <ul className="submenu-list pl-6 mt-2 space-y-1">
+
+                    {/* Tooltip for collapsed state */}
+                    {!isSidebarExpanded && (
+                      <div className={clsx([
+                        'absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-2',
+                        'bg-slate-800 text-white text-sm rounded-lg shadow-xl',
+                        'opacity-0 invisible group-hover/item:opacity-100 group-hover/item:visible',
+                        'transition-all duration-200 whitespace-nowrap z-50',
+                        'border border-white/10',
+                      ])}>
+                        {menu.title}
+                        {/* Tooltip arrow */}
+                        <div className="absolute left-0 top-1/2 -translate-x-1 -translate-y-1/2 w-2 h-2 bg-slate-800 rotate-45 border-l border-b border-white/10" />
+                      </div>
+                    )}
+
+                    {/* Submenu */}
+                    {menu.subMenu && menu.activeDropdown && isSidebarExpanded && (
+                      <ul className={clsx([
+                        'submenu-list ml-4 mt-1 space-y-1 pl-4',
+                        'border-l border-white/10',
+                        'animate-in slide-in-from-top-2 duration-200',
+                      ])}>
                         {menu.subMenu.map((subMenu, subIndex) => (
-                          <li key={subIndex}>
+                          <li key={subIndex} className="group/subitem">
                             <a
                               href=""
                               className={clsx([
-                                'submenu-item flex items-center px-4 py-2 rounded-md hover:bg-gray-200',
-                                subMenu.active && 'bg-gray-200',
+                                'submenu-item flex items-center px-3 py-2 rounded-lg transition-all duration-200',
+                                'hover:bg-white/5 hover:translate-x-1',
+                                subMenu.active && 'bg-white/10 text-white',
+                                !subMenu.active && 'text-white/60',
                               ])}
                               onClick={(event) => {
                                 event.preventDefault();
                                 linkTo(subMenu, navigate);
                               }}
                             >
-                              <Lucide
-                                icon={subMenu.icon || 'Circle'}
-                                className="submenu-icon w-4 h-4 text-gray-800"
-                              />
-                              {isSidebarExpanded && (
-                                <span className="submenu-title ml-3">
-                                  {subMenu.title}
-                                </span>
-                              )}
+                              <div className={clsx([
+                                'w-1.5 h-1.5 rounded-full mr-3 transition-all duration-200',
+                                subMenu.active ? 'bg-indigo-400 shadow-lg shadow-indigo-400/50' : 'bg-white/30',
+                                'group-hover/subitem:bg-indigo-400',
+                              ])} />
+                              <span className={clsx([
+                                'submenu-title text-sm transition-colors duration-200',
+                                'group-hover/subitem:text-white',
+                              ])}>
+                                {subMenu.title}
+                              </span>
                             </a>
                           </li>
                         ))}
@@ -680,10 +932,13 @@ function Main() {
               )}
             </ul>
           </div>
+
+          {/* Sidebar footer decoration */}
+          <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-slate-900/80 to-transparent pointer-events-none" />
         </div>
         <div
           className={clsx([
-            'transition-[margin,width] duration-100 xl:pl-3.5 pt-[54px] pb-16 relative z-10 group mode',
+            'transition-[margin,width] duration-300 xl:pl-3.5 pt-[54px] pb-16 relative z-10 group mode',
             { 'xl:ml-[275px]': !compactMenu || isSidebarFixed },
             { 'xl:ml-[91px]': compactMenu && !isSidebarFixed },
             { 'mode--light': !topBarActive },

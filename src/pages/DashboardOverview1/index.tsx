@@ -394,50 +394,45 @@ function Main() {
     getFilterDateRange(vendorSelectedFilterDates);
   return (
     <>
-      <div className="flex flex-col h-10 w-full px-2 sm:px-4">
-        <div className="flex flex-col md:h-10 gap-y-3 md:items-center md:flex-row">
-          <div className="text-lg sm:text-xl font-medium group-[.mode--light]:text-white">
-            DashBoard
+      <div className="relative min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 px-3 sm:px-6 lg:px-10 py-6">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.14),transparent_28%),radial-gradient(circle_at_80%_0%,rgba(14,165,233,0.12),transparent_24%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.12),transparent_22%)]"></div>
+        <div className="relative z-10 space-y-6">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-4">
+            <div>
+              <div className="text-xl sm:text-2xl font-semibold text-white drop-shadow">
+                Dashboard
+              </div>
+              <div className="text-sm text-white/60">Vendor overview & stats</div>
+            </div>
           </div>
-        </div>
-      </div>
-      <div className="grid grid-cols-12 gap-y-6 gap-x-4 lg:gap-y-10 lg:gap-x-6 mt-2">
-        <div className="col-span-12">
-          <div className="relative flex flex-col col-span-12 lg:col-span-12 xl:col-span-12 gap-y-7">
-            <div className="flex flex-col p-3 sm:p-5 box box--stacked">
-                      <VendorBoard
-                        calculationData={calculationData}
-                        vendorPayinChartData={chartData.vendorPayinData}
-                        ChargebackChartData={chartData.vendorChargebackData}
-                        ReverseChartData={chartData.vendorReverseData}
-                        vendorPayoutChartData={chartData.vendorPayoutData}
-                        payInCommissionData={
-                          chartData.vendorPayinCommissionData
-                        }
-                        payoutCommissionData={
-                          chartData.vendorPayoutCommissionData
-                        }
-                        vendorSettlementChartData={
-                          chartData.vendorSettlementData
-                        }
-                        settlementCommissionData={
-                          chartData.vendorSettlementCommissionData
-                        } // Add this line
-                        totalVendorCommissionData={
-                          chartData.totalVendorCommissionData
-                        }
-                        vendorSelectedFilterDates={vendorSelectedFilterDates}
-                        setVendorSelectedFilterDates={
-                          setVendorSelectedFilterDates
-                        }
-                        vendorSelectedFilter={vendorSelectedFilter}
-                        setVendorSelectedFilter={setVendorSelectedFilter}
-                        vendorCodes={vendorCodes}
-                        handleFilterData={handleFilterData}
-                        startDate={vendorStartDate}
-                        endDate={vendorEndDate}
-                        isLoading={isLoading}
-                      />
+
+          <div className="grid grid-cols-12 gap-y-6 gap-x-4 lg:gap-y-10 lg:gap-x-6">
+            <div className="col-span-12">
+              <div className="relative rounded-3xl bg-white/5 border border-white/10 shadow-2xl p-3 sm:p-5">
+                <VendorBoard
+                  calculationData={calculationData}
+                  vendorPayinChartData={chartData.vendorPayinData}
+                  ChargebackChartData={chartData.vendorChargebackData}
+                  ReverseChartData={chartData.vendorReverseData}
+                  vendorPayoutChartData={chartData.vendorPayoutData}
+                  payInCommissionData={chartData.vendorPayinCommissionData}
+                  payoutCommissionData={chartData.vendorPayoutCommissionData}
+                  vendorSettlementChartData={chartData.vendorSettlementData}
+                  settlementCommissionData={
+                    chartData.vendorSettlementCommissionData
+                  } // Add this line
+                  totalVendorCommissionData={chartData.totalVendorCommissionData}
+                  vendorSelectedFilterDates={vendorSelectedFilterDates}
+                  setVendorSelectedFilterDates={setVendorSelectedFilterDates}
+                  vendorSelectedFilter={vendorSelectedFilter}
+                  setVendorSelectedFilter={setVendorSelectedFilter}
+                  vendorCodes={vendorCodes}
+                  handleFilterData={handleFilterData}
+                  startDate={vendorStartDate}
+                  endDate={vendorEndDate}
+                  isLoading={isLoading}
+                />
+              </div>
             </div>
           </div>
         </div>

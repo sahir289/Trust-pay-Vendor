@@ -33,7 +33,7 @@ import {
 } from '@/redux-toolkit/slices/common/params/paramsSlice';
 // import { getCount } from '@/redux-toolkit/slices/common/apis/commonAPI';
 import { getParentTabs } from '@/redux-toolkit/slices/common/tabs/tabSelectors';
-import { setParentTab } from '@/redux-toolkit/slices/common/tabs/tabSlice';
+// import { setParentTab } from '@/redux-toolkit/slices/common/tabs/tabSlice';
 import { verifyPassword } from '@/redux-toolkit/slices/auth/authAPI';
 import { Menu } from '@/components/Base/Headless';
 import Button from '@/components/Base/Button';
@@ -247,17 +247,6 @@ const BeneficiaryAccounts: React.FC = () => {
     pagination?.limit,
     tabRole,
   ]);
-
-  // const fetchCount = async (role: string = tabRole) => {
-  //   const getCountData = await getCount('BeneficiaryAccounts', '', {
-  //     beneficiary_role: role,
-  //   });
-  //   dispatch(getBeneficiaryCount(getCountData.count));
-  // };
-
-  // useEffect(() => {
-  //   fetchCount();
-  // }, [dispatch]);
 
   const handleConfirmDelete = async () => {
     if (selectedBeneficiary) {
@@ -586,24 +575,19 @@ const BeneficiaryAccounts: React.FC = () => {
     }
   };
 
-  const beneficiaryAccounts = async (index: number) => {
-    const newMethod = index === 0 ? Role.MERCHANT : Role.VENDOR;
+  // const beneficiaryAccounts = async (index: number) => {
+  //   const newMethod = index === 0 ? Role.MERCHANT : Role.VENDOR;
 
-    // Reset pagination
-    dispatch(setPagination({ page: 1, limit: pagination?.limit || 10 }));
+  //   // Reset pagination
+  //   dispatch(setPagination({ page: 1, limit: pagination?.limit || 10 }));
 
-    // Update Redux and local state
-    dispatch(setParentTab(index));
-    setTabRole(newMethod);
-    setSearchQuery('');
-    setDebouncedSearchQuery('')
+  //   // Update Redux and local state
+  //   dispatch(setParentTab(index));
+  //   setTabRole(newMethod);
+  //   setSearchQuery('');
+  //   setDebouncedSearchQuery('')
 
-    // Trigger refresh
-    // dispatch(setRefreshBeneficiaryAccounts(true));
-
-    // Await fetchCount
-    // await fetchCount(newMethod);
-  };
+  // };
 
   useEffect(() => {
     if (role === Role.ADMIN) {
@@ -661,17 +645,36 @@ const BeneficiaryAccounts: React.FC = () => {
   beneficiaryAccountsData = allbeneficiaryAccounts?.beneficiaryAccount;
 
   return (
-    <div className="flex flex-col p-5 ">
-      <div className="col-span-12">
-        <div className="flex flex-col  md:h-10 gap-y-3 md:items-center md:flex-row">
-          <div className="text-base font-medium group-[.mode--light]:text-white">
-            Beneficiary Accounts
+    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4 sm:p-6 lg:p-8 shadow-2xl border border-white/10 min-h-screen">
+      {/* Background gradient overlay */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.15),transparent_30%),radial-gradient(circle_at_85%_10%,rgba(14,165,233,0.12),transparent_28%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.12),transparent_24%)]"></div>
+
+      <div className="relative z-10">
+        {/* Header Section */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 border rounded-2xl border-white/20 bg-white/10 shrink-0">
+              <Lucide
+                icon="Wallet"
+                className="w-5 h-5 sm:w-6 sm:h-6 text-white"
+              />
+            </div>
+            <div>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold text-white">
+                Beneficiary Accounts
+              </h1>
+              <p className="text-white/60 text-sm hidden sm:block">
+                Manage your beneficiary accounts
+              </p>
+            </div>
           </div>
-          <div className="flex flex-col sm:flex-row gap-x-3 gap-y-2 md:ml-auto">
+
+          <div className="flex flex-col sm:flex-row gap-x-3 gap-y-2">
             <Modal
               handleModal={beneficiaryModal}
               forOpen={newUserModal}
               buttonTitle={`Add Beneficiary`}
+              // className="px-5 py-3 rounded-xl bg-gradient-to-r from-theme-1 via-theme-2 to-emerald-500 text-white font-semibold shadow-lg shadow-theme-2/30 hover:shadow-theme-2/50 transition-all duration-200 flex items-center gap-2"
             >
               <DynamicForm
                 sections={
@@ -718,151 +721,174 @@ const BeneficiaryAccounts: React.FC = () => {
                 isLoading={isLoading}
               />
             </Modal>
-            <Modal handleModal={handleCancelDelete} forOpen={deleteModal}>
-              <ModalContent
-                handleCancelDelete={handleCancelDelete}
-                handleConfirmDelete={handleConfirmDelete}
-              >
-                Are you sure you want to delete this beneficiary?
-              </ModalContent>
-            </Modal>
-            <Modal
-              handleModal={() => setVerification(false)}
-              forOpen={verification}
-            >
-              <DynamicForm
-                sections={VerificationformFields(showPassword)}
-                onSubmit={handleVerification}
-                defaultValues={formData || {}}
-                isEditMode={formData ? true : false}
-                handleCancel={() => setVerification(false)}
-                isLoading={isLoading}
-              />
-              {errorMessage && (
-                <p className="px-4 text-red-500 text-md mt-2">{errorMessage}</p>
-              )}
-            </Modal>
-            <Modal
-              handleModal={() => setVerificationDelete(false)}
-              forOpen={verificationDelete}
-            >
-              <DynamicForm
-                sections={VerificationformFields(showPassword)}
-                onSubmit={handleVerificationDelete}
-                defaultValues={formData || {}}
-                isEditMode={true}
-                handleCancel={() => setVerificationDelete(false)}
-                isLoading={isLoading}
-              />
-              {errorMessage && (
-                <p className="px-4 text-red-500 text-md mt-2">{errorMessage}</p>
-              )}
-            </Modal>
           </div>
         </div>
-        <div className="flex flex-col p-5 box box--stacked mt-4">
-          <div className="flex flex-col gap-8 mt-3.5 rounded-lg">
-            <div className="flex flex-col ">
-              <Tab.Group
-                selectedIndex={parentTab}
-                onChange={beneficiaryAccounts}
-              >
-                <Tab.List className="flex border-b-0 bg-transparent relative">
-                  {role && [Role.ADMIN, Role.MERCHANT].includes(role) && (
-                    <Tab className="relative flex-1">
-                      {({ selected }) => (
-                        <Tab.Button className={`w-full py-2 flex items-center justify-center transition-all duration-200 relative ${
-                          selected
-                            ? 'bg-white dark:bg-darkmode-700 text-slate-900 dark:text-white border-t-4 border-l-4 border-r-4 border-gray-100 dark:border-darkmode-400 rounded-tl-xl rounded-tr-xl shadow-sm'
-                            : 'bg-slate-50 dark:bg-darkmode-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-darkmode-700'
-                        }`}
-                        style={selected ? {
-                          position: 'relative',
-                          zIndex: 10
-                        } : {}}>
-                          <Lucide icon="CreditCard" className="w-5 h-5 mr-2" />
-                          Merchant
-                        </Tab.Button>
+
+        {/* Modals */}
+        <Modal handleModal={handleCancelDelete} forOpen={deleteModal}>
+          <ModalContent
+            handleCancelDelete={handleCancelDelete}
+            handleConfirmDelete={handleConfirmDelete}
+          >
+            Are you sure you want to delete this beneficiary?
+          </ModalContent>
+        </Modal>
+        <Modal
+          handleModal={() => setVerification(false)}
+          forOpen={verification}
+        >
+          <DynamicForm
+            sections={VerificationformFields(showPassword)}
+            onSubmit={handleVerification}
+            defaultValues={formData || {}}
+            isEditMode={formData ? true : false}
+            handleCancel={() => setVerification(false)}
+            isLoading={isLoading}
+          />
+          {errorMessage && (
+            <p className="px-4 text-red-500 text-md mt-2">{errorMessage}</p>
+          )}
+        </Modal>
+        <Modal
+          handleModal={() => setVerificationDelete(false)}
+          forOpen={verificationDelete}
+        >
+          <DynamicForm
+            sections={VerificationformFields(showPassword)}
+            onSubmit={handleVerificationDelete}
+            defaultValues={formData || {}}
+            isEditMode={true}
+            handleCancel={() => setVerificationDelete(false)}
+            isLoading={isLoading}
+          />
+          {errorMessage && (
+            <p className="px-4 text-red-500 text-md mt-2">{errorMessage}</p>
+          )}
+        </Modal>
+
+        {/* Main Content Card */}
+        <div className="rounded-2xl bg-white/10 border border-white/15 shadow-2xl backdrop-blur-xl overflow-hidden">
+            {/* Tab List - Only show for Admin */}
+            {role === Role.ADMIN && (
+              <Tab.List className="flex border-b border-white/10 bg-white/5">
+                <Tab className="relative flex-1">
+                  {({ selected }) => (
+                    <Tab.Button
+                      className={`w-full py-3 sm:py-4 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base md:text-lg font-medium transition-all duration-300 relative ${
+                        selected
+                          ? 'text-white bg-gradient-to-r from-theme-1/20 via-theme-2/20 to-emerald-500/20 border-b-2 border-theme-1'
+                          : 'text-white/60 hover:text-white hover:bg-white/5'
+                      }`}
+                      as="button"
+                    >
+                      <div className={`flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl ${
+                        selected 
+                          ? 'bg-gradient-to-r from-theme-1 to-theme-2 shadow-lg shadow-theme-1/30' 
+                          : 'bg-white/10'
+                      }`}>
+                        <Lucide 
+                          icon="Building2" 
+                          className={`w-4 h-4 sm:w-5 sm:h-5 ${selected ? 'text-white' : 'text-white/70'}`} 
+                        />
+                      </div>
+                      <span>Merchant</span>
+                      {selected && (
+                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-theme-1 via-theme-2 to-emerald-500"></div>
                       )}
-                    </Tab>
+                    </Tab.Button>
                   )}
-                  {role && [Role.ADMIN, Role.VENDOR, Role.SUB_VENDOR].includes(role) && (
-                    <Tab className="relative flex-1">
-                      {({ selected }) => (
-                        <Tab.Button className={`w-full py-2 flex items-center justify-center transition-all duration-200 relative ${
-                          selected
-                            ? 'bg-white dark:bg-darkmode-700 text-slate-900 dark:text-white border-t-4 border-l-4 border-r-4 border-gray-100 dark:border-darkmode-400 rounded-tl-xl rounded-tr-xl shadow-sm'
-                            : 'bg-slate-50 dark:bg-darkmode-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-darkmode-700'
-                        }`}
-                        style={selected ? {
-                          position: 'relative',
-                          zIndex: 10
-                        } : {}}>
-                          <Lucide icon="Store" className="w-5 h-5 mr-2" />
-                          Vendor
-                        </Tab.Button>
+                </Tab>
+                <Tab className="relative flex-1">
+                  {({ selected }) => (
+                    <Tab.Button
+                      className={`w-full py-3 sm:py-4 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base md:text-lg font-medium transition-all duration-300 relative ${
+                        selected
+                          ? 'text-white bg-gradient-to-r from-theme-1/20 via-theme-2/20 to-emerald-500/20 border-b-2 border-theme-1'
+                          : 'text-white/60 hover:text-white hover:bg-white/5'
+                      }`}
+                      as="button"
+                    >
+                      <div className={`flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl ${
+                        selected 
+                          ? 'bg-gradient-to-r from-theme-1 to-theme-2 shadow-lg shadow-theme-1/30' 
+                          : 'bg-white/10'
+                      }`}>
+                        <Lucide 
+                          icon="Users" 
+                          className={`w-4 h-4 sm:w-5 sm:h-5 ${selected ? 'text-white' : 'text-white/70'}`} 
+                        />
+                      </div>
+                      <span>Vendor</span>
+                      {selected && (
+                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-theme-1 via-theme-2 to-emerald-500"></div>
                       )}
-                    </Tab>
+                    </Tab.Button>
                   )}
-                </Tab.List>
-                <div className="flex flex-col border-l border-r border-t-4 border-t-gray-100 dark:border-t-darkmode-400 border-gray-100 dark:border-darkmode-400 p-5 sm:items-center sm:flex-row gap-y-2">
-                  <div>
-                    <div className="relative">
+                </Tab>
+              </Tab.List>
+            )}
+
+            {/* Search and Actions Bar */}
+            <div className="p-4 sm:p-6">
+              <div className="flex flex-col sm:items-center sm:flex-row gap-y-3 mb-6">
+                <div>
+                  <div className="relative">
+                    <Lucide
+                      icon="Search"
+                      className="absolute inset-y-0 left-0 z-10 w-4 h-4 my-auto ml-3 stroke-[1.3] text-white/50"
+                    />
+                    <FormInput
+                      type="text"
+                      placeholder="Search Beneficiary..."
+                      className="pl-9 sm:w-64 rounded-xl bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-theme-1/50 focus:ring-theme-1/30"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                    {searchQuery && (
                       <Lucide
-                        icon="Search"
-                        className="absolute inset-y-0 left-0 z-10 w-4 h-4 my-auto ml-3 stroke-[1.3] text-slate-500"
+                        icon="X"
+                        className="absolute inset-y-0 right-0 z-10 w-4 h-4 my-auto mr-3 stroke-[1.3] text-white/50 cursor-pointer hover:text-white"
+                        onClick={() => setSearchQuery('')}
                       />
-                      <FormInput
-                        type="text"
-                        placeholder="Search Beneficiary..."
-                        className="pl-9 sm:w-64 rounded-[0.5rem]"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                      />
-                      {searchQuery && (
-                        <Lucide
-                          icon="X"
-                          className="absolute inset-y-0 right-0 z-10 w-4 h-4 my-auto mr-3 stroke-[1.3] text-slate-500 cursor-pointer"
-                          onClick={() => setSearchQuery('')}
-                        />
-                      )}
-                    </div>
-                  </div>
-                  <div className="flex flex-col sm:flex-row gap-x-3 gap-y-2 sm:ml-auto">
-                    <Menu>
-                      <Menu.Button
-                        as={Button}
-                        variant="outline-secondary"
-                        className="w-full sm:w-auto"
-                        onClick={handleRefresh}
-                      >
-                        <Lucide
-                          icon="RefreshCw"
-                          className="stroke-[1.3] w-4 h-4 mr-2"
-                        />
-                        Refresh
-                      </Menu.Button>
-                    </Menu>
-                    <Menu>
-                      <Menu.Button
-                        as={Button}
-                        variant="outline-secondary"
-                        className="w-full sm:w-auto"
-                        onClick={handleReset}
-                      >
-                        <Lucide
-                          icon="RotateCcw"
-                          className="stroke-[1.3] w-4 h-4 mr-2"
-                        />
-                        Reset
-                      </Menu.Button>
-                    </Menu>
+                    )}
                   </div>
                 </div>
-              </Tab.Group>
-              <div className="overflow-auto border-b border-l border-r xl:overflow-visible">
+                <div className="flex flex-col sm:flex-row gap-x-3 gap-y-2 sm:ml-auto">
+                  <Menu>
+                    <Menu.Button
+                      as={Button}
+                      variant="outline-secondary"
+                      className="w-full sm:w-auto bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30"
+                      onClick={handleRefresh}
+                    >
+                      <Lucide
+                        icon="RefreshCw"
+                        className="stroke-[1.3] w-4 h-4 mr-2"
+                      />
+                      Refresh
+                    </Menu.Button>
+                  </Menu>
+                  <Menu>
+                    <Menu.Button
+                      as={Button}
+                      variant="outline-secondary"
+                      className="w-full sm:w-auto bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30"
+                      onClick={handleReset}
+                    >
+                      <Lucide
+                        icon="RotateCcw"
+                        className="stroke-[1.3] w-4 h-4 mr-2"
+                      />
+                      Reset
+                    </Menu.Button>
+                  </Menu>
+                </div>
+              </div>
+
+              {/* Table Section */}
+              <div className="overflow-auto xl:overflow-visible">
                 {allbeneficiaryAccounts.loading ? (
-                  <div className="flex justify-center items-center w-full h-screen">
+                  <div className="flex justify-center items-center w-full h-96">
                     <LoadingIcon
                       icon="ball-triangle"
                       className="w-[5%] h-auto"
@@ -870,22 +896,22 @@ const BeneficiaryAccounts: React.FC = () => {
                   </div>
                 ) : (
                   <CommonTable
-                  columns={
-                    role &&
-                    [
-                      Role.MERCHANT,
-                      Role.MERCHANT_ADMIN,
-                      Role.SUB_MERCHANT,
-                      Role.MERCHANT_OPERATIONS,
-                    ].includes(role)
-                      ? Columns.BeneficiaryAccounts_Merchant
-                      : role &&
-                        [Role.VENDOR, Role.SUB_VENDOR, Role.VENDOR_OPERATIONS].includes(role)
-                      ? Columns.BeneficiaryAccounts_Vendor
-                      : parentTab === 0
-                      ? Columns.BeneficiaryAccounts_Merchant_Admin
-                      : Columns.BeneficiaryAccounts_Vendor_Admin
-                  }                
+                    columns={
+                      role &&
+                      [
+                        Role.MERCHANT,
+                        Role.MERCHANT_ADMIN,
+                        Role.SUB_MERCHANT,
+                        Role.MERCHANT_OPERATIONS,
+                      ].includes(role)
+                        ? Columns.BeneficiaryAccounts_Merchant
+                        : role &&
+                          [Role.VENDOR, Role.SUB_VENDOR, Role.VENDOR_OPERATIONS].includes(role)
+                        ? Columns.BeneficiaryAccounts_Vendor
+                        : parentTab === 0
+                        ? Columns.BeneficiaryAccounts_Merchant_Admin
+                        : Columns.BeneficiaryAccounts_Vendor_Admin
+                    }
                     data={{
                       rows: beneficiaryAccountsData,
                       totalCount: allbeneficiaryAccounts.count,
@@ -905,7 +931,7 @@ const BeneficiaryAccounts: React.FC = () => {
                         onMouseEnter?: () => void;
                         hover?: boolean;
                       }> = [];
-                  
+
                       items.push({
                         label: 'Edit',
                         icon: 'Pencil',
@@ -929,7 +955,6 @@ const BeneficiaryAccounts: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
     </div>
   );
 };
