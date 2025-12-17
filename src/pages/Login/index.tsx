@@ -502,7 +502,7 @@ function Main() {
 
   return (
     <>
-      <div className="min-h-screen w-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
+      <div className="min-h-screen w-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden  flex items-center justify-center">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.2),transparent_25%),radial-gradient(circle_at_80%_0%,rgba(14,165,233,0.18),transparent_22%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.16),transparent_20%)]"></div>
         <div className="absolute inset-0 backdrop-blur-[2px]"></div>
         <div className="relative z-10 container mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 py-10 lg:py-16">
