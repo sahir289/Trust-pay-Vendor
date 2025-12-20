@@ -930,19 +930,19 @@ const AddDataHistory: React.FC<AddDataHistoryProps> = ({ selectedIndex }) => {
               <div className="relative w-full sm:w-auto sm:flex-shrink-0">
                 <Lucide
                   icon="Search"
-                  className="absolute inset-y-0 left-0 z-10 w-4 h-4 my-auto ml-3 stroke-[1.3] text-white/50"
+                  className="absolute inset-y-0 left-0 z-10 w-4 h-4 my-auto ml-3 stroke-[1.3] text-slate-500 dark:text-white/50"
                 />
                 <FormInput
                   type="text"
                   placeholder="UTR..."
-                  className="w-full pl-9 pr-9 sm:w-40 lg:w-48 rounded-xl bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-theme-1/50 focus:ring-theme-1/30 text-xs sm:text-sm"
+                  className="w-full pl-9 pr-9 sm:w-40 lg:w-48 rounded-xl bg-slate-100 dark:bg-white/10 border-slate-300 dark:border-white/20 text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/50 focus:border-theme-1/50 focus:ring-theme-1/30 text-xs sm:text-sm"
                   value={utr}
                   onChange={(e) => setUtr(e.target.value)}
                 />
                 {utr && (
                   <Lucide
                     icon="X"
-                    className="absolute inset-y-0 right-0 z-10 w-4 h-4 my-auto mr-3 stroke-[1.3] text-white/50 cursor-pointer hover:text-white"
+                    className="absolute inset-y-0 right-0 z-10 w-4 h-4 my-auto mr-3 stroke-[1.3] text-slate-500 dark:text-white/50 cursor-pointer hover:text-slate-700 dark:hover:text-white"
                     onClick={() => {
                       setUtr('');
                       sessionStorage.setItem('searchInAddData', 'false');
@@ -953,19 +953,19 @@ const AddDataHistory: React.FC<AddDataHistoryProps> = ({ selectedIndex }) => {
               <div className="relative w-full sm:w-auto sm:flex-shrink-0">
                 <Lucide
                   icon="Search"
-                  className="absolute inset-y-0 left-0 z-10 w-4 h-4 my-auto ml-3 stroke-[1.3] text-white/50"
+                  className="absolute inset-y-0 left-0 z-10 w-4 h-4 my-auto ml-3 stroke-[1.3] text-slate-500 dark:text-white/50"
                 />
                 <FormInput
                   type="text"
                   placeholder="Bank Name..."
-                  className="w-full pl-9 pr-9 sm:w-40 lg:w-48 rounded-xl bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-theme-1/50 focus:ring-theme-1/30 text-xs sm:text-sm"
+                  className="w-full pl-9 pr-9 sm:w-40 lg:w-48 rounded-xl bg-slate-100 dark:bg-white/10 border-slate-300 dark:border-white/20 text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/50 focus:border-theme-1/50 focus:ring-theme-1/30 text-xs sm:text-sm"
                   value={nickName}
                   onChange={(e) => setNickName(e.target.value)}
                 />
                 {nickName && (
                   <Lucide
                     icon="X"
-                    className="absolute inset-y-0 right-0 z-10 w-4 h-4 my-auto mr-3 stroke-[1.3] text-white/50 cursor-pointer hover:text-white"
+                    className="absolute inset-y-0 right-0 z-10 w-4 h-4 my-auto mr-3 stroke-[1.3] text-slate-500 dark:text-white/50 cursor-pointer hover:text-slate-700 dark:hover:text-white"
                     onClick={() => {
                       setNickName('');
                       sessionStorage.setItem('searchInAddData', 'false');
@@ -976,19 +976,19 @@ const AddDataHistory: React.FC<AddDataHistoryProps> = ({ selectedIndex }) => {
               <div className="relative w-full sm:w-auto sm:flex-shrink-0">
                 <Lucide
                   icon="Search"
-                  className="absolute inset-y-0 left-0 z-10 w-4 h-4 my-auto ml-3 stroke-[1.3] text-white/50"
+                  className="absolute inset-y-0 left-0 z-10 w-4 h-4 my-auto ml-3 stroke-[1.3] text-slate-500 dark:text-white/50"
                 />
                 <FormInput
                   type="text"
                   placeholder="Amount..."
-                  className="w-full pl-9 pr-9 sm:w-40 lg:w-48 rounded-xl bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-theme-1/50 focus:ring-theme-1/30 text-xs sm:text-sm"
+                  className="w-full pl-9 pr-9 sm:w-40 lg:w-48 rounded-xl bg-slate-100 dark:bg-white/10 border-slate-300 dark:border-white/20 text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/50 focus:border-theme-1/50 focus:ring-theme-1/30 text-xs sm:text-sm"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                 />
                 {amount && (
                   <Lucide
                     icon="X"
-                    className="absolute inset-y-0 right-0 z-10 w-4 h-4 my-auto mr-3 stroke-[1.3] text-white/50 cursor-pointer hover:text-white"
+                    className="absolute inset-y-0 right-0 z-10 w-4 h-4 my-auto mr-3 stroke-[1.3] text-slate-500 dark:text-white/50 cursor-pointer hover:text-slate-700 dark:hover:text-white"
                     onClick={() => {
                       setAmount('');
                       sessionStorage.setItem('searchInAddData', 'false');
@@ -1002,7 +1002,7 @@ const AddDataHistory: React.FC<AddDataHistoryProps> = ({ selectedIndex }) => {
                 <Menu.Button
                   as={Button}
                   variant="outline-secondary"
-                  className="w-full sm:w-auto bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30"
+                  className="w-full sm:w-auto bg-slate-100 dark:bg-white/10 border-slate-300 dark:border-white/20 text-slate-700 dark:text-white hover:bg-slate-200 dark:hover:bg-white/20 hover:border-slate-400 dark:hover:border-white/30"
                   onClick={handleRefresh}
                 >
                   <Lucide
@@ -1016,7 +1016,7 @@ const AddDataHistory: React.FC<AddDataHistoryProps> = ({ selectedIndex }) => {
                 <Menu.Button
                   as={Button}
                   variant="outline-secondary"
-                  className="w-full sm:w-auto bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30"
+                  className="w-full sm:w-auto bg-slate-100 dark:bg-white/10 border-slate-300 dark:border-white/20 text-slate-700 dark:text-white hover:bg-slate-200 dark:hover:bg-white/20 hover:border-slate-400 dark:hover:border-white/30"
                   onClick={handleReset}
                 >
                   <Lucide
@@ -1030,7 +1030,7 @@ const AddDataHistory: React.FC<AddDataHistoryProps> = ({ selectedIndex }) => {
                 <Menu.Button
                   as={Button}
                   variant="outline-secondary"
-                  className="w-full sm:w-auto bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30"
+                  className="w-full sm:w-auto bg-slate-100 dark:bg-white/10 border-slate-300 dark:border-white/20 text-slate-700 dark:text-white hover:bg-slate-200 dark:hover:bg-white/20 hover:border-slate-400 dark:hover:border-white/30"
                   onClick={() => setExportModalOpen(true)}
                 >
                   <Lucide
@@ -1046,7 +1046,7 @@ const AddDataHistory: React.FC<AddDataHistoryProps> = ({ selectedIndex }) => {
                     <Popover.Button
                       as={Button}
                       variant="outline-secondary"
-                      className="w-full sm:w-auto bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30"
+                      className="w-full sm:w-auto bg-slate-100 dark:bg-white/10 border-slate-300 dark:border-white/20 text-slate-700 dark:text-white hover:bg-slate-200 dark:hover:bg-white/20 hover:border-slate-400 dark:hover:border-white/30"
                       onClick={() => setCallBank(true)}
                     >
                       <Lucide
@@ -1204,49 +1204,49 @@ const AddDataHistory: React.FC<AddDataHistoryProps> = ({ selectedIndex }) => {
           </div>
 
           {/* Data Tabs - All Data / Updated Data */}
-          {role && ![Role.VENDOR, Role.VENDOR_OPERATIONS].includes(role) && (
+          {role && role !== Role.VENDOR && role !== Role.VENDOR_OPERATIONS && (
             <div className="mb-6">
               <Tab.Group
                 selectedIndex={activeDataTab}
                 onChange={setActiveDataTab}
               >
-                <Tab.List className="flex border-b border-white/10 bg-white/5 rounded-t-xl">
+                <Tab.List className="flex border-b border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 rounded-t-xl">
                   <Tab className="relative flex-1">
                     {({ selected }) => (
-                      <Tab.Button
+                      <button
+                        type="button"
                         className={`w-full py-3 flex items-center justify-center gap-2 text-sm font-medium transition-all duration-300 ${
                           selected
-                            ? 'text-white bg-gradient-to-r from-theme-1/20 to-theme-2/20'
-                            : 'text-white/60 hover:text-white hover:bg-white/5'
+                            ? 'text-slate-900 dark:text-white bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-cyan-500/20'
+                            : 'text-slate-500 dark:text-white/60 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5'
                         }`}
-                        as="button"
                         onClick={handleViewAllData}
                       >
                         <Lucide icon="Database" className="w-4 h-4" />
                         All Data
                         {selected && (
-                          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-theme-1 to-theme-2"></div>
+                          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500"></div>
                         )}
-                      </Tab.Button>
+                      </button>
                     )}
                   </Tab>
                   <Tab className="relative flex-1">
                     {({ selected }) => (
-                      <Tab.Button
+                      <button
+                        type="button"
                         className={`w-full py-3 flex items-center justify-center gap-2 text-sm font-medium transition-all duration-300 ${
                           selected
-                            ? 'text-white bg-gradient-to-r from-theme-1/20 to-theme-2/20'
-                            : 'text-white/60 hover:text-white hover:bg-white/5'
+                            ? 'text-slate-900 dark:text-white bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-cyan-500/20'
+                            : 'text-slate-500 dark:text-white/60 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5'
                         }`}
-                        as="button"
                         onClick={handleViewUpdatedData}
                       >
                         <Lucide icon="Clock" className="w-4 h-4" />
                         Updated Data
                         {selected && (
-                          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-theme-1 to-theme-2"></div>
+                          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500"></div>
                         )}
-                      </Tab.Button>
+                      </button>
                     )}
                   </Tab>
                 </Tab.List>

@@ -502,285 +502,270 @@ function Main() {
 
   return (
     <>
-      <div className="min-h-screen w-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden  flex items-center justify-center">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.2),transparent_25%),radial-gradient(circle_at_80%_0%,rgba(14,165,233,0.18),transparent_22%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.16),transparent_20%)]"></div>
+      <div className={`min-h-screen w-full relative overflow-hidden flex items-center justify-center ${
+        document.documentElement.classList.contains('dark')
+          ? 'bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900'
+          : 'bg-gradient-to-br from-slate-100 via-white to-slate-200'
+      }`}>
+        <div className={`absolute inset-0 ${
+          document.documentElement.classList.contains('dark')
+        ? 'bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.2),transparent_25%),radial-gradient(circle_at_80%_0%,rgba(14,165,233,0.18),transparent_22%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.16),transparent_20%)]'
+        : 'bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.1),transparent_25%),radial-gradient(circle_at_80%_0%,rgba(14,165,233,0.1),transparent_22%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.08),transparent_20%)]'
+        }`}></div>
         <div className="absolute inset-0 backdrop-blur-[2px]"></div>
         <div className="relative z-10 container mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 py-10 lg:py-16">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-            <div className="lg:col-span-6 flex flex-col gap-6 text-white">
-              <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/10 border border-white/20 backdrop-blur">
-                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-theme-1 to-theme-2 flex items-center justify-center text-xs font-semibold text-white">
-                  TP
-                </div>
-                <span className="text-sm tracking-wide">Trusted. Fast. Secure.</span>
-              </div>
-              <div className="space-y-4">
-                <h1 className="text-4xl sm:text-5xl font-semibold leading-tight drop-shadow">
-                  Elevate your payments with a fresh, modern workspace.
-                </h1>
-                <p className="text-lg text-white/70 max-w-xl leading-relaxed">
-                  A clean, distraction-free login crafted for busy operators and admins. Stay focused on approvals, settlements, and vendor flows without losing speed.
-                </p>
-              </div>
-              <div className="grid grid-cols-2 gap-4 max-w-lg">
-                <div className="p-4 rounded-2xl border border-white/10 bg-white/5 backdrop-blur">
-                  <div className="text-xl font-semibold">99.99%</div>
-                  <div className="text-sm text-white/70">Platform uptime</div>
-                </div>
-                <div className="p-4 rounded-2xl border border-white/10 bg-white/5 backdrop-blur">
-                  <div className="text-xl font-semibold">180k+</div>
-                  <div className="text-sm text-white/70">Active users</div>
-                </div>
-              </div>
+        <div className="lg:col-span-6 lg:col-start-4">
+          <div className="relative max-w-md mx-auto">
+          <div className="absolute -inset-1 bg-gradient-to-r from-theme-1/70 via-theme-2/60 to-emerald-400/50 rounded-[1.5rem] blur-2xl opacity-70 animate-pulse"></div>
+          <div className="relative bg-white/90 dark:bg-darkmode-700/90 backdrop-blur-xl border border-white/30 dark:border-darkmode-400/50 shadow-2xl rounded-[1.4rem] p-8 sm:p-10">
+          <div className="flex items-center gap-3">
+          <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-cyan-500 flex items-center justify-center text-white font-semibold shadow-lg shadow-indigo-500/30">
+            TP
+          </div>
+          <div>
+            <div className="text-lg font-semibold text-slate-900 dark:text-slate-50">
+          Trust Pay Vendor
             </div>
-
-            <div className="lg:col-span-6">
-              <div className="relative">
-                <div className="absolute -inset-1 bg-gradient-to-r from-theme-1/70 via-theme-2/60 to-emerald-400/50 rounded-[1.5rem] blur-2xl opacity-70 animate-pulse"></div>
-                <div className="relative bg-white/90 dark:bg-darkmode-700/90 backdrop-blur-xl border border-white/30 dark:border-darkmode-400/50 shadow-2xl rounded-[1.4rem] p-8 sm:p-10">
-                  <div className="flex items-center gap-3">
-                    <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-theme-1 to-theme-2 flex items-center justify-center text-white font-semibold">
-                      TP
-                    </div>
-                    <div>
-                      <div className="text-lg font-semibold text-slate-900 dark:text-slate-50">
-                        Trust Pay Vendor
-                      </div>
-                      <div className="text-sm text-slate-500 dark:text-slate-300">
-                        Secure Sign In
-                      </div>
-                    </div>
-                    <div className="ml-auto">
-                      <ThemeSwitcher />
-                    </div>
-                  </div>
-
-                  <div className="mt-8">
-                    {showForgotPassword ? (
-                      <ForgotPassword
-                        onBack={() => setShowForgotPassword(false)}
-                        onSuccess={() => {
-                          setShowForgotPassword(false);
-                        }}
-                      />
-                    ) : (
-                      <>
-                        <div className="text-2xl font-semibold text-slate-900 dark:text-slate-50">
-                          {isLoginFirst ? 'Update your password' : 'Welcome back'}
-                        </div>
-                        <div className="text-sm text-slate-500 dark:text-slate-300 mt-1">
-                          {isLoginFirst
-                            ? 'Create a strong password to continue.'
-                            : 'Access your dashboard to manage payouts and vendors.'}
-                        </div>
-
-                        <form onSubmit={handleForm} className="mt-6 space-y-4">
-                          {!isLoginFirst && (
-                            <>
-                              <div className="space-y-2">
-                                <FormLabel className="text-sm text-slate-600 dark:text-slate-200">
-                                  UserName<span className="text-danger">*</span>
-                                </FormLabel>
-                                <FormInput
-                                  type="text"
-                                  className="block w-full px-4 py-3.5 rounded-xl border border-slate-200 dark:border-darkmode-400 focus:border-theme-1/70 focus:ring-2 focus:ring-theme-1/30 transition"
-                                  placeholder="Enter your username"
-                                  value={loginObj.username}
-                                  onChange={(e) => {
-                                    getUserRole(e.target.value);
-                                    updateFormValue({
-                                      updateType: 'username',
-                                      value: e.target.value,
-                                    });
-                                  }}
-                                  required
-                                />
-                                {userRoleError && (
-                                  <div className="text-danger text-sm">{userRoleError}</div>
-                                )}
-                              </div>
-
-                              <div className="space-y-2">
-                                <FormLabel className="text-sm text-slate-600 dark:text-slate-200">
-                                  Password<span className="text-danger">*</span>
-                                </FormLabel>
-                                <div className="relative">
-                                  <FormInput
-                                    type={showPassword ? 'text' : 'password'}
-                                    className="block w-full px-4 py-3.5 rounded-xl border border-slate-200 dark:border-darkmode-400 focus:border-theme-1/70 focus:ring-2 focus:ring-theme-1/30 transition pr-12"
-                                    placeholder="************"
-                                    value={loginObj.password}
-                                    onChange={(e) =>
-                                      updateFormValue({
-                                        updateType: 'password',
-                                        value: e.target.value,
-                                      })
-                                    }
-                                    required
-                                  />
-                                  <div
-                                    className="absolute right-4 top-4 cursor-pointer text-slate-600"
-                                    onClick={togglePasswordVisibility}
-                                  >
-                                    {showPassword ? (
-                                      <Lucide className="stroke-[1]" icon="Eye" />
-                                    ) : (
-                                      <Lucide className="stroke-[1]" icon="EyeOff" />
-                                    )}
-                                  </div>
-                                </div>
-                              </div>
-
-                              {loginObj.isAdminLogin && (
-                                <div className="space-y-2">
-                                  <FormLabel className="text-sm text-slate-600 dark:text-slate-200">
-                                    Unique ID<span className="text-danger">*</span>
-                                  </FormLabel>
-                                  <FormInput
-                                    type="text"
-                                    className="block w-full px-4 py-3.5 rounded-xl border border-slate-200 dark:border-darkmode-400 focus:border-theme-1/70 focus:ring-2 focus:ring-theme-1/30 transition"
-                                    placeholder="Enter unique ID"
-                                    value={loginObj.uniqueId}
-                                    onChange={(e) =>
-                                      updateFormValue({
-                                        updateType: 'uniqueId',
-                                        value: e.target.value,
-                                      })
-                                    }
-                                    required
-                                  />
-                                </div>
-                              )}
-
-                              <div className="flex items-center text-xs text-slate-500 sm:text-sm gap-3">
-                                {loginObj.isAdminLogin && (
-                                  <div className="flex items-center gap-2">
-                                    <FormCheck.Input
-                                      id="remember-me"
-                                      type="checkbox"
-                                      className="border"
-                                      checked={loginObj.rememberMe}
-                                      onChange={(e) =>
-                                        updateFormValue({
-                                          updateType: 'rememberMe',
-                                          value: e.target.checked,
-                                        })
-                                      }
-                                    />
-                                    <label
-                                      className="cursor-pointer select-none"
-                                      htmlFor="remember-me"
-                                    >
-                                      Remember me
-                                    </label>
-                                  </div>
-                                )}
-                                <button
-                                  type="button"
-                                  onClick={() => setShowForgotPassword(true)}
-                                  className="text-primary hover:underline ml-auto"
-                                >
-                                  Forgot Password?
-                                </button>
-                              </div>
-                            </>
-                          )}
-
-                          {isLoginFirst && (
-                            <>
-                              <div className="space-y-2">
-                                <FormLabel className="text-sm text-slate-600 dark:text-slate-200">
-                                  New Password<span className="text-danger">*</span>
-                                </FormLabel>
-                                <div className="relative">
-                                  <FormInput
-                                    type={showPassword ? 'text' : 'password'}
-                                    className={`block w-full px-4 py-3.5 rounded-xl border ${
-                                      passwordError && passwords.newPassword
-                                        ? 'border-danger'
-                                        : 'border-slate-200 dark:border-darkmode-400'
-                                    } focus:border-theme-1/70 focus:ring-2 focus:ring-theme-1/30 transition pr-12`}
-                                    placeholder="Enter new password"
-                                    value={passwords.newPassword}
-                                    onChange={(e) =>
-                                      handlePasswordChange('newPassword', e.target.value)
-                                    }
-                                    required
-                                  />
-                                  <div
-                                    className="absolute right-4 top-4 cursor-pointer text-slate-600"
-                                    onClick={togglePasswordVisibility}
-                                  >
-                                    {showPassword ? (
-                                      <Lucide className="stroke-[1]" icon="Eye" />
-                                    ) : (
-                                      <Lucide className="stroke-[1]" icon="EyeOff" />
-                                    )}
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div className="space-y-2">
-                                <FormLabel className="text-sm text-slate-600 dark:text-slate-200">
-                                  Confirm New Password<span className="text-danger">*</span>
-                                </FormLabel>
-                                <div className="relative">
-                                  <FormInput
-                                    type={showPassword ? 'text' : 'password'}
-                                    className={`block w-full px-4 py-3.5 rounded-xl border ${
-                                      passwordError && passwords.confirmPassword
-                                        ? 'border-danger'
-                                        : 'border-slate-200 dark:border-darkmode-400'
-                                    } focus:border-theme-1/70 focus:ring-2 focus:ring-theme-1/30 transition pr-12`}
-                                    placeholder="Confirm new password"
-                                    value={passwords.confirmPassword}
-                                    onChange={(e) =>
-                                      handlePasswordChange('confirmPassword', e.target.value)
-                                    }
-                                    required
-                                  />
-                                  <div
-                                    className="absolute right-4 top-4 cursor-pointer text-slate-600"
-                                    onClick={togglePasswordVisibility}
-                                  >
-                                    {showPassword ? (
-                                      <Lucide className="stroke-[1]" icon="Eye" />
-                                    ) : (
-                                      <Lucide className="stroke-[1]" icon="EyeOff" />
-                                    )}
-                                  </div>
-                                </div>
-                              </div>
-                              {passwordError && (
-                                <div className="text-danger text-sm">{passwordError}</div>
-                              )}
-                            </>
-                          )}
-
-                          <div className="pt-2">
-                            <Button
-                              variant="primary"
-                              rounded
-                              disabled={userLogin.loading || isButtonDisabled}
-                              className="w-full py-3.5 font-semibold bg-gradient-to-r from-theme-1 via-theme-2 to-emerald-500 text-white shadow-lg shadow-theme-2/30 hover:shadow-theme-2/50 transition"
-                            >
-                              {userLogin.loading
-                                ? 'Loading...'
-                                : isLoginFirst
-                                ? 'Update Password'
-                                : 'Log In'}
-                            </Button>
-                          </div>
-                        </form>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
+            <div className="text-sm text-slate-500 dark:text-slate-300">
+          Secure Sign In
             </div>
           </div>
+          <div className="ml-auto">
+            <ThemeSwitcher />
+          </div>
+          </div>
+
+          <div className="mt-8">
+          {showForgotPassword ? (
+            <ForgotPassword
+          onBack={() => setShowForgotPassword(false)}
+          onSuccess={() => {
+            setShowForgotPassword(false);
+          }}
+            />
+          ) : (
+            <>
+          <div className="text-2xl font-semibold text-slate-900 dark:text-slate-50">
+            {isLoginFirst ? 'Update your password' : 'Welcome back'}
+          </div>
+          <div className="text-sm text-slate-500 dark:text-slate-300 mt-1">
+            {isLoginFirst
+            ? 'Create a strong password to continue.'
+            : 'Access your dashboard to manage payouts and vendors.'}
+          </div>
+
+          <form onSubmit={handleForm} className="mt-6 space-y-4">
+            {!isLoginFirst && (
+            <>
+            <div className="space-y-2">
+            <FormLabel className="text-sm text-slate-600 dark:text-slate-200">
+              UserName<span className="text-danger">*</span>
+            </FormLabel>
+            <FormInput
+              type="text"
+              className="block w-full px-4 py-3.5 rounded-xl border border-slate-200 dark:border-darkmode-400 focus:border-theme-1/70 focus:ring-2 focus:ring-theme-1/30 transition"
+              placeholder="Enter your username"
+              value={loginObj.username}
+              onChange={(e) => {
+            getUserRole(e.target.value);
+            updateFormValue({
+              updateType: 'username',
+              value: e.target.value,
+            });
+              }}
+              required
+            />
+            {userRoleError && (
+              <div className="text-danger text-sm">{userRoleError}</div>
+            )}
+            </div>
+
+            <div className="space-y-2">
+            <FormLabel className="text-sm text-slate-600 dark:text-slate-200">
+              Password<span className="text-danger">*</span>
+            </FormLabel>
+            <div className="relative">
+              <FormInput
+            type={showPassword ? 'text' : 'password'}
+            className="block w-full px-4 py-3.5 rounded-xl border border-slate-200 dark:border-darkmode-400 focus:border-theme-1/70 focus:ring-2 focus:ring-theme-1/30 transition pr-12"
+            placeholder="************"
+            value={loginObj.password}
+            onChange={(e) =>
+              updateFormValue({
+              updateType: 'password',
+              value: e.target.value,
+              })
+            }
+            required
+              />
+              <div
+            className="absolute right-4 top-4 cursor-pointer text-slate-600"
+            onClick={togglePasswordVisibility}
+              >
+            {showPassword ? (
+              <Lucide className="stroke-[1]" icon="Eye" />
+            ) : (
+              <Lucide className="stroke-[1]" icon="EyeOff" />
+            )}
+              </div>
+            </div>
+            </div>
+
+            {loginObj.isAdminLogin && (
+            <div className="space-y-2">
+              <FormLabel className="text-sm text-slate-600 dark:text-slate-200">
+            Unique ID<span className="text-danger">*</span>
+              </FormLabel>
+              <FormInput
+            type="text"
+            className="block w-full px-4 py-3.5 rounded-xl border border-slate-200 dark:border-darkmode-400 focus:border-theme-1/70 focus:ring-2 focus:ring-theme-1/30 transition"
+            placeholder="Enter unique ID"
+            value={loginObj.uniqueId}
+            onChange={(e) =>
+              updateFormValue({
+              updateType: 'uniqueId',
+              value: e.target.value,
+              })
+            }
+            required
+              />
+            </div>
+            )}
+
+            <div className="flex items-center text-xs text-slate-500 sm:text-sm gap-3">
+            {loginObj.isAdminLogin && (
+              <div className="flex items-center gap-2">
+            <FormCheck.Input
+              id="remember-me"
+              type="checkbox"
+              className="border"
+              checked={loginObj.rememberMe}
+              onChange={(e) =>
+              updateFormValue({
+              updateType: 'rememberMe',
+              value: e.target.checked,
+              })
+              }
+            />
+            <label
+              className="cursor-pointer select-none"
+              htmlFor="remember-me"
+            >
+              Remember me
+            </label>
+              </div>
+            )}
+            <button
+              type="button"
+              onClick={() => setShowForgotPassword(true)}
+              className="text-primary hover:underline ml-auto"
+            >
+              Forgot Password?
+            </button>
+            </div>
+            </>
+            )}
+
+            {isLoginFirst && (
+            <>
+            <div className="space-y-2">
+            <FormLabel className="text-sm text-slate-600 dark:text-slate-200">
+              New Password<span className="text-danger">*</span>
+            </FormLabel>
+            <div className="relative">
+              <FormInput
+            type={showPassword ? 'text' : 'password'}
+            className={`block w-full px-4 py-3.5 rounded-xl border ${
+              passwordError && passwords.newPassword
+              ? 'border-danger'
+              : 'border-slate-200 dark:border-darkmode-400'
+            } focus:border-theme-1/70 focus:ring-2 focus:ring-theme-1/30 transition pr-12`}
+            placeholder="Enter new password"
+            value={passwords.newPassword}
+            onChange={(e) =>
+              handlePasswordChange('newPassword', e.target.value)
+            }
+            required
+              />
+              <div
+            className="absolute right-4 top-4 cursor-pointer text-slate-600"
+            onClick={togglePasswordVisibility}
+              >
+            {showPassword ? (
+              <Lucide className="stroke-[1]" icon="Eye" />
+            ) : (
+              <Lucide className="stroke-[1]" icon="EyeOff" />
+            )}
+              </div>
+            </div>
+            </div>
+
+            <div className="space-y-2">
+            <FormLabel className="text-sm text-slate-600 dark:text-slate-200">
+              Confirm New Password<span className="text-danger">*</span>
+            </FormLabel>
+            <div className="relative">
+              <FormInput
+            type={showPassword ? 'text' : 'password'}
+            className={`block w-full px-4 py-3.5 rounded-xl border ${
+              passwordError && passwords.confirmPassword
+              ? 'border-danger'
+              : 'border-slate-200 dark:border-darkmode-400'
+            } focus:border-theme-1/70 focus:ring-2 focus:ring-theme-1/30 transition pr-12`}
+            placeholder="Confirm new password"
+            value={passwords.confirmPassword}
+            onChange={(e) =>
+              handlePasswordChange('confirmPassword', e.target.value)
+            }
+            required
+              />
+              <div
+            className="absolute right-4 top-4 cursor-pointer text-slate-600"
+            onClick={togglePasswordVisibility}
+              >
+            {showPassword ? (
+              <Lucide className="stroke-[1]" icon="Eye" />
+            ) : (
+              <Lucide className="stroke-[1]" icon="EyeOff" />
+            )}
+              </div>
+            </div>
+            </div>
+            {passwordError && (
+            <div className="text-danger text-sm">{passwordError}</div>
+            )}
+            </>
+            )}
+
+            <div className="pt-2">
+            <Button
+            variant="primary"
+            rounded
+            disabled={userLogin.loading || isButtonDisabled}
+            className="w-full py-3.5 font-semibold bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500 hover:from-indigo-600 hover:via-purple-600 hover:to-cyan-600 text-white shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/35 transition-all duration-200 hover:scale-[1.01] active:scale-[0.99]"
+            >
+            {userLogin.loading
+            ? 'Loading...'
+            : isLoginFirst
+            ? 'Update Password'
+            : 'Log In'}
+            </Button>
+            </div>
+          </form>
+            </>
+          )}
+          </div>
+          </div>
+          </div>
         </div>
-        <div className="fixed bottom-4 right-4 z-50 text-sm text-white/80 bg-white/10 border border-white/20 px-3 py-1.5 rounded-lg shadow-sm backdrop-blur-sm">
+          </div>
+        </div>
+        <div className={`fixed bottom-4 right-4 z-50 text-sm px-3 py-1.5 rounded-lg shadow-sm backdrop-blur-sm ${
+          document.documentElement.classList.contains('dark')
+        ? 'text-white/80 bg-white/10 border border-white/20'
+        : 'text-slate-700 bg-slate-900/10 border border-slate-900/20'
+        }`}>
           {getShortBuildInfo()}
         </div>
       </div>

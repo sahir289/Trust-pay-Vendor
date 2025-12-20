@@ -40,6 +40,7 @@ import Modal from '../../components/Modal/modals';
 import DynamicForm from '@/components/CommonForm';
 import { triggerCrossTabLogout } from '@/utils/crossTabAuthSync';
 import { addAllNotification } from '@/redux-toolkit/slices/AllNoti/allNotifications';
+import { selectDarkMode } from '@/redux-toolkit/slices/common/darkMode/darkModeSlice';
 const debounce = (func: Function, wait: number) => {
   let timeout: NodeJS.Timeout;
   return (...args: any[]) => {
@@ -51,6 +52,7 @@ const debounce = (func: Function, wait: number) => {
 
 function Main() {
   const dispatch = useAppDispatch();
+  const darkMode = useAppSelector(selectDarkMode);
   // const isRefreshCount = useAppSelector(selectIsSocketHit);
   // const notificationsCount = useAppSelector(selectNotificationsCount);
   const { setToken } = useAuth();
@@ -404,8 +406,14 @@ function Main() {
     <>
       <div
         className={clsx([
-          'echo group bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 relative min-h-screen',
-          "before:content-[''] before:h-[420px] before:w-screen before:bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.28),transparent_32%),radial-gradient(circle_at_80%_0%,rgba(14,165,233,0.22),transparent_26%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.18),transparent_24%)] before:top-0 before:fixed before:left-0 before:right-0 before:pointer-events-none",
+          'echo group relative min-h-screen',
+          // Dynamic background based on dark mode
+          darkMode 
+            ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950'
+            : 'bg-gradient-to-br from-slate-100 via-white to-slate-200',
+          darkMode 
+            ? "before:content-[''] before:h-[420px] before:w-screen before:bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.28),transparent_32%),radial-gradient(circle_at_80%_0%,rgba(14,165,233,0.22),transparent_26%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.18),transparent_24%)] before:top-0 before:fixed before:left-0 before:right-0 before:pointer-events-none"
+            : "before:content-[''] before:h-[420px] before:w-screen before:bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.12),transparent_32%),radial-gradient(circle_at_80%_0%,rgba(14,165,233,0.10),transparent_26%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.08),transparent_24%)] before:top-0 before:fixed before:left-0 before:right-0 before:pointer-events-none",
           topBarActive && 'background--hidden',
         ])}
       >
@@ -413,20 +421,35 @@ function Main() {
         <div
           className={clsx([
             'navbar fixed top-0 left-0 right-0 z-40 h-16',
-            'bg-gradient-to-r from-slate-900/80 via-slate-800/70 to-slate-900/80',
-            'border-b border-white/10',
-            'shadow-[0_4px_30px_rgba(0,0,0,0.3)]',
+            darkMode 
+              ? 'bg-gradient-to-r from-slate-900/80 via-slate-800/70 to-slate-900/80'
+              : 'bg-gradient-to-r from-white/90 via-slate-50/80 to-white/90',
+            darkMode ? 'border-b border-white/10' : 'border-b border-slate-200/60',
+            darkMode 
+              ? 'shadow-[0_4px_30px_rgba(0,0,0,0.3)]'
+              : 'shadow-[0_4px_30px_rgba(0,0,0,0.08)]',
             'backdrop-blur-xl',
             'flex items-center justify-between px-4 sm:px-6',
             'transition-all duration-300',
-            topBarActive && 'shadow-[0_4px_40px_rgba(79,70,229,0.15)]',
+            topBarActive && darkMode && 'shadow-[0_4px_40px_rgba(79,70,229,0.15)]',
+            topBarActive && !darkMode && 'shadow-[0_4px_40px_rgba(79,70,229,0.08)]',
           ])}
         >
           {/* Decorative gradient line at top */}
-          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
+          <div className={clsx([
+            'absolute top-0 left-0 right-0 h-[2px]',
+            darkMode 
+              ? 'bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent'
+              : 'bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent',
+          ])} />
           
           {/* Subtle animated glow */}
-          <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/5 via-cyan-500/5 to-emerald-500/5 opacity-0 hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+          <div className={clsx([
+            'absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-500 pointer-events-none',
+            darkMode 
+              ? 'bg-gradient-to-r from-indigo-500/5 via-cyan-500/5 to-emerald-500/5'
+              : 'bg-gradient-to-r from-indigo-500/3 via-cyan-500/3 to-emerald-500/3',
+          ])} />
 
           <div className="navbar-left flex items-center space-x-4 relative z-10">
             {/* Enhanced Logo */}
@@ -452,32 +475,42 @@ function Main() {
             <div className="brand-name hidden sm:block">
               <span className={clsx([
                 'text-xl font-bold',
-                'bg-gradient-to-r from-white via-indigo-200 to-cyan-200 bg-clip-text text-transparent',
+                darkMode 
+                  ? 'bg-gradient-to-r from-white via-indigo-200 to-cyan-200 bg-clip-text text-transparent'
+                  : 'bg-gradient-to-r from-slate-800 via-indigo-600 to-cyan-600 bg-clip-text text-transparent',
                 'drop-shadow-[0_0_20px_rgba(99,102,241,0.3)]',
               ])}>
                 TrustPay
               </span>
-              <span className="block text-[10px] text-white/40 font-medium tracking-widest uppercase -mt-1">
+              <span className={clsx([
+                'block text-[10px] font-medium tracking-widest uppercase -mt-1',
+                darkMode ? 'text-white/40' : 'text-slate-500',
+              ])}>
                 Vendor Portal
               </span>
             </div>
 
             {/* Divider */}
-            <div className="hidden md:block w-px h-8 bg-gradient-to-b from-transparent via-white/20 to-transparent mx-2" />
+            <div className={clsx([
+              'hidden md:block w-px h-8 mx-2',
+              darkMode 
+                ? 'bg-gradient-to-b from-transparent via-white/20 to-transparent'
+                : 'bg-gradient-to-b from-transparent via-slate-300 to-transparent',
+            ])} />
 
             {/* Enhanced Toggle Button - Now acts as Pin/Unpin */}
             <button
               className={clsx([
                 'toggle-sidebar-btn p-2.5 rounded-xl',
-                'bg-white/5 hover:bg-white/10',
-                'border border-white/10 hover:border-white/20',
-                'text-white/70 hover:text-white',
+                darkMode ? 'bg-white/5 hover:bg-white/10' : 'bg-slate-100 hover:bg-slate-200',
+                darkMode ? 'border border-white/10 hover:border-white/20' : 'border border-slate-200 hover:border-slate-300',
+                darkMode ? 'text-white/70 hover:text-white' : 'text-slate-600 hover:text-slate-800',
                 'transition-all duration-200',
-                'hover:shadow-lg hover:shadow-indigo-500/10',
+                darkMode ? 'hover:shadow-lg hover:shadow-indigo-500/10' : 'hover:shadow-lg hover:shadow-slate-300/50',
                 'group/toggle',
                 // Highlight when pinned
-                isSidebarFixed &&
-                  'bg-indigo-500/20 border-indigo-400/30 text-indigo-300',
+                isSidebarFixed && darkMode && 'bg-indigo-500/20 border-indigo-400/30 text-indigo-300',
+                isSidebarFixed && !darkMode && 'bg-indigo-100 border-indigo-300 text-indigo-600',
               ])}
               onClick={(event) => {
                 event.preventDefault();
@@ -493,71 +526,25 @@ function Main() {
                 icon={isSidebarFixed ? 'Pin' : 'PinOff'}
                 className={clsx([
                   'w-5 h-5 transition-transform duration-200 group-hover/toggle:scale-110',
-                  isSidebarFixed && 'text-indigo-300',
+                  isSidebarFixed && darkMode && 'text-indigo-300',
+                  isSidebarFixed && !darkMode && 'text-indigo-600',
                 ])}
               />
             </button>
           </div>
 
-          {/* Center section - can add search or breadcrumb later */}
-          {/* <div className="navbar-center hidden lg:flex items-center flex-1 justify-center px-8">
-            <div className={clsx([
-              'search-container flex items-center gap-2 px-4 py-2 rounded-xl',
-              'bg-white/5 border border-white/10',
-              'text-white/40 text-sm',
-              'cursor-pointer hover:bg-white/10 hover:border-white/20',
-              'transition-all duration-200',
-              'max-w-md w-full',
-            ])}>
-              <Lucide icon="Search" className="w-4 h-4" />
-              <span>Quick search...</span>
-              <div className="ml-auto flex items-center gap-1">
-                <kbd className="px-1.5 py-0.5 text-[10px] bg-white/10 rounded border border-white/10">⌘</kbd>
-                <kbd className="px-1.5 py-0.5 text-[10px] bg-white/10 rounded border border-white/10">K</kbd>
-              </div>
-            </div>
-          </div> */}
+          {/* ...existing navbar center section (commented)... */}
 
           <div className="navbar-right flex items-center space-x-2 sm:space-x-3 relative z-10">
-            {/* Notification Bell */}
-            {/* <button
-              className={clsx([
-                'notification-btn p-2.5 rounded-xl relative',
-                'bg-white/5 hover:bg-white/10',
-                'border border-white/10 hover:border-white/20',
-                'text-white/70 hover:text-white',
-                'transition-all duration-200',
-                'hover:shadow-lg hover:shadow-indigo-500/10',
-                'group/notif',
-              ])}
-              title="Notifications"
-            >
-              <Lucide
-                icon="Bell"
-                className="w-5 h-5 transition-transform duration-200 group-hover/notif:scale-110"
-              />
-
-              <span className={clsx([
-                'absolute -top-1 -right-1 w-5 h-5',
-                'bg-gradient-to-r from-rose-500 to-pink-500',
-                'rounded-full flex items-center justify-center',
-                'text-[10px] font-bold text-white',
-                'shadow-lg shadow-rose-500/40',
-                'animate-pulse',
-              ])}>
-                3
-              </span>
-            </button> */}
-
             {/* Fullscreen Button */}
             <button
               className={clsx([
                 'fullscreen-btn p-2.5 rounded-xl',
-                'bg-white/5 hover:bg-white/10',
-                'border border-white/10 hover:border-white/20',
-                'text-white/70 hover:text-white',
+                darkMode ? 'bg-white/5 hover:bg-white/10' : 'bg-slate-100 hover:bg-slate-200',
+                darkMode ? 'border border-white/10 hover:border-white/20' : 'border border-slate-200 hover:border-slate-300',
+                darkMode ? 'text-white/70 hover:text-white' : 'text-slate-600 hover:text-slate-800',
                 'transition-all duration-200',
-                'hover:shadow-lg hover:shadow-indigo-500/10',
+                darkMode ? 'hover:shadow-lg hover:shadow-indigo-500/10' : 'hover:shadow-lg hover:shadow-slate-300/50',
                 'group/fs',
               ])}
               onClick={toggleFullscreen}
@@ -570,19 +557,25 @@ function Main() {
             </button>
 
             {/* Divider */}
-            <div className="hidden sm:block w-px h-8 bg-gradient-to-b from-transparent via-white/20 to-transparent mx-1" />
+            <div className={clsx([
+              'hidden sm:block w-px h-8 mx-1',
+              darkMode 
+                ? 'bg-gradient-to-b from-transparent via-white/20 to-transparent'
+                : 'bg-gradient-to-b from-transparent via-slate-300 to-transparent',
+            ])} />
 
             {/* Profile Dropdown */}
             <div className="relative">
               <button
                 className={clsx([
                   'profile-btn flex items-center gap-3 p-1.5 pr-3 rounded-xl',
-                  'bg-white/5 hover:bg-white/10',
-                  'border border-white/10 hover:border-white/20',
+                  darkMode ? 'bg-white/5 hover:bg-white/10' : 'bg-slate-100 hover:bg-slate-200',
+                  darkMode ? 'border border-white/10 hover:border-white/20' : 'border border-slate-200 hover:border-slate-300',
                   'transition-all duration-200',
-                  'hover:shadow-lg hover:shadow-indigo-500/10',
+                  darkMode ? 'hover:shadow-lg hover:shadow-indigo-500/10' : 'hover:shadow-lg hover:shadow-slate-300/50',
                   'group/profile',
-                  isOpen && 'bg-white/10 border-white/20',
+                  isOpen && darkMode && 'bg-white/10 border-white/20',
+                  isOpen && !darkMode && 'bg-slate-200 border-slate-300',
                 ])}
                 onClick={toggleDropdown}
               >
@@ -590,7 +583,9 @@ function Main() {
                 <div className="relative">
                   <div className={clsx([
                     'w-9 h-9 rounded-lg overflow-hidden',
-                    'ring-2 ring-white/20 group-hover/profile:ring-indigo-400/50',
+                    darkMode 
+                      ? 'ring-2 ring-white/20 group-hover/profile:ring-indigo-400/50'
+                      : 'ring-2 ring-slate-200 group-hover/profile:ring-indigo-400/50',
                     'transition-all duration-200',
                   ])}>
                     <img
@@ -603,17 +598,27 @@ function Main() {
                   <span className={clsx([
                     'absolute -bottom-0.5 -right-0.5 w-3 h-3',
                     'bg-emerald-500 rounded-full',
-                    'border-2 border-slate-900',
+                    darkMode ? 'border-2 border-slate-900' : 'border-2 border-white',
                     'shadow-lg shadow-emerald-500/50',
                   ])} />
                 </div>
                 
                 {/* User info - hidden on small screens */}
                 <div className="hidden sm:block text-left">
-                  <p className="text-sm font-medium text-white/90 group-hover/profile:text-white transition-colors">
+                  <p className={clsx([
+                    'text-sm font-medium transition-colors',
+                    darkMode 
+                      ? 'text-white/90 group-hover/profile:text-white'
+                      : 'text-slate-700 group-hover/profile:text-slate-900',
+                  ])}>
                     {userData.name?.split(' ')[0] || 'User'}
                   </p>
-                  <p className="text-[10px] text-white/50 group-hover/profile:text-white/60 transition-colors">
+                  <p className={clsx([
+                    'text-[10px] transition-colors',
+                    darkMode 
+                      ? 'text-white/50 group-hover/profile:text-white/60'
+                      : 'text-slate-500 group-hover/profile:text-slate-600',
+                  ])}>
                     {userData.designation || 'N/A'}
                   </p>
                 </div>
@@ -621,8 +626,9 @@ function Main() {
                 <Lucide
                   icon="ChevronDown"
                   className={clsx([
-                    'w-4 h-4 text-white/50 transition-transform duration-200',
+                    'w-4 h-4 transition-transform duration-200',
                     'hidden sm:block',
+                    darkMode ? 'text-white/50' : 'text-slate-400',
                     isOpen && 'rotate-180',
                   ])}
                 />
@@ -632,18 +638,29 @@ function Main() {
               {isOpen && (
                 <div className={clsx([
                   'dropdown-menu absolute right-0 mt-2 w-64',
-                  'bg-gradient-to-b from-slate-800/95 to-slate-900/95',
-                  'text-white rounded-2xl',
-                  'shadow-2xl shadow-black/50',
-                  'border border-white/10',
+                  darkMode 
+                    ? 'bg-gradient-to-b from-slate-800/95 to-slate-900/95'
+                    : 'bg-gradient-to-b from-white to-slate-50',
+                  darkMode ? 'text-white' : 'text-slate-800',
+                  'rounded-2xl',
+                  darkMode ? 'shadow-2xl shadow-black/50' : 'shadow-2xl shadow-slate-300/50',
+                  darkMode ? 'border border-white/10' : 'border border-slate-200',
                   'backdrop-blur-xl',
                   'overflow-hidden',
                   'animate-in fade-in slide-in-from-top-2 duration-200',
                 ])}>
                   {/* User header */}
-                  <div className="px-4 py-4 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-cyan-500/10">
+                  <div className={clsx([
+                    'px-4 py-4',
+                    darkMode 
+                      ? 'bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-cyan-500/10'
+                      : 'bg-gradient-to-r from-indigo-50 via-purple-50 to-cyan-50',
+                  ])}>
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-xl overflow-hidden ring-2 ring-white/20">
+                      <div className={clsx([
+                        'w-12 h-12 rounded-xl overflow-hidden',
+                        darkMode ? 'ring-2 ring-white/20' : 'ring-2 ring-slate-200',
+                      ])}>
                         <img
                           src={users || 'https://via.placeholder.com/48'}
                           alt="Profile"
@@ -651,8 +668,14 @@ function Main() {
                         />
                       </div>
                       <div>
-                        <p className="text-sm font-semibold text-white">{userData.name}</p>
-                        <p className="text-xs text-white/60">{userData.designation}</p>
+                        <p className={clsx([
+                          'text-sm font-semibold',
+                          darkMode ? 'text-white' : 'text-slate-800',
+                        ])}>{userData.name}</p>
+                        <p className={clsx([
+                          'text-xs',
+                          darkMode ? 'text-white/60' : 'text-slate-500',
+                        ])}>{userData.designation}</p>
                         <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 bg-emerald-500/20 rounded-full">
                           <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full" />
                           <span className="text-[10px] text-emerald-400 font-medium">Online</span>
@@ -662,31 +685,13 @@ function Main() {
                   </div>
                   
                   <div className="p-2">
-                    {/* Profile link */}
-                    {/* <button
-                      className={clsx([
-                        'dropdown-item flex items-center gap-3 px-3 py-2.5 w-full text-left rounded-xl',
-                        'text-white/70 hover:text-white',
-                        'hover:bg-white/5',
-                        'transition-all duration-200',
-                        'group/item',
-                      ])}
-                    >
-                      <div className="p-2 rounded-lg bg-white/5 group-hover/item:bg-indigo-500/20 transition-colors">
-                        <Lucide icon="User" className="w-4 h-4" />
-                      </div>
-                      <div>
-                        <span className="text-sm font-medium">My Profile</span>
-                        <span className="block text-[10px] text-white/40">View and edit profile</span>
-                      </div>
-                    </button> */}
-
                     {/* Change Password */}
                     <button
                       className={clsx([
                         'dropdown-item flex items-center gap-3 px-3 py-2.5 w-full text-left rounded-xl',
-                        'text-white/70 hover:text-white',
-                        'hover:bg-white/5',
+                        darkMode 
+                          ? 'text-white/70 hover:text-white hover:bg-white/5'
+                          : 'text-slate-600 hover:text-slate-800 hover:bg-slate-100',
                         'transition-all duration-200',
                         'group/item',
                       ])}
@@ -695,37 +700,31 @@ function Main() {
                         setIsOpen(false);
                       }}
                     >
-                      <div className="p-2 rounded-lg bg-white/5 group-hover/item:bg-amber-500/20 transition-colors">
+                      <div className={clsx([
+                        'p-2 rounded-lg transition-colors',
+                        darkMode 
+                          ? 'bg-white/5 group-hover/item:bg-amber-500/20'
+                          : 'bg-slate-100 group-hover/item:bg-amber-100',
+                      ])}>
                         <Lucide icon="Lock" className="w-4 h-4" />
                       </div>
                       <div>
                         <span className="text-sm font-medium">Change Password</span>
-                        <span className="block text-[10px] text-white/40">Update your password</span>
+                        <span className={clsx([
+                          'block text-[10px]',
+                          darkMode ? 'text-white/40' : 'text-slate-400',
+                        ])}>Update your password</span>
                       </div>
                     </button>
-
-                    {/* Settings */}
-                    {/* <button
-                      className={clsx([
-                        'dropdown-item flex items-center gap-3 px-3 py-2.5 w-full text-left rounded-xl',
-                        'text-white/70 hover:text-white',
-                        'hover:bg-white/5',
-                        'transition-all duration-200',
-                        'group/item',
-                      ])}
-                    >
-                      <div className="p-2 rounded-lg bg-white/5 group-hover/item:bg-cyan-500/20 transition-colors">
-                        <Lucide icon="Settings" className="w-4 h-4" />
-                      </div>
-                      <div>
-                        <span className="text-sm font-medium">Settings</span>
-                        <span className="block text-[10px] text-white/40">Preferences & config</span>
-                      </div>
-                    </button> */}
                   </div>
 
                   {/* Divider */}
-                  <div className="mx-3 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                  <div className={clsx([
+                    'mx-3 h-px',
+                    darkMode 
+                      ? 'bg-gradient-to-r from-transparent via-white/10 to-transparent'
+                      : 'bg-gradient-to-r from-transparent via-slate-200 to-transparent',
+                  ])} />
 
                   {/* Logout */}
                   <div className="p-2">
@@ -733,7 +732,7 @@ function Main() {
                       className={clsx([
                         'dropdown-item flex items-center gap-3 px-3 py-2.5 w-full text-left rounded-xl',
                         'text-rose-400 hover:text-rose-300',
-                        'hover:bg-rose-500/10',
+                        darkMode ? 'hover:bg-rose-500/10' : 'hover:bg-rose-50',
                         'transition-all duration-200',
                         'group/item',
                       ])}
@@ -742,7 +741,12 @@ function Main() {
                         setIsOpen(false);
                       }}
                     >
-                      <div className="p-2 rounded-lg bg-rose-500/10 group-hover/item:bg-rose-500/20 transition-colors">
+                      <div className={clsx([
+                        'p-2 rounded-lg transition-colors',
+                        darkMode 
+                          ? 'bg-rose-500/10 group-hover/item:bg-rose-500/20'
+                          : 'bg-rose-50 group-hover/item:bg-rose-100',
+                      ])}>
                         <Lucide icon="LogOut" className="w-4 h-4" />
                       </div>
                       <div>
@@ -761,17 +765,22 @@ function Main() {
         <div
           className={clsx([
             'sidebar-container fixed top-16 left-0 z-30 h-[calc(100%-4rem)]',
-            'bg-gradient-to-b from-slate-900/95 via-slate-800/90 to-slate-900/95',
-            'text-white shadow-2xl backdrop-blur-xl',
-            'border-r border-white/10',
+            darkMode 
+              ? 'bg-gradient-to-b from-slate-900/95 via-slate-800/90 to-slate-900/95'
+              : 'bg-gradient-to-b from-white/95 via-slate-50/90 to-white/95',
+            darkMode ? 'text-white' : 'text-slate-800',
+            'shadow-2xl backdrop-blur-xl',
+            darkMode ? 'border-r border-white/10' : 'border-r border-slate-200/60',
             isSidebarExpanded ? 'w-72' : 'w-20',
             'transition-all duration-300 ease-in-out overflow-hidden',
-            'hover:shadow-[0_0_40px_rgba(79,70,229,0.15)]',
+            darkMode 
+              ? 'hover:shadow-[0_0_40px_rgba(79,70,229,0.15)]'
+              : 'hover:shadow-[0_0_40px_rgba(79,70,229,0.08)]',
             // Show pin indicator when fixed
-            isSidebarFixed && 'border-r-indigo-500/30',
+            isSidebarFixed && darkMode && 'border-r-indigo-500/30',
+            isSidebarFixed && !darkMode && 'border-r-indigo-300/50',
           ])}
           onMouseEnter={() => {
-            // Only enable hover expansion when sidebar is NOT fixed
             if (!isSidebarFixed && compactMenu) {
               setIsSidebarHovered(true);
             }
@@ -783,9 +792,14 @@ function Main() {
           }}
         >
           {/* Decorative gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-cyan-500/5 pointer-events-none" />
+          <div className={clsx([
+            'absolute inset-0 pointer-events-none',
+            darkMode 
+              ? 'bg-gradient-to-br from-indigo-500/5 via-transparent to-cyan-500/5'
+              : 'bg-gradient-to-br from-indigo-500/3 via-transparent to-cyan-500/3',
+          ])} />
 
-          {/* Animated border glow on hover - only show when hovering and not fixed */}
+          {/* Animated border glow on hover */}
           <div
             className={clsx([
               'absolute top-0 right-0 w-[2px] h-full',
@@ -802,7 +816,8 @@ function Main() {
                   <li
                     key={index}
                     className={clsx([
-                      'menu-divider text-white/40 text-[10px] font-semibold px-3 py-2 uppercase tracking-widest',
+                      'menu-divider text-[10px] font-semibold px-3 py-2 uppercase tracking-widest',
+                      darkMode ? 'text-white/40' : 'text-slate-400',
                       'transition-all duration-300',
                       !isSidebarExpanded && 'opacity-0 h-0 py-0 overflow-hidden',
                     ])}
@@ -815,14 +830,25 @@ function Main() {
                       href=""
                       className={clsx([
                         'menu-item flex items-center px-3 py-3 rounded-xl transition-all duration-200',
-                        'hover:bg-gradient-to-r hover:from-white/10 hover:to-white/5',
-                        'hover:shadow-lg hover:shadow-indigo-500/10',
+                        darkMode 
+                          ? 'hover:bg-gradient-to-r hover:from-white/10 hover:to-white/5'
+                          : 'hover:bg-gradient-to-r hover:from-slate-100 hover:to-slate-50',
+                        darkMode 
+                          ? 'hover:shadow-lg hover:shadow-indigo-500/10'
+                          : 'hover:shadow-lg hover:shadow-slate-300/30',
                         'hover:translate-x-1',
-                        'border border-transparent hover:border-white/10',
-                        menu.active && [
+                        darkMode 
+                          ? 'border border-transparent hover:border-white/10'
+                          : 'border border-transparent hover:border-slate-200',
+                        menu.active && darkMode && [
                           'bg-gradient-to-r from-indigo-500/20 via-cyan-500/15 to-emerald-500/10',
                           'shadow-lg shadow-indigo-500/20',
                           'border-l-2 border-l-indigo-400',
+                        ],
+                        menu.active && !darkMode && [
+                          'bg-gradient-to-r from-indigo-100 via-cyan-50 to-emerald-50',
+                          'shadow-lg shadow-indigo-200/50',
+                          'border-l-2 border-l-indigo-500',
                         ],
                       ])}
                       onClick={(event) => {
@@ -833,17 +859,27 @@ function Main() {
                       <div className={clsx([
                         'menu-icon-wrapper flex items-center justify-center w-10 h-10 rounded-lg',
                         'transition-all duration-200',
-                        'bg-gradient-to-br from-white/5 to-transparent',
-                        menu.active && 'from-indigo-500/30 to-cyan-500/20 shadow-lg shadow-indigo-500/20',
-                        'group-hover/item:from-white/10 group-hover/item:to-white/5',
-                        'group-hover/item:shadow-md group-hover/item:shadow-white/5',
+                        darkMode 
+                          ? 'bg-gradient-to-br from-white/5 to-transparent'
+                          : 'bg-gradient-to-br from-slate-100 to-transparent',
+                        menu.active && darkMode && 'from-indigo-500/30 to-cyan-500/20 shadow-lg shadow-indigo-500/20',
+                        menu.active && !darkMode && 'from-indigo-200 to-cyan-100 shadow-lg shadow-indigo-200/50',
+                        darkMode 
+                          ? 'group-hover/item:from-white/10 group-hover/item:to-white/5'
+                          : 'group-hover/item:from-slate-200 group-hover/item:to-slate-100',
+                        'group-hover/item:shadow-md',
                       ])}>
                         <Lucide
                           icon={menu.icon || 'Circle'}
                           className={clsx([
                             'w-5 h-5 transition-all duration-200',
-                            menu.active ? 'text-indigo-300' : 'text-white/70',
-                            'group-hover/item:text-white group-hover/item:scale-110',
+                            menu.active && darkMode && 'text-indigo-300',
+                            menu.active && !darkMode && 'text-indigo-600',
+                            !menu.active && darkMode && 'text-white/70',
+                            !menu.active && !darkMode && 'text-slate-500',
+                            darkMode 
+                              ? 'group-hover/item:text-white group-hover/item:scale-110'
+                              : 'group-hover/item:text-slate-800 group-hover/item:scale-110',
                           ])}
                         />
                       </div>
@@ -855,8 +891,11 @@ function Main() {
                       ])}>
                         <span className={clsx([
                           'menu-title text-sm font-medium whitespace-nowrap',
-                          menu.active ? 'text-white' : 'text-white/80',
-                          'group-hover/item:text-white',
+                          menu.active && darkMode && 'text-white',
+                          menu.active && !darkMode && 'text-slate-800',
+                          !menu.active && darkMode && 'text-white/80',
+                          !menu.active && !darkMode && 'text-slate-600',
+                          darkMode ? 'group-hover/item:text-white' : 'group-hover/item:text-slate-800',
                         ])}>
                           {menu.title}
                         </span>
@@ -867,7 +906,8 @@ function Main() {
                         <Lucide
                           icon={menu.activeDropdown ? 'ChevronDown' : 'ChevronRight'}
                           className={clsx([
-                            'w-4 h-4 text-white/50 transition-transform duration-200',
+                            'w-4 h-4 transition-transform duration-200',
+                            darkMode ? 'text-white/50' : 'text-slate-400',
                             menu.activeDropdown && 'rotate-0',
                           ])}
                         />
@@ -878,14 +918,22 @@ function Main() {
                     {!isSidebarExpanded && (
                       <div className={clsx([
                         'absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-2',
-                        'bg-slate-800 text-white text-sm rounded-lg shadow-xl',
+                        darkMode 
+                          ? 'bg-slate-800 text-white'
+                          : 'bg-white text-slate-800',
+                        'text-sm rounded-lg shadow-xl',
                         'opacity-0 invisible group-hover/item:opacity-100 group-hover/item:visible',
                         'transition-all duration-200 whitespace-nowrap z-50',
-                        'border border-white/10',
+                        darkMode ? 'border border-white/10' : 'border border-slate-200',
                       ])}>
                         {menu.title}
                         {/* Tooltip arrow */}
-                        <div className="absolute left-0 top-1/2 -translate-x-1 -translate-y-1/2 w-2 h-2 bg-slate-800 rotate-45 border-l border-b border-white/10" />
+                        <div className={clsx([
+                          'absolute left-0 top-1/2 -translate-x-1 -translate-y-1/2 w-2 h-2 rotate-45',
+                          darkMode 
+                            ? 'bg-slate-800 border-l border-b border-white/10'
+                            : 'bg-white border-l border-b border-slate-200',
+                        ])} />
                       </div>
                     )}
 
@@ -893,7 +941,7 @@ function Main() {
                     {menu.subMenu && menu.activeDropdown && isSidebarExpanded && (
                       <ul className={clsx([
                         'submenu-list ml-4 mt-1 space-y-1 pl-4',
-                        'border-l border-white/10',
+                        darkMode ? 'border-l border-white/10' : 'border-l border-slate-200',
                         'animate-in slide-in-from-top-2 duration-200',
                       ])}>
                         {menu.subMenu.map((subMenu, subIndex) => (
@@ -902,9 +950,13 @@ function Main() {
                               href=""
                               className={clsx([
                                 'submenu-item flex items-center px-3 py-2 rounded-lg transition-all duration-200',
-                                'hover:bg-white/5 hover:translate-x-1',
-                                subMenu.active && 'bg-white/10 text-white',
-                                !subMenu.active && 'text-white/60',
+                                darkMode 
+                                  ? 'hover:bg-white/5 hover:translate-x-1'
+                                  : 'hover:bg-slate-100 hover:translate-x-1',
+                                subMenu.active && darkMode && 'bg-white/10 text-white',
+                                subMenu.active && !darkMode && 'bg-slate-100 text-slate-800',
+                                !subMenu.active && darkMode && 'text-white/60',
+                                !subMenu.active && !darkMode && 'text-slate-500',
                               ])}
                               onClick={(event) => {
                                 event.preventDefault();
@@ -913,12 +965,16 @@ function Main() {
                             >
                               <div className={clsx([
                                 'w-1.5 h-1.5 rounded-full mr-3 transition-all duration-200',
-                                subMenu.active ? 'bg-indigo-400 shadow-lg shadow-indigo-400/50' : 'bg-white/30',
+                                subMenu.active 
+                                  ? 'bg-indigo-400 shadow-lg shadow-indigo-400/50'
+                                  : darkMode ? 'bg-white/30' : 'bg-slate-300',
                                 'group-hover/subitem:bg-indigo-400',
                               ])} />
                               <span className={clsx([
                                 'submenu-title text-sm transition-colors duration-200',
-                                'group-hover/subitem:text-white',
+                                darkMode 
+                                  ? 'group-hover/subitem:text-white'
+                                  : 'group-hover/subitem:text-slate-800',
                               ])}>
                                 {subMenu.title}
                               </span>
@@ -934,7 +990,12 @@ function Main() {
           </div>
 
           {/* Sidebar footer decoration */}
-          <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-slate-900/80 to-transparent pointer-events-none" />
+          <div className={clsx([
+            'absolute bottom-0 left-0 right-0 h-20 pointer-events-none',
+            darkMode 
+              ? 'bg-gradient-to-t from-slate-900/80 to-transparent'
+              : 'bg-gradient-to-t from-white/80 to-transparent',
+          ])} />
         </div>
         <div
           className={clsx([

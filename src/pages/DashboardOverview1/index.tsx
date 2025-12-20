@@ -13,6 +13,7 @@ import { extractChartData, getFormattedCurrentDate } from '@/utils/helper';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
+import clsx from 'clsx';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -147,6 +148,7 @@ function Main() {
   const [isLoading, setIsloading] = useState(false);
   const dispatch = useAppDispatch();
   const activeTab = useAppSelector(getTabs);
+  const darkMode = useAppSelector(selectDarkMode);
   useAppSelector(selectDarkMode); // Subscribe to dark mode to trigger re-render
 
   useEffect(() => {
@@ -394,21 +396,44 @@ function Main() {
     getFilterDateRange(vendorSelectedFilterDates);
   return (
     <>
-      <div className="relative min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 px-3 sm:px-6 lg:px-10 py-6">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.14),transparent_28%),radial-gradient(circle_at_80%_0%,rgba(14,165,233,0.12),transparent_24%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.12),transparent_22%)]"></div>
+      <div className={clsx([
+        'relative min-h-screen px-3 sm:px-6 lg:px-10 py-6',
+        darkMode 
+          ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950'
+          : 'bg-gradient-to-br from-slate-100 via-white to-slate-200',
+      ])}>
+        <div className={clsx([
+          'pointer-events-none absolute inset-0',
+          darkMode 
+            ? 'bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.14),transparent_28%),radial-gradient(circle_at_80%_0%,rgba(14,165,233,0.12),transparent_24%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.12),transparent_22%)]'
+            : 'bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.08),transparent_28%),radial-gradient(circle_at_80%_0%,rgba(14,165,233,0.06),transparent_24%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.06),transparent_22%)]',
+        ])}></div>
         <div className="relative z-10 space-y-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-4">
             <div>
-              <div className="text-xl sm:text-2xl font-semibold text-white drop-shadow">
+              <div className={clsx([
+                'text-xl sm:text-2xl font-semibold drop-shadow',
+                darkMode ? 'text-white' : 'text-slate-800',
+              ])}>
                 Dashboard
               </div>
-              <div className="text-sm text-white/60">Vendor overview & stats</div>
+              <div className={clsx([
+                'text-sm',
+                darkMode ? 'text-white/60' : 'text-slate-500',
+              ])}>
+                Vendor overview & stats
+              </div>
             </div>
           </div>
 
           <div className="grid grid-cols-12 gap-y-6 gap-x-4 lg:gap-y-10 lg:gap-x-6">
             <div className="col-span-12">
-              <div className="relative rounded-3xl bg-white/5 border border-white/10 shadow-2xl p-3 sm:p-5">
+              <div className={clsx([
+                'relative rounded-3xl shadow-2xl p-3 sm:p-5',
+                darkMode 
+                  ? 'bg-white/5 border border-white/10'
+                  : 'bg-white/80 border border-slate-200/60',
+              ])}>
                 <VendorBoard
                   calculationData={calculationData}
                   vendorPayinChartData={chartData.vendorPayinData}
@@ -420,7 +445,7 @@ function Main() {
                   vendorSettlementChartData={chartData.vendorSettlementData}
                   settlementCommissionData={
                     chartData.vendorSettlementCommissionData
-                  } // Add this line
+                  }
                   totalVendorCommissionData={chartData.totalVendorCommissionData}
                   vendorSelectedFilterDates={vendorSelectedFilterDates}
                   setVendorSelectedFilterDates={setVendorSelectedFilterDates}
