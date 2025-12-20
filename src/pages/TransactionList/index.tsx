@@ -35,6 +35,7 @@ import { getMerchantCodes } from '@/redux-toolkit/slices/merchants/merchantSlice
 import ModalContent from '@/components/Modal/ModalContent/ModalContent';
 // import { withLazyLoading } from '@/utils/lazyStrategies';
 import { addAllNotification } from '@/redux-toolkit/slices/AllNoti/allNotifications';
+import clsx from 'clsx';
 
 // Normal imports instead of lazy loading
 import PayInComponent from '@/pages/TransactionList/Payin/payin';
@@ -52,7 +53,7 @@ import PayOut from '@/pages/TransactionList/Payout/payout';
 
 function Main() {
   const dispatch = useAppDispatch();
-  useAppSelector(selectDarkMode); // Subscribe to dark mode to trigger re-render
+  const darkMode = useAppSelector(selectDarkMode);
   const parentTab = useAppSelector(getParentTabs);
   const [newTransactionModal, setNewTransactionModal] = useState(false);
   const [title, setTitle] = useState(parentTab === 0 ? 'PayIns' : 'PayOuts');
@@ -277,25 +278,49 @@ function Main() {
   }, [parentTab]);
   return (
     <>
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4 sm:p-6 lg:p-8 shadow-2xl border border-white/10 min-h-screen">
+      <div className={clsx([
+        'relative overflow-hidden rounded-3xl p-4 sm:p-6 lg:p-8 shadow-2xl min-h-screen',
+        darkMode 
+          ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border border-white/10'
+          : 'bg-gradient-to-br from-white via-slate-50 to-white border border-slate-200',
+      ])}>
         {/* Background gradient overlay */}
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.15),transparent_30%),radial-gradient(circle_at_85%_10%,rgba(14,165,233,0.12),transparent_28%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.12),transparent_24%)]"></div>
+        <div className={clsx([
+          'pointer-events-none absolute inset-0',
+          darkMode 
+            ? 'bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.15),transparent_30%),radial-gradient(circle_at_85%_10%,rgba(14,165,233,0.12),transparent_28%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.12),transparent_24%)]'
+            : 'bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.08),transparent_30%),radial-gradient(circle_at_85%_10%,rgba(14,165,233,0.06),transparent_28%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.06),transparent_24%)]',
+        ])}></div>
         
         <div className="relative z-10">
           {/* Header Section */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
             <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 border rounded-2xl border-white/20 bg-white/10 shrink-0">
+              <div className={clsx([
+                'flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 border rounded-2xl shrink-0',
+                darkMode 
+                  ? 'border-white/20 bg-white/10'
+                  : 'border-slate-200 bg-slate-100',
+              ])}>
                 <Lucide
                   icon={title === 'PayIns' ? 'BadgeIndianRupee' : 'ArrowRightCircle'}
-                  className="w-5 h-5 sm:w-6 sm:h-6 text-white"
+                  className={clsx([
+                    'w-5 h-5 sm:w-6 sm:h-6',
+                    darkMode ? 'text-white' : 'text-slate-700',
+                  ])}
                 />
               </div>
               <div>
-                <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold text-white">
+                <h1 className={clsx([
+                  'text-xl sm:text-2xl md:text-3xl font-semibold',
+                  darkMode ? 'text-white' : 'text-slate-800',
+                ])}>
                   {title}
                 </h1>
-                <p className="text-white/60 text-sm hidden sm:block">
+                <p className={clsx([
+                  'text-sm hidden sm:block',
+                  darkMode ? 'text-white/60' : 'text-slate-500',
+                ])}>
                   Manage your {title.toLowerCase()} transactions
                 </p>
               </div>
@@ -324,35 +349,52 @@ function Main() {
           </div>
 
           {/* Tab Container */}
-          <div className="rounded-2xl bg-white/10 border border-white/15 shadow-2xl backdrop-blur-xl overflow-hidden">
+          <div className={clsx([
+            'rounded-2xl shadow-2xl backdrop-blur-xl overflow-hidden',
+            darkMode 
+              ? 'bg-white/10 border border-white/15'
+              : 'bg-white border border-slate-200',
+          ])}>
             <Tab.Group
               selectedIndex={parentTab}
               onChange={handleParentTabChange}
             >
-              <Tab.List className="flex border-b border-white/10 bg-white/5">
+              <Tab.List className={clsx([
+                'flex border-b',
+                darkMode ? 'border-white/10 bg-white/5' : 'border-slate-200 bg-slate-50',
+              ])}>
                 <Tab className="relative flex-1">
                   {({ selected }) => (
                     <Tab.Button
-                      className={`w-full py-3 sm:py-4 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base md:text-lg font-medium transition-all duration-300 relative ${
+                      className={clsx([
+                        'w-full py-3 sm:py-4 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base md:text-lg font-medium transition-all duration-300 relative',
                         selected
-                          ? 'text-white bg-gradient-to-r from-theme-1/20 via-theme-2/20 to-emerald-500/20 border-b-2 border-theme-1'
-                          : 'text-white/60 hover:text-white hover:bg-white/5'
-                      }`}
+                          ? darkMode
+                            ? 'text-white bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-cyan-500/20 border-b-2 border-indigo-500'
+                            : 'text-slate-800 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-cyan-500/10 border-b-2 border-indigo-500'
+                          : darkMode
+                            ? 'text-white/60 hover:text-white hover:bg-white/5'
+                            : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100',
+                      ])}
                       as="button"
                     >
-                      <div className={`flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl ${
+                      <div className={clsx([
+                        'flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl',
                         selected 
-                          ? 'bg-gradient-to-r from-theme-1 to-theme-2 shadow-lg shadow-theme-1/30' 
-                          : 'bg-white/10'
-                      }`}>
+                          ? 'bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500 shadow-lg shadow-indigo-500/30' 
+                          : darkMode ? 'bg-white/10' : 'bg-slate-200',
+                      ])}>
                         <Lucide 
                           icon="BadgeIndianRupee" 
-                          className={`w-4 h-4 sm:w-5 sm:h-5 ${selected ? 'text-white' : 'text-white/70'}`} 
+                          className={clsx([
+                            'w-4 h-4 sm:w-5 sm:h-5',
+                            selected ? 'text-white' : darkMode ? 'text-white/70' : 'text-slate-500',
+                          ])} 
                         />
                       </div>
                       <span>Payins</span>
                       {selected && (
-                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-theme-1 via-theme-2 to-emerald-500"></div>
+                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500"></div>
                       )}
                     </Tab.Button>
                   )}
@@ -360,26 +402,35 @@ function Main() {
                 <Tab className="relative flex-1">
                   {({ selected }) => (
                     <Tab.Button
-                      className={`w-full py-3 sm:py-4 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base md:text-lg font-medium transition-all duration-300 relative ${
+                      className={clsx([
+                        'w-full py-3 sm:py-4 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base md:text-lg font-medium transition-all duration-300 relative',
                         selected
-                          ? 'text-white bg-gradient-to-r from-theme-1/20 via-theme-2/20 to-emerald-500/20 border-b-2 border-theme-1'
-                          : 'text-white/60 hover:text-white hover:bg-white/5'
-                      }`}
+                          ? darkMode
+                            ? 'text-white bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-cyan-500/20 border-b-2 border-indigo-500'
+                            : 'text-slate-800 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-cyan-500/10 border-b-2 border-indigo-500'
+                          : darkMode
+                            ? 'text-white/60 hover:text-white hover:bg-white/5'
+                            : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100',
+                      ])}
                       as="button"
                     >
-                      <div className={`flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl ${
+                      <div className={clsx([
+                        'flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl',
                         selected 
-                          ? 'bg-gradient-to-r from-theme-1 to-theme-2 shadow-lg shadow-theme-1/30' 
-                          : 'bg-white/10'
-                      }`}>
+                          ? 'bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500 shadow-lg shadow-indigo-500/30' 
+                          : darkMode ? 'bg-white/10' : 'bg-slate-200',
+                      ])}>
                         <Lucide 
                           icon="ArrowRightCircle" 
-                          className={`w-4 h-4 sm:w-5 sm:h-5 ${selected ? 'text-white' : 'text-white/70'}`} 
+                          className={clsx([
+                            'w-4 h-4 sm:w-5 sm:h-5',
+                            selected ? 'text-white' : darkMode ? 'text-white/70' : 'text-slate-500',
+                          ])} 
                         />
                       </div>
                       <span>Payouts</span>
                       {selected && (
-                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-theme-1 via-theme-2 to-emerald-500"></div>
+                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500"></div>
                       )}
                     </Tab.Button>
                   )}

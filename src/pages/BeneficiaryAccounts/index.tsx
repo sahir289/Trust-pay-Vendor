@@ -4,7 +4,6 @@
 import Lucide from '@/components/Base/Lucide';
 import { FormInput } from '@/components/Base/Form';
 import ModalContent from '@/components/Modal/ModalContent/ModalContent';
-import { Tab } from '@/components/Base/Headless';
 import React, { useState, useCallback, useEffect } from 'react';
 import {
   BeneficiaryAccountsFormFields,
@@ -58,6 +57,7 @@ import {
   updateBeneficiaryApi,
 } from '@/redux-toolkit/slices/beneficiaryAccounts/beneficiaryAccountsAPI';
 import { addAllNotification } from '@/redux-toolkit/slices/AllNoti/allNotifications';
+import clsx from 'clsx';
 
 interface BeneficiaryAccount {
   id: string;
@@ -74,7 +74,7 @@ interface FormData {
 
 const BeneficiaryAccounts: React.FC = () => {
   const dispatch = useAppDispatch();
-  useAppSelector(selectDarkMode); // Subscribe to dark mode to trigger re-render
+  const darkMode = useAppSelector(selectDarkMode);
   const pagination = useAppSelector(getPaginationData);
   const [verificationDelete, setVerificationDelete] = useState(false);
   const refreshBankDetails = useAppSelector(getRefreshBeneficiaryAccounts);
@@ -645,25 +645,49 @@ const BeneficiaryAccounts: React.FC = () => {
   beneficiaryAccountsData = allbeneficiaryAccounts?.beneficiaryAccount;
 
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4 sm:p-6 lg:p-8 shadow-2xl border border-white/10 min-h-screen">
+    <div className={clsx([
+      'relative overflow-hidden rounded-3xl p-4 sm:p-6 lg:p-8 shadow-2xl min-h-screen',
+      darkMode 
+        ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border border-white/10'
+        : 'bg-gradient-to-br from-white via-slate-50 to-white border border-slate-200',
+    ])}>
       {/* Background gradient overlay */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.15),transparent_30%),radial-gradient(circle_at_85%_10%,rgba(14,165,233,0.12),transparent_28%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.12),transparent_24%)]"></div>
+      <div className={clsx([
+        'pointer-events-none absolute inset-0',
+        darkMode 
+          ? 'bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.15),transparent_30%),radial-gradient(circle_at_85%_10%,rgba(14,165,233,0.12),transparent_28%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.12),transparent_24%)]'
+          : 'bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.08),transparent_30%),radial-gradient(circle_at_85%_10%,rgba(14,165,233,0.06),transparent_28%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.06),transparent_24%)]',
+      ])}></div>
 
       <div className="relative z-10">
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 border rounded-2xl border-white/20 bg-white/10 shrink-0">
+            <div className={clsx([
+              'flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 border rounded-2xl shrink-0',
+              darkMode 
+                ? 'border-white/20 bg-white/10'
+                : 'border-slate-200 bg-slate-100',
+            ])}>
               <Lucide
                 icon="Wallet"
-                className="w-5 h-5 sm:w-6 sm:h-6 text-white"
+                className={clsx([
+                  'w-5 h-5 sm:w-6 sm:h-6',
+                  darkMode ? 'text-white' : 'text-slate-700',
+                ])}
               />
             </div>
             <div>
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold text-white">
+              <h1 className={clsx([
+                'text-xl sm:text-2xl md:text-3xl font-semibold',
+                darkMode ? 'text-white' : 'text-slate-800',
+              ])}>
                 Beneficiary Accounts
               </h1>
-              <p className="text-white/60 text-sm hidden sm:block">
+              <p className={clsx([
+                'text-sm hidden sm:block',
+                darkMode ? 'text-white/60' : 'text-slate-500',
+              ])}>
                 Manage your beneficiary accounts
               </p>
             </div>
@@ -674,7 +698,6 @@ const BeneficiaryAccounts: React.FC = () => {
               handleModal={beneficiaryModal}
               forOpen={newUserModal}
               buttonTitle={`Add Beneficiary`}
-              // className="px-5 py-3 rounded-xl bg-gradient-to-r from-theme-1 via-theme-2 to-emerald-500 text-white font-semibold shadow-lg shadow-theme-2/30 hover:shadow-theme-2/50 transition-all duration-200 flex items-center gap-2"
             >
               <DynamicForm
                 sections={
@@ -767,194 +790,160 @@ const BeneficiaryAccounts: React.FC = () => {
         </Modal>
 
         {/* Main Content Card */}
-        <div className="rounded-2xl bg-white/10 border border-white/15 shadow-2xl backdrop-blur-xl overflow-hidden">
-            {/* Tab List - Only show for Admin */}
-            {role === Role.ADMIN && (
-              <Tab.List className="flex border-b border-white/10 bg-white/5">
-                <Tab className="relative flex-1">
-                  {({ selected }) => (
-                    <Tab.Button
-                      className={`w-full py-3 sm:py-4 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base md:text-lg font-medium transition-all duration-300 relative ${
-                        selected
-                          ? 'text-white bg-gradient-to-r from-theme-1/20 via-theme-2/20 to-emerald-500/20 border-b-2 border-theme-1'
-                          : 'text-white/60 hover:text-white hover:bg-white/5'
-                      }`}
-                      as="button"
-                    >
-                      <div className={`flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl ${
-                        selected 
-                          ? 'bg-gradient-to-r from-theme-1 to-theme-2 shadow-lg shadow-theme-1/30' 
-                          : 'bg-white/10'
-                      }`}>
-                        <Lucide 
-                          icon="Building2" 
-                          className={`w-4 h-4 sm:w-5 sm:h-5 ${selected ? 'text-white' : 'text-white/70'}`} 
-                        />
-                      </div>
-                      <span>Merchant</span>
-                      {selected && (
-                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-theme-1 via-theme-2 to-emerald-500"></div>
-                      )}
-                    </Tab.Button>
-                  )}
-                </Tab>
-                <Tab className="relative flex-1">
-                  {({ selected }) => (
-                    <Tab.Button
-                      className={`w-full py-3 sm:py-4 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base md:text-lg font-medium transition-all duration-300 relative ${
-                        selected
-                          ? 'text-white bg-gradient-to-r from-theme-1/20 via-theme-2/20 to-emerald-500/20 border-b-2 border-theme-1'
-                          : 'text-white/60 hover:text-white hover:bg-white/5'
-                      }`}
-                      as="button"
-                    >
-                      <div className={`flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl ${
-                        selected 
-                          ? 'bg-gradient-to-r from-theme-1 to-theme-2 shadow-lg shadow-theme-1/30' 
-                          : 'bg-white/10'
-                      }`}>
-                        <Lucide 
-                          icon="Users" 
-                          className={`w-4 h-4 sm:w-5 sm:h-5 ${selected ? 'text-white' : 'text-white/70'}`} 
-                        />
-                      </div>
-                      <span>Vendor</span>
-                      {selected && (
-                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-theme-1 via-theme-2 to-emerald-500"></div>
-                      )}
-                    </Tab.Button>
-                  )}
-                </Tab>
-              </Tab.List>
-            )}
-
-            {/* Search and Actions Bar */}
-            <div className="p-4 sm:p-6">
-              <div className="flex flex-col sm:items-center sm:flex-row gap-y-3 mb-6">
-                <div>
-                  <div className="relative">
-                    <Lucide
-                      icon="Search"
-                      className="absolute inset-y-0 left-0 z-10 w-4 h-4 my-auto ml-3 stroke-[1.3] text-white/50"
-                    />
-                    <FormInput
-                      type="text"
-                      placeholder="Search Beneficiary..."
-                      className="pl-9 sm:w-64 rounded-xl bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-theme-1/50 focus:ring-theme-1/30"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                    {searchQuery && (
-                      <Lucide
-                        icon="X"
-                        className="absolute inset-y-0 right-0 z-10 w-4 h-4 my-auto mr-3 stroke-[1.3] text-white/50 cursor-pointer hover:text-white"
-                        onClick={() => setSearchQuery('')}
-                      />
-                    )}
-                  </div>
-                </div>
-                <div className="flex flex-col sm:flex-row gap-x-3 gap-y-2 sm:ml-auto">
-                  <Menu>
-                    <Menu.Button
-                      as={Button}
-                      variant="outline-secondary"
-                      className="w-full sm:w-auto bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30"
-                      onClick={handleRefresh}
-                    >
-                      <Lucide
-                        icon="RefreshCw"
-                        className="stroke-[1.3] w-4 h-4 mr-2"
-                      />
-                      Refresh
-                    </Menu.Button>
-                  </Menu>
-                  <Menu>
-                    <Menu.Button
-                      as={Button}
-                      variant="outline-secondary"
-                      className="w-full sm:w-auto bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30"
-                      onClick={handleReset}
-                    >
-                      <Lucide
-                        icon="RotateCcw"
-                        className="stroke-[1.3] w-4 h-4 mr-2"
-                      />
-                      Reset
-                    </Menu.Button>
-                  </Menu>
-                </div>
-              </div>
-
-              {/* Table Section */}
-              <div className="overflow-auto xl:overflow-visible">
-                {allbeneficiaryAccounts.loading ? (
-                  <div className="flex justify-center items-center w-full h-96">
-                    <LoadingIcon
-                      icon="ball-triangle"
-                      className="w-[5%] h-auto"
-                    />
-                  </div>
-                ) : (
-                  <CommonTable
-                    columns={
-                      role &&
-                      [
-                        Role.MERCHANT,
-                        Role.MERCHANT_ADMIN,
-                        Role.SUB_MERCHANT,
-                        Role.MERCHANT_OPERATIONS,
-                      ].includes(role)
-                        ? Columns.BeneficiaryAccounts_Merchant
-                        : role &&
-                          [Role.VENDOR, Role.SUB_VENDOR, Role.VENDOR_OPERATIONS].includes(role)
-                        ? Columns.BeneficiaryAccounts_Vendor
-                        : parentTab === 0
-                        ? Columns.BeneficiaryAccounts_Merchant_Admin
-                        : Columns.BeneficiaryAccounts_Vendor_Admin
-                    }
-                    data={{
-                      rows: beneficiaryAccountsData,
-                      totalCount: allbeneficiaryAccounts.count,
-                    }}
-                    currentPage={Number(pagination?.page) || 1}
-                    pageSize={Number(pagination?.limit) || 10}
-                    onPageChange={handlePageChange}
-                    onPageSizeChange={handlePageSizeChange}
-                    handleNumberChange={handleNumberChange}
-                    handleToggleClick={handleToggleClick}
-                    source="Beneficiaries"
-                    actionMenuItems={(row: any) => {
-                      const items: Array<{
-                        label: string;
-                        icon: 'Pencil' | 'Trash2' | 'Eye' | 'Plus';
-                        onClick?: () => void;
-                        onMouseEnter?: () => void;
-                        hover?: boolean;
-                      }> = [];
-
-                      items.push({
-                        label: 'Edit',
-                        icon: 'Pencil',
-                        onClick: () => {
-                          setBeneficiaryToEdit(row);
-                          setVerification(true);
-                        },
-                      });
-                      if (designation !== Role.TRANSACTIONS) {
-                        items.push({
-                          label: 'Delete',
-                          icon: 'Trash2',
-                          onClick: async () => handleDeleteData(row.id),
-                        });
-                      }
-                      return items;
-                    }}
+        <div className={clsx([
+          'rounded-2xl shadow-2xl backdrop-blur-xl overflow-hidden',
+          darkMode 
+            ? 'bg-white/10 border border-white/15'
+            : 'bg-white border border-slate-200',
+        ])}>
+          {/* Search and Actions Bar */}
+          <div className="p-4 sm:p-6">
+            <div className="flex flex-col sm:items-center sm:flex-row gap-y-3 mb-6">
+              <div>
+                <div className="relative">
+                  <Lucide
+                    icon="Search"
+                    className={clsx([
+                      'absolute inset-y-0 left-0 z-10 w-4 h-4 my-auto ml-3 stroke-[1.3]',
+                      darkMode ? 'text-white/50' : 'text-slate-400',
+                    ])}
                   />
-                )}
+                  <FormInput
+                    type="text"
+                    placeholder="Search Beneficiary..."
+                    className={clsx([
+                      'pl-9 sm:w-64 rounded-xl',
+                      darkMode 
+                        ? 'bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-theme-1/50 focus:ring-theme-1/30'
+                        : 'bg-white border-slate-200 text-slate-800 placeholder:text-slate-400 focus:border-theme-1/50 focus:ring-theme-1/30',
+                    ])}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                  {searchQuery && (
+                    <Lucide
+                      icon="X"
+                      className={clsx([
+                        'absolute inset-y-0 right-0 z-10 w-4 h-4 my-auto mr-3 stroke-[1.3] cursor-pointer',
+                        darkMode ? 'text-white/50 hover:text-white' : 'text-slate-400 hover:text-slate-600',
+                      ])}
+                      onClick={() => setSearchQuery('')}
+                    />
+                  )}
+                </div>
               </div>
+              <div className="flex flex-col sm:flex-row gap-x-3 gap-y-2 sm:ml-auto">
+                <Menu>
+                  <Menu.Button
+                    as={Button}
+                    variant="outline-secondary"
+                    className={clsx([
+                      'w-full sm:w-auto',
+                      darkMode 
+                        ? 'bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30'
+                        : 'bg-slate-100 border-slate-200 text-slate-700 hover:bg-slate-200 hover:border-slate-300',
+                    ])}
+                    onClick={handleRefresh}
+                  >
+                    <Lucide
+                      icon="RefreshCw"
+                      className="stroke-[1.3] w-4 h-4 mr-2"
+                    />
+                    Refresh
+                  </Menu.Button>
+                </Menu>
+                <Menu>
+                  <Menu.Button
+                    as={Button}
+                    variant="outline-secondary"
+                    className={clsx([
+                      'w-full sm:w-auto',
+                      darkMode 
+                        ? 'bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30'
+                        : 'bg-slate-100 border-slate-200 text-slate-700 hover:bg-slate-200 hover:border-slate-300',
+                    ])}
+                    onClick={handleReset}
+                  >
+                    <Lucide
+                      icon="RotateCcw"
+                      className="stroke-[1.3] w-4 h-4 mr-2"
+                    />
+                    Reset
+                  </Menu.Button>
+                </Menu>
+              </div>
+            </div>
+
+            {/* Table Section */}
+            <div className="overflow-auto xl:overflow-visible">
+              {allbeneficiaryAccounts.loading ? (
+                <div className="flex justify-center items-center w-full h-96">
+                  <LoadingIcon
+                    icon="ball-triangle"
+                    className="w-[5%] h-auto"
+                  />
+                </div>
+              ) : (
+                <CommonTable
+                  columns={
+                    role &&
+                    [
+                      Role.MERCHANT,
+                      Role.MERCHANT_ADMIN,
+                      Role.SUB_MERCHANT,
+                      Role.MERCHANT_OPERATIONS,
+                    ].includes(role)
+                      ? Columns.BeneficiaryAccounts_Merchant
+                      : role &&
+                        [Role.VENDOR, Role.SUB_VENDOR, Role.VENDOR_OPERATIONS].includes(role)
+                      ? Columns.BeneficiaryAccounts_Vendor
+                      : parentTab === 0
+                      ? Columns.BeneficiaryAccounts_Merchant_Admin
+                      : Columns.BeneficiaryAccounts_Vendor_Admin
+                  }
+                  data={{
+                    rows: beneficiaryAccountsData,
+                    totalCount: allbeneficiaryAccounts.count,
+                  }}
+                  currentPage={Number(pagination?.page) || 1}
+                  pageSize={Number(pagination?.limit) || 10}
+                  onPageChange={handlePageChange}
+                  onPageSizeChange={handlePageSizeChange}
+                  handleNumberChange={handleNumberChange}
+                  handleToggleClick={handleToggleClick}
+                  source="Beneficiaries"
+                  actionMenuItems={(row: any) => {
+                    const items: Array<{
+                      label: string;
+                      icon: 'Pencil' | 'Trash2' | 'Eye' | 'Plus';
+                      onClick?: () => void;
+                      onMouseEnter?: () => void;
+                      hover?: boolean;
+                    }> = [];
+
+                    items.push({
+                      label: 'Edit',
+                      icon: 'Pencil',
+                      onClick: () => {
+                        setBeneficiaryToEdit(row);
+                        setVerification(true);
+                      },
+                    });
+                    if (designation !== Role.TRANSACTIONS) {
+                      items.push({
+                        label: 'Delete',
+                        icon: 'Trash2',
+                        onClick: async () => handleDeleteData(row.id),
+                      });
+                    }
+                    return items;
+                  }}
+                />
+              )}
             </div>
           </div>
         </div>
+      </div>
     </div>
   );
 };

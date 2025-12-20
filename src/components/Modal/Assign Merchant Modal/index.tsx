@@ -197,7 +197,7 @@ const AssignMerchantModal: React.FC<AssignMerchantModalProps> = ({
       <ModalContent
         handleCancelDelete={handleModal}
         handleConfirmDelete={handleModal}
-        buttonTitle="Update"
+        // buttonTitle="Update"
       >
         <h2 className="text-lg font-semibold mb-4">{title}</h2>
 

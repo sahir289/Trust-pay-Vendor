@@ -22,11 +22,13 @@ import {
   removeNotificationById,
 } from '@/redux-toolkit/slices/AllNoti/allNotifications';
 
-type ResetHistoryProps = {
-  setTabState: any;
-};
+interface EntityFormProps {
+  setTabState: React.Dispatch<React.SetStateAction<number>>;
+  onSuccess?: () => void;
+  onCancel?: () => void;
+}
 
-function EntityForm({ setTabState }: ResetHistoryProps) {
+function EntityForm({ setTabState, onSuccess, onCancel }: EntityFormProps) {
   const dispatch = useAppDispatch();
   const [newTransactionModal, setNewTransactionModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -94,6 +96,9 @@ function EntityForm({ setTabState }: ResetHistoryProps) {
           }),
         );
         autoClearNotification(notificationId);
+        if (onSuccess) {
+          onSuccess();
+        }
       } else if (res.error) {
         const notificationId = `${Date.now()}-${Math.random()}`;
         dispatch(
@@ -104,7 +109,7 @@ function EntityForm({ setTabState }: ResetHistoryProps) {
         );
         autoClearNotification(notificationId);
       }
-      setTabState(0);
+      setTabState((prev) => prev + 1);
     } catch (error: any) {
       const notificationId = `${Date.now()}-${Math.random()}`;
       dispatch(
@@ -120,17 +125,15 @@ function EntityForm({ setTabState }: ResetHistoryProps) {
     }
   }, 300);
 
+  const handleCancel = () => {
+    if (onCancel) {
+      onCancel();
+    }
+    toggleTransactionModal();
+  };
+
   return (
-    <>
-      <div className="grid grid-cols-12 gap-y-10 gap-x-6">
-        <div className="col-span-12">
-          <div className="relative flex flex-col gap-y-7">
-            {/* Form Card with glassmorphism effect */}
-            <div className="rounded-2xl bg-white/10 border border-white/15 shadow-2xl backdrop-blur-xl overflow-hidden">
-              <div className="p-4 sm:p-6">
-                
-                {/* Form */}
-                <div className="w-full md:w-full lg:w-3/4 xl:w-2/3 mx-auto">
+    <>                
                   <DynamicForm
                     sections={
                       getDataEntriesFormFields(bankOptions, true, role)
@@ -139,16 +142,10 @@ function EntityForm({ setTabState }: ResetHistoryProps) {
                     onSubmit={debouncedHandleCreateBankResponse}
                     defaultValues={{ bank_acc_id: defaultbank }}
                     isEditMode={true}
-                    handleCancel={toggleTransactionModal}
+                    handleCancel={handleCancel}
                     isAddData={true}
                     isLoading={isLoading}
                   />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </>
   );
 }

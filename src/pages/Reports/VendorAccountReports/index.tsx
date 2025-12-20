@@ -37,6 +37,8 @@ import ModalContent from '@/components/Modal/ModalContent/ModalContent';
 import { updateCalculations } from '@/redux-toolkit/slices/calculations/calcuationsAPI';
 import DynamicForm from '@/components/CommonForm';
 import { verifyPassword } from '@/redux-toolkit/slices/auth/authAPI';
+import { selectDarkMode } from '@/redux-toolkit/slices/common/darkMode/darkModeSlice';
+import clsx from 'clsx';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -79,6 +81,7 @@ const VendorAccountReports: React.FC<VendorAccountReportsProps> = ({
   role,
   name,
 }) => {
+  const darkMode = useAppSelector(selectDarkMode);
   const [vendorCode, setVendorCode] = useState<VendorCode[]>([]);
   const [countReport, setCountReports] = useState<number>(0);
   const dispatch = useAppDispatch();
@@ -576,25 +579,49 @@ const VendorAccountReports: React.FC<VendorAccountReportsProps> = ({
   };
 
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4 sm:p-6 lg:p-8 shadow-2xl border border-white/10 min-h-screen">
+    <div className={clsx([
+      'relative overflow-hidden rounded-3xl p-4 sm:p-6 lg:p-8 shadow-2xl min-h-screen',
+      darkMode 
+        ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border border-white/10'
+        : 'bg-gradient-to-br from-white via-slate-50 to-white border border-slate-200',
+    ])}>
       {/* Background gradient overlay */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.15),transparent_30%),radial-gradient(circle_at_85%_10%,rgba(14,165,233,0.12),transparent_28%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.12),transparent_24%)]"></div>
+      <div className={clsx([
+        'pointer-events-none absolute inset-0',
+        darkMode 
+          ? 'bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.15),transparent_30%),radial-gradient(circle_at_85%_10%,rgba(14,165,233,0.12),transparent_28%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.12),transparent_24%)]'
+          : 'bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.08),transparent_30%),radial-gradient(circle_at_85%_10%,rgba(14,165,233,0.06),transparent_28%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.06),transparent_24%)]',
+      ])}></div>
 
       <div className="relative z-10">
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 border rounded-2xl border-white/20 bg-white/10 shrink-0">
+            <div className={clsx([
+              'flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 border rounded-2xl shrink-0',
+              darkMode 
+                ? 'border-white/20 bg-white/10'
+                : 'border-slate-200 bg-slate-100',
+            ])}>
               <Lucide
                 icon="FileBarChart"
-                className="w-5 h-5 sm:w-6 sm:h-6 text-white"
+                className={clsx([
+                  'w-5 h-5 sm:w-6 sm:h-6',
+                  darkMode ? 'text-white' : 'text-slate-700',
+                ])}
               />
             </div>
             <div>
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold text-white">
+              <h1 className={clsx([
+                'text-xl sm:text-2xl md:text-3xl font-semibold',
+                darkMode ? 'text-white' : 'text-slate-800',
+              ])}>
                 Vendor Reports
               </h1>
-              <p className="text-white/60 text-sm hidden sm:block">
+              <p className={clsx([
+                'text-sm hidden sm:block',
+                darkMode ? 'text-white/60' : 'text-slate-500',
+              ])}>
                 View and export vendor account reports
               </p>
             </div>
@@ -602,11 +629,19 @@ const VendorAccountReports: React.FC<VendorAccountReportsProps> = ({
         </div>
 
         {/* Filter Section Card */}
-        <div className="rounded-2xl bg-white/10 border border-white/15 shadow-2xl backdrop-blur-xl overflow-hidden mb-6">
+        <div className={clsx([
+          'rounded-2xl shadow-2xl backdrop-blur-xl overflow-hidden mb-6',
+          darkMode 
+            ? 'bg-white/10 border border-white/15'
+            : 'bg-white border border-slate-200',
+        ])}>
           <div className="p-4 sm:p-6">
             <div className="flex flex-col lg:flex-row gap-4 items-end">
               <div className="w-full lg:w-[50%]">
-                <label className="block text-xs sm:text-sm mb-2 px-1 text-white/70">
+                <label className={clsx([
+                  'block text-xs sm:text-sm mb-2 px-1',
+                  darkMode ? 'text-white/70' : 'text-slate-600',
+                ])}>
                   Vendor Codes
                 </label>
                 <MultiSelect
@@ -642,29 +677,30 @@ const VendorAccountReports: React.FC<VendorAccountReportsProps> = ({
                   }}
                   enforceRange={false}
                   placeholder="Select a date range"
-                  className="w-full px-3 py-2 h-10 text-xs sm:text-sm rounded-xl bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-theme-1/50 focus:ring-theme-1/30"
+                  className={clsx([
+                    'w-full px-3 py-2 h-10 text-xs sm:text-sm rounded-xl',
+                    darkMode 
+                      ? 'bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-theme-1/50 focus:ring-theme-1/30'
+                      : 'bg-white border-slate-200 text-slate-800 placeholder:text-slate-400 focus:border-theme-1/50 focus:ring-theme-1/30',
+                  ])}
                 />
                 <div className="flex flex-row gap-2 sm:gap-3">
                   <Button
-                    className={`px-4 w-full sm:w-auto h-10 text-xs sm:text-sm rounded-xl ${
-                      selectedFilter.length &&
-                      selectedFilterDates &&
-                      vendorCode.length
-                        ? 'bg-gradient-to-r from-theme-1 to-theme-2 text-white border-0 shadow-lg shadow-theme-1/30'
-                        : 'bg-white/10 text-white/50 cursor-not-allowed border-white/20'
-                    }`}
-                    disabled={
-                      !selectedFilter.length ||
-                      !selectedFilterDates ||
-                      !vendorCode.length
-                    }
+                    className={clsx([
+                      'px-4 w-full sm:w-auto h-10 text-xs sm:text-sm rounded-xl transition-all duration-200',
+                      selectedFilter.length && selectedFilterDates && vendorCode.length
+                        ? 'bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500 hover:from-indigo-600 hover:via-purple-600 hover:to-cyan-600 text-white border-0 shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/35 hover:scale-[1.02] active:scale-[0.98]'
+                        : darkMode 
+                          ? 'bg-white/10 text-white/50 cursor-not-allowed border-white/20'
+                          : 'bg-slate-100 text-slate-400 cursor-not-allowed border-slate-200',
+                    ])}
+                    disabled={!selectedFilter.length || !selectedFilterDates || !vendorCode.length}
                     onClick={() => {
                       if (!selectedFilter.length || !selectedFilterDates) {
                         dispatch(
                           addAllNotification({
                             status: Status.ERROR,
-                            message:
-                              'Please select both vendors and date range.',
+                            message: 'Please select both vendors and date range.',
                           }),
                         );
                         return;
@@ -679,41 +715,48 @@ const VendorAccountReports: React.FC<VendorAccountReportsProps> = ({
                     <Menu.Button
                       as={Button}
                       variant="outline-secondary"
-                      className="px-4 w-full sm:w-auto h-10 text-xs sm:text-sm rounded-xl bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30"
+                      className={clsx([
+                        'px-4 w-full sm:w-auto h-10 text-xs sm:text-sm rounded-xl',
+                        darkMode 
+                          ? 'bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30'
+                          : 'bg-slate-100 border-slate-200 text-slate-700 hover:bg-slate-200 hover:border-slate-300',
+                      ])}
                     >
                       <Lucide icon="Download" className="w-4 h-4 mr-2" />
                       Export
                       <Lucide icon="ChevronDown" className="w-4 h-4 ml-2" />
                     </Menu.Button>
-                    <Menu.Items className="w-40 bg-slate-800 border border-white/20 rounded-xl">
+                    <Menu.Items className={clsx([
+                      'w-40 rounded-xl',
+                      darkMode 
+                        ? 'bg-slate-800 border border-white/20'
+                        : 'bg-white border border-slate-200',
+                    ])}>
                       <Menu.Item
                         onClick={() => handleDownload('CSV')}
-                        className="text-white hover:bg-white/10"
+                        className={clsx([
+                          darkMode ? 'text-white hover:bg-white/10' : 'text-slate-700 hover:bg-slate-100',
+                        ])}
                       >
-                        <Lucide
-                          icon="FileText"
-                          className="stroke-[1.3] w-4 h-4 mr-2"
-                        />
+                        <Lucide icon="FileText" className="stroke-[1.3] w-4 h-4 mr-2" />
                         CSV
                       </Menu.Item>
                       <Menu.Item
                         onClick={() => handleDownload('XLSX')}
-                        className="text-white hover:bg-white/10"
+                        className={clsx([
+                          darkMode ? 'text-white hover:bg-white/10' : 'text-slate-700 hover:bg-slate-100',
+                        ])}
                       >
-                        <Lucide
-                          icon="FileSpreadsheet"
-                          className="stroke-[1.3] w-4 h-4 mr-2"
-                        />
+                        <Lucide icon="FileSpreadsheet" className="stroke-[1.3] w-4 h-4 mr-2" />
                         XLSX
                       </Menu.Item>
                       <Menu.Item
                         onClick={() => handleDownload('PDF')}
-                        className="text-white hover:bg-white/10"
+                        className={clsx([
+                          darkMode ? 'text-white hover:bg-white/10' : 'text-slate-700 hover:bg-slate-100',
+                        ])}
                       >
-                        <Lucide
-                          icon="FileText"
-                          className="stroke-[1.3] w-4 h-4 mr-2"
-                        />
+                        <Lucide icon="FileText" className="stroke-[1.3] w-4 h-4 mr-2" />
                         PDF
                       </Menu.Item>
                     </Menu.Items>
@@ -725,7 +768,12 @@ const VendorAccountReports: React.FC<VendorAccountReportsProps> = ({
         </div>
 
         {/* Table Section Card */}
-        <div className="rounded-2xl bg-white/10 border border-white/15 shadow-2xl backdrop-blur-xl overflow-hidden">
+        <div className={clsx([
+          'rounded-2xl shadow-2xl backdrop-blur-xl overflow-hidden',
+          darkMode 
+            ? 'bg-white/10 border border-white/15'
+            : 'bg-white border border-slate-200',
+        ])}>
           <div className="p-4 sm:p-6">
             <div className="overflow-auto xl:overflow-visible">
               {isLoaded ? (

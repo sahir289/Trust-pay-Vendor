@@ -1,13 +1,15 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Lucide from '@/components/Base/Lucide';
-// import { Menu } from "@/components/Base/Headless";
 import BarChart from '@/components/VerticalBarChart';
 import { useEffect, useState } from 'react';
 import MultiSelect from '@/components/MultiSelect/MultiSelect';
 import Litepicker from '@/components/Base/Litepicker';
 import { Role } from '@/constants';
-// import CustomTooltip from "@/pages/Tooltip/tooltip";
+import { useAppSelector } from '@/redux-toolkit/hooks/useAppSelector';
+import { selectDarkMode } from '@/redux-toolkit/slices/common/darkMode/darkModeSlice';
+import clsx from 'clsx';
+
 function VendorBoard({
   calculationData,
   vendorPayinChartData,
@@ -29,7 +31,7 @@ function VendorBoard({
   endDate,
   isLoading,
 }: any) {
-  // const vendorCurrentDateCalculation = calculationData?.vendor[0] || {};
+  const darkMode = useAppSelector(selectDarkMode);
   const [totalCalculations, setTotalCalculations] = useState(
     calculationData?.vendorTotalCalculations || {},
   );
@@ -51,20 +53,7 @@ function VendorBoard({
   const userData = localStorage.getItem('userData');
   const parsedData = userData ? JSON.parse(userData) : null;
   const userRole = parsedData?.role;
-  // const userDesignation = parsedData?.designation;
-  // const currentUserId = parsedData?.user_id || parsedData?.userId;
 
-  // Check if current vendor has sub-vendors by looking in vendorCodes
-  // const currentVendorHasSubVendors =
-  //   userRole === Role.VENDOR && vendorCodes
-  //     ? vendorCodes.some(
-  //         (vendor: any) =>
-  //           vendor.value === currentUserId &&
-  //           (vendor.subvendors?.length > 0 || vendor.subVendors?.length > 0),
-  //       )
-  //     : false;
-
-  // Chart datasets configuration
   const calculationChartDatasets = [
     {
       data: vendorPayinChartData || [],
@@ -168,8 +157,18 @@ function VendorBoard({
   ];
 
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4 sm:p-6 lg:p-8 shadow-2xl border border-white/10">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.15),transparent_30%),radial-gradient(circle_at_85%_10%,rgba(14,165,233,0.12),transparent_28%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.12),transparent_24%)]"></div>
+    <div className={clsx([
+      'relative overflow-hidden rounded-3xl p-4 sm:p-6 lg:p-8 shadow-2xl',
+      darkMode 
+        ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border border-white/10'
+        : 'bg-gradient-to-br from-white via-slate-50 to-white border border-slate-200',
+    ])}>
+      <div className={clsx([
+        'pointer-events-none absolute inset-0',
+        darkMode 
+          ? 'bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.15),transparent_30%),radial-gradient(circle_at_85%_10%,rgba(14,165,233,0.12),transparent_28%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.12),transparent_24%)]'
+          : 'bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.08),transparent_30%),radial-gradient(circle_at_85%_10%,rgba(14,165,233,0.06),transparent_28%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.06),transparent_24%)]',
+      ])}></div>
       <div className="relative z-10 grid grid-cols-12 gap-y-6 gap-x-4 lg:gap-y-10 lg:gap-x-6">
         <div className="col-span-12">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6 mb-6">
@@ -185,7 +184,10 @@ function VendorBoard({
               <div className="relative w-full sm:w-72">
                 <Lucide
                   icon="Calendar"
-                  className="absolute text-white/60 inset-y-0 left-0 z-10 w-4 h-4 my-auto ml-3 stroke-[1.3]"
+                  className={clsx([
+                    'absolute inset-y-0 left-0 z-10 w-4 h-4 my-auto ml-3 stroke-[1.3]',
+                    darkMode ? 'text-white/60' : 'text-slate-400',
+                  ])}
                 />
                 <Litepicker
                   value={vendorSelectedFilterDates}
@@ -207,13 +209,18 @@ function VendorBoard({
                     endDate: endDate,
                   }}
                   placeholder="Select a date range"
-                  className="w-full pl-10 rounded-xl bg-white/10 text-white placeholder:text-white/50 border border-white/20 focus:border-theme-1/60 focus:ring-2 focus:ring-theme-1/30 dark:!box"
+                  className={clsx([
+                    'w-full pl-10 rounded-xl border focus:ring-2 focus:ring-theme-1/30',
+                    darkMode 
+                      ? 'bg-white/10 text-white placeholder:text-white/50 border-white/20 focus:border-theme-1/60'
+                      : 'bg-white text-slate-800 placeholder:text-slate-400 border-slate-200 focus:border-theme-1/60',
+                  ])}
                 />
               </div>
               <button
                 onClick={handleFilterData}
                 disabled={isLoading}
-                className="px-5 py-3 rounded-xl bg-gradient-to-r from-theme-1 via-theme-2 to-emerald-500 text-white font-semibold shadow-lg shadow-theme-2/30 hover:shadow-theme-2/50 transition disabled:opacity-60 disabled:cursor-not-allowed"
+                className="px-5 py-3 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500 hover:from-indigo-600 hover:via-purple-600 hover:to-cyan-600 text-white font-semibold shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/35 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
                 {isLoading ? (
                   <div className="flex items-center justify-center gap-2 text-sm">
@@ -248,193 +255,382 @@ function VendorBoard({
         </div>
         <div className="grid grid-cols-12 col-span-12 gap-4 lg:gap-5 mt-3.5">
 
-                    {/* Calculations Box */}
-            <div className="flex flex-col col-span-12 p-4 sm:p-6 md:col-span-6 rounded-2xl bg-white/10 border border-white/15 shadow-2xl backdrop-blur-xl">
+          {/* Calculations Box */}
+          <div className={clsx([
+            'flex flex-col col-span-12 p-4 sm:p-6 rounded-2xl shadow-2xl backdrop-blur-xl',
+            darkMode 
+              ? 'bg-white/10 border border-white/15'
+              : 'bg-white border border-slate-200',
+          ])}>
             <div className="flex items-center gap-3 mb-6">
-              <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 shrink-0 border rounded-full border-primary/10 bg-primary/10">
-              <Lucide
-              icon="Calculator"
-              className="w-5 h-5 sm:w-6 sm:h-6 text-primary fill-primary/10"
-              />
-              </div>
-              <div>
-              <div className="text-xl sm:text-2xl lg:text-3xl font-semibold">
-              Calculations
-              </div>
-              </div>
-            </div>
-
-            {/* Stats Grid */}
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-4">
-              {/* Deposits */}
-              <div className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-600/10 border border-blue-400/20 p-3 sm:p-4 hover:border-blue-400/40 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10">
-              <div className="absolute top-0 right-0 w-16 h-16 bg-blue-400/10 rounded-full -mr-8 -mt-8"></div>
-              <div className="flex items-center gap-2 mb-2">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-500/20">
-              <Lucide icon="BadgeIndianRupee" className="w-4 h-4 text-blue-400" />
-              </div>
-              <span className="text-xs sm:text-sm text-blue-300/80 font-medium">Deposits</span>
-              </div>
-              <div className="text-lg sm:text-xl lg:text-2xl font-bold text-white">
-              ₹{totalCalculations?.total_payin_amount || 0}
-              </div>
-              </div>
-
-              {/* Withdrawals */}
-              <div className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-orange-500/20 to-orange-600/10 border border-orange-400/20 p-3 sm:p-4 hover:border-orange-400/40 transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/10">
-              <div className="absolute top-0 right-0 w-16 h-16 bg-orange-400/10 rounded-full -mr-8 -mt-8"></div>
-              <div className="flex items-center gap-2 mb-2">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-orange-500/20">
-              <Lucide icon="ArrowRightCircle" className="w-4 h-4 text-orange-400" />
-              </div>
-              <span className="text-xs sm:text-sm text-orange-300/80 font-medium">Withdrawals</span>
-              </div>
-              <div className="text-lg sm:text-xl lg:text-2xl font-bold text-white">
-              ₹{totalCalculations?.total_payout_amount || 0}
-              </div>
-              </div>
-
-              {/* Reverse Withdrawals */}
-              <div className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-yellow-500/20 to-yellow-600/10 border border-yellow-400/20 p-3 sm:p-4 hover:border-yellow-400/40 transition-all duration-300 hover:shadow-lg hover:shadow-yellow-500/10">
-              <div className="absolute top-0 right-0 w-16 h-16 bg-yellow-400/10 rounded-full -mr-8 -mt-8"></div>
-              <div className="flex items-center gap-2 mb-2">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-yellow-500/20">
-              <Lucide icon="ArrowRightCircle" className="w-4 h-4 text-yellow-400" />
-              </div>
-              <span className="text-xs sm:text-sm text-yellow-300/80 font-medium">Reverse Withdrawals</span>
-              </div>
-              <div className="text-lg sm:text-xl lg:text-2xl font-bold text-white">
-              ₹{totalCalculations?.total_reverse_payout_amount || 0}
-              </div>
-              </div>
-
-              {/* Commission */}
-              <div className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-purple-500/20 to-purple-600/10 border border-purple-400/20 p-3 sm:p-4 hover:border-purple-400/40 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10">
-              <div className="absolute top-0 right-0 w-16 h-16 bg-purple-400/10 rounded-full -mr-8 -mt-8"></div>
-              <div className="flex items-center gap-2 mb-2">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-purple-500/20">
-              <Lucide icon="BadgePercent" className="w-4 h-4 text-purple-400" />
-              </div>
-              <span className="text-xs sm:text-sm text-purple-300/80 font-medium">Commission</span>
-              </div>
-              <div className="text-lg sm:text-xl lg:text-2xl font-bold text-white">
-              ₹{totalCommission || 0}
-              </div>
-              </div>
-
-              {/* Settlements */}
-              <div className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-indigo-500/20 to-indigo-600/10 border border-indigo-400/20 p-3 sm:p-4 hover:border-indigo-400/40 transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/10">
-              <div className="absolute top-0 right-0 w-16 h-16 bg-indigo-400/10 rounded-full -mr-8 -mt-8"></div>
-              <div className="flex items-center gap-2 mb-2">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-500/20">
-              <Lucide icon="NotebookText" className="w-4 h-4 text-indigo-400" />
-              </div>
-              <span className="text-xs sm:text-sm text-indigo-300/80 font-medium">Settlements</span>
-              </div>
-              <div className="text-lg sm:text-xl lg:text-2xl font-bold text-white">
-              ₹{totalCalculations?.total_settlement_amount || 0}
-              </div>
-              </div>
-
-              {/* Chargebacks */}
-              <div className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-red-500/20 to-red-600/10 border border-red-400/20 p-3 sm:p-4 hover:border-red-400/40 transition-all duration-300 hover:shadow-lg hover:shadow-red-500/10">
-              <div className="absolute top-0 right-0 w-16 h-16 bg-red-400/10 rounded-full -mr-8 -mt-8"></div>
-              <div className="flex items-center gap-2 mb-2">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-red-500/20">
-              <Lucide icon="ArrowLeftCircle" className="w-4 h-4 text-red-400" />
-              </div>
-              <span className="text-xs sm:text-sm text-red-300/80 font-medium">Chargebacks</span>
-              </div>
-              <div className="text-lg sm:text-xl lg:text-2xl font-bold text-white">
-              ₹{totalCalculations?.total_chargeback_amount || 0}
-              </div>
-              </div>
-
-              {/* Adjustments */}
-              <div className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-pink-500/20 to-pink-600/10 border border-pink-400/20 p-3 sm:p-4 hover:border-pink-400/40 transition-all duration-300 hover:shadow-lg hover:shadow-pink-500/10 col-span-2 lg:col-span-1">
-              <div className="absolute top-0 right-0 w-16 h-16 bg-pink-400/10 rounded-full -mr-8 -mt-8"></div>
-              <div className="flex items-center gap-2 mb-2">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-pink-500/20">
-              <Lucide icon="ArrowLeftCircle" className="w-4 h-4 text-pink-400" />
-              </div>
-              <span className="text-xs sm:text-sm text-pink-300/80 font-medium">Adjustments</span>
-              </div>
-              <div className="text-lg sm:text-xl lg:text-2xl font-bold text-white">
-              ₹{totalCalculations?.total_adjustment_amount || 0}
-              </div>
-              </div>
-            </div>
-
-            {/* Balance Cards - Full Width Single Row Each */}
-            <div className="flex flex-col gap-3 sm:gap-4 mt-2">
-              {/* Current Balance */}
-              <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-emerald-500/30 to-emerald-600/20 border border-emerald-400/30 p-4 sm:p-5">
-              <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-emerald-400/10 rounded-full"></div>
-              <div className="absolute top-2 right-2">
-              <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-              </div>
-              <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-500/30 border border-emerald-400/30">
-                <Lucide icon="Globe" className="w-5 h-5 text-emerald-400" />
-              </div>
-              <span className="text-sm sm:text-base text-emerald-300 font-semibold">Current Balance</span>
-              </div>
-              <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-emerald-400">
-              ₹{-1 * (totalCalculations?.current_balance || 0)}
-              </div>
-              </div>
-              </div>
-
-              {/* Net Balance */}
-              <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-cyan-500/30 to-cyan-600/20 border border-cyan-400/30 p-4 sm:p-5">
-              <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-cyan-400/10 rounded-full"></div>
-              <div className="absolute top-2 right-2">
-              <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
-              </div>
-              <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-cyan-500/30 border border-cyan-400/30">
-                <Lucide icon="Globe" className="w-5 h-5 text-cyan-400" />
-              </div>
-              <span className="text-sm sm:text-base text-cyan-300 font-semibold">Net Balance</span>
-              </div>
-              <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-cyan-400">
-              ₹{-1 * (calculationData?.netBalance?.vendor || 0).toFixed(2)}
-              </div>
-              </div>
-              </div>
-            </div>
-            </div>
-
-                    {/* Calculation Chart */}
-                    <div className="flex flex-col col-span-12 p-4 sm:p-5 md:col-span-6 rounded-2xl bg-white/10 border border-white/15 shadow-2xl backdrop-blur-xl">
-            {/* <Menu className="absolute top-0 right-0 mt-5 mr-5">
-              <Menu.Button className="w-5 h-5 text-slate-500">
-                <Lucide
-                  icon="MoreVertical"
-                  className="w-6 h-6 stroke-slate-400/70 fill-slate-400/70"
-                />
-              </Menu.Button>
-              <Menu.Items className="w-40">
-                <Menu.Item>
-                  <Lucide icon="Copy" className="w-4 h-4 mr-2" /> Copy Link
-                </Menu.Item>
-                <Menu.Item>
-                  <Lucide icon="Trash" className="w-4 h-4 mr-2" />
-                  Delete
-                </Menu.Item>
-              </Menu.Items>
-            </Menu> */}
-            <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 shrink-0 border rounded-full border-primary/10 bg-primary/10">
+              <div className={clsx([
+                'flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 shrink-0 border rounded-full',
+                darkMode ? 'border-primary/10 bg-primary/10' : 'border-primary/20 bg-primary/10',
+              ])}>
                 <Lucide
                   icon="Calculator"
                   className="w-5 h-5 sm:w-6 sm:h-6 text-primary fill-primary/10"
                 />
               </div>
               <div>
-                <div className="text-xl sm:text-2xl lg:text-3xl font-semibold">
+                <div className={clsx([
+                  'text-xl sm:text-2xl lg:text-3xl font-semibold',
+                  darkMode ? 'text-white' : 'text-slate-800',
+                ])}>
+                  Calculations
+                </div>
+              </div>
+            </div>
+
+            {/* Stats Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3 sm:gap-4 mb-4">
+              {/* Deposits */}
+              <div className={clsx([
+                'group relative overflow-hidden rounded-xl p-3 sm:p-4 transition-all duration-300',
+                darkMode 
+                  ? 'bg-gradient-to-br from-blue-500/20 to-blue-600/10 border border-blue-400/20 hover:border-blue-400/40 hover:shadow-lg hover:shadow-blue-500/10'
+                  : 'bg-gradient-to-br from-blue-50 to-blue-100/50 border border-blue-200 hover:border-blue-300 hover:shadow-lg hover:shadow-blue-200/50',
+              ])}>
+                <div className={clsx([
+                  'absolute top-0 right-0 w-16 h-16 rounded-full -mr-8 -mt-8',
+                  darkMode ? 'bg-blue-400/10' : 'bg-blue-200/30',
+                ])}></div>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className={clsx([
+                    'flex items-center justify-center w-8 h-8 rounded-lg',
+                    darkMode ? 'bg-blue-500/20' : 'bg-blue-200',
+                  ])}>
+                    <Lucide icon="BadgeIndianRupee" className={clsx([
+                      'w-4 h-4',
+                      darkMode ? 'text-blue-400' : 'text-blue-600',
+                    ])} />
+                  </div>
+                  <span className={clsx([
+                    'text-xs sm:text-sm font-medium',
+                    darkMode ? 'text-blue-300/80' : 'text-blue-700',
+                  ])}>Deposits</span>
+                </div>
+                <div className={clsx([
+                  'text-lg sm:text-xl lg:text-2xl font-bold',
+                  darkMode ? 'text-white' : 'text-slate-800',
+                ])}>
+                  ₹{totalCalculations?.total_payin_amount || 0}
+                </div>
+              </div>
+
+              {/* Withdrawals */}
+              <div className={clsx([
+                'group relative overflow-hidden rounded-xl p-3 sm:p-4 transition-all duration-300',
+                darkMode 
+                  ? 'bg-gradient-to-br from-orange-500/20 to-orange-600/10 border border-orange-400/20 hover:border-orange-400/40 hover:shadow-lg hover:shadow-orange-500/10'
+                  : 'bg-gradient-to-br from-orange-50 to-orange-100/50 border border-orange-200 hover:border-orange-300 hover:shadow-lg hover:shadow-orange-200/50',
+              ])}>
+                <div className={clsx([
+                  'absolute top-0 right-0 w-16 h-16 rounded-full -mr-8 -mt-8',
+                  darkMode ? 'bg-orange-400/10' : 'bg-orange-200/30',
+                ])}></div>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className={clsx([
+                    'flex items-center justify-center w-8 h-8 rounded-lg',
+                    darkMode ? 'bg-orange-500/20' : 'bg-orange-200',
+                  ])}>
+                    <Lucide icon="ArrowRightCircle" className={clsx([
+                      'w-4 h-4',
+                      darkMode ? 'text-orange-400' : 'text-orange-600',
+                    ])} />
+                  </div>
+                  <span className={clsx([
+                    'text-xs sm:text-sm font-medium',
+                    darkMode ? 'text-orange-300/80' : 'text-orange-700',
+                  ])}>Withdrawals</span>
+                </div>
+                <div className={clsx([
+                  'text-lg sm:text-xl lg:text-2xl font-bold',
+                  darkMode ? 'text-white' : 'text-slate-800',
+                ])}>
+                  ₹{totalCalculations?.total_payout_amount || 0}
+                </div>
+              </div>
+
+              {/* Reverse Withdrawals */}
+              <div className={clsx([
+                'group relative overflow-hidden rounded-xl p-3 sm:p-4 transition-all duration-300',
+                darkMode 
+                  ? 'bg-gradient-to-br from-yellow-500/20 to-yellow-600/10 border border-yellow-400/20 hover:border-yellow-400/40 hover:shadow-lg hover:shadow-yellow-500/10'
+                  : 'bg-gradient-to-br from-yellow-50 to-yellow-100/50 border border-yellow-200 hover:border-yellow-300 hover:shadow-lg hover:shadow-yellow-200/50',
+              ])}>
+                <div className={clsx([
+                  'absolute top-0 right-0 w-16 h-16 rounded-full -mr-8 -mt-8',
+                  darkMode ? 'bg-yellow-400/10' : 'bg-yellow-200/30',
+                ])}></div>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className={clsx([
+                    'flex items-center justify-center w-8 h-8 rounded-lg',
+                    darkMode ? 'bg-yellow-500/20' : 'bg-yellow-200',
+                  ])}>
+                    <Lucide icon="ArrowRightCircle" className={clsx([
+                      'w-4 h-4',
+                      darkMode ? 'text-yellow-400' : 'text-yellow-600',
+                    ])} />
+                  </div>
+                  <span className={clsx([
+                    'text-xs sm:text-sm font-medium',
+                    darkMode ? 'text-yellow-300/80' : 'text-yellow-700',
+                  ])}>Reverse Withdrawals</span>
+                </div>
+                <div className={clsx([
+                  'text-lg sm:text-xl lg:text-2xl font-bold',
+                  darkMode ? 'text-white' : 'text-slate-800',
+                ])}>
+                  ₹{totalCalculations?.total_reverse_payout_amount || 0}
+                </div>
+              </div>
+
+              {/* Commission */}
+              <div className={clsx([
+                'group relative overflow-hidden rounded-xl p-3 sm:p-4 transition-all duration-300',
+                darkMode 
+                  ? 'bg-gradient-to-br from-purple-500/20 to-purple-600/10 border border-purple-400/20 hover:border-purple-400/40 hover:shadow-lg hover:shadow-purple-500/10'
+                  : 'bg-gradient-to-br from-purple-50 to-purple-100/50 border border-purple-200 hover:border-purple-300 hover:shadow-lg hover:shadow-purple-200/50',
+              ])}>
+                <div className={clsx([
+                  'absolute top-0 right-0 w-16 h-16 rounded-full -mr-8 -mt-8',
+                  darkMode ? 'bg-purple-400/10' : 'bg-purple-200/30',
+                ])}></div>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className={clsx([
+                    'flex items-center justify-center w-8 h-8 rounded-lg',
+                    darkMode ? 'bg-purple-500/20' : 'bg-purple-200',
+                  ])}>
+                    <Lucide icon="BadgePercent" className={clsx([
+                      'w-4 h-4',
+                      darkMode ? 'text-purple-400' : 'text-purple-600',
+                    ])} />
+                  </div>
+                  <span className={clsx([
+                    'text-xs sm:text-sm font-medium',
+                    darkMode ? 'text-purple-300/80' : 'text-purple-700',
+                  ])}>Commission</span>
+                </div>
+                <div className={clsx([
+                  'text-lg sm:text-xl lg:text-2xl font-bold',
+                  darkMode ? 'text-white' : 'text-slate-800',
+                ])}>
+                  ₹{totalCommission || 0}
+                </div>
+              </div>
+
+              {/* Settlements */}
+              <div className={clsx([
+                'group relative overflow-hidden rounded-xl p-3 sm:p-4 transition-all duration-300',
+                darkMode 
+                  ? 'bg-gradient-to-br from-indigo-500/20 to-indigo-600/10 border border-indigo-400/20 hover:border-indigo-400/40 hover:shadow-lg hover:shadow-indigo-500/10'
+                  : 'bg-gradient-to-br from-indigo-50 to-indigo-100/50 border border-indigo-200 hover:border-indigo-300 hover:shadow-lg hover:shadow-indigo-200/50',
+              ])}>
+                <div className={clsx([
+                  'absolute top-0 right-0 w-16 h-16 rounded-full -mr-8 -mt-8',
+                  darkMode ? 'bg-indigo-400/10' : 'bg-indigo-200/30',
+                ])}></div>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className={clsx([
+                    'flex items-center justify-center w-8 h-8 rounded-lg',
+                    darkMode ? 'bg-indigo-500/20' : 'bg-indigo-200',
+                  ])}>
+                    <Lucide icon="NotebookText" className={clsx([
+                      'w-4 h-4',
+                      darkMode ? 'text-indigo-400' : 'text-indigo-600',
+                    ])} />
+                  </div>
+                  <span className={clsx([
+                    'text-xs sm:text-sm font-medium',
+                    darkMode ? 'text-indigo-300/80' : 'text-indigo-700',
+                  ])}>Settlements</span>
+                </div>
+                <div className={clsx([
+                  'text-lg sm:text-xl lg:text-2xl font-bold',
+                  darkMode ? 'text-white' : 'text-slate-800',
+                ])}>
+                  ₹{totalCalculations?.total_settlement_amount || 0}
+                </div>
+              </div>
+
+              {/* Chargebacks */}
+              <div className={clsx([
+                'group relative overflow-hidden rounded-xl p-3 sm:p-4 transition-all duration-300',
+                darkMode 
+                  ? 'bg-gradient-to-br from-red-500/20 to-red-600/10 border border-red-400/20 hover:border-red-400/40 hover:shadow-lg hover:shadow-red-500/10'
+                  : 'bg-gradient-to-br from-red-50 to-red-100/50 border border-red-200 hover:border-red-300 hover:shadow-lg hover:shadow-red-200/50',
+              ])}>
+                <div className={clsx([
+                  'absolute top-0 right-0 w-16 h-16 rounded-full -mr-8 -mt-8',
+                  darkMode ? 'bg-red-400/10' : 'bg-red-200/30',
+                ])}></div>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className={clsx([
+                    'flex items-center justify-center w-8 h-8 rounded-lg',
+                    darkMode ? 'bg-red-500/20' : 'bg-red-200',
+                  ])}>
+                    <Lucide icon="ArrowLeftCircle" className={clsx([
+                      'w-4 h-4',
+                      darkMode ? 'text-red-400' : 'text-red-600',
+                    ])} />
+                  </div>
+                  <span className={clsx([
+                    'text-xs sm:text-sm font-medium',
+                    darkMode ? 'text-red-300/80' : 'text-red-700',
+                  ])}>Chargebacks</span>
+                </div>
+                <div className={clsx([
+                  'text-lg sm:text-xl lg:text-2xl font-bold',
+                  darkMode ? 'text-white' : 'text-slate-800',
+                ])}>
+                  ₹{totalCalculations?.total_chargeback_amount || 0}
+                </div>
+              </div>
+
+              {/* Adjustments */}
+              <div className={clsx([
+                'group relative overflow-hidden rounded-xl p-3 sm:p-4 transition-all duration-300 col-span-2 lg:col-span-1',
+                darkMode 
+                  ? 'bg-gradient-to-br from-pink-500/20 to-pink-600/10 border border-pink-400/20 hover:border-pink-400/40 hover:shadow-lg hover:shadow-pink-500/10'
+                  : 'bg-gradient-to-br from-pink-50 to-pink-100/50 border border-pink-200 hover:border-pink-300 hover:shadow-lg hover:shadow-pink-200/50',
+              ])}>
+                <div className={clsx([
+                  'absolute top-0 right-0 w-16 h-16 rounded-full -mr-8 -mt-8',
+                  darkMode ? 'bg-pink-400/10' : 'bg-pink-200/30',
+                ])}></div>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className={clsx([
+                    'flex items-center justify-center w-8 h-8 rounded-lg',
+                    darkMode ? 'bg-pink-500/20' : 'bg-pink-200',
+                  ])}>
+                    <Lucide icon="ArrowLeftCircle" className={clsx([
+                      'w-4 h-4',
+                      darkMode ? 'text-pink-400' : 'text-pink-600',
+                    ])} />
+                  </div>
+                  <span className={clsx([
+                    'text-xs sm:text-sm font-medium',
+                    darkMode ? 'text-pink-300/80' : 'text-pink-700',
+                  ])}>Adjustments</span>
+                </div>
+                <div className={clsx([
+                  'text-lg sm:text-xl lg:text-2xl font-bold',
+                  darkMode ? 'text-white' : 'text-slate-800',
+                ])}>
+                  ₹{totalCalculations?.total_adjustment_amount || 0}
+                </div>
+              </div>
+            </div>
+
+            {/* Balance Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mt-2">
+              {/* Current Balance */}
+              <div className={clsx([
+                'relative overflow-hidden rounded-xl p-4 sm:p-5',
+                darkMode 
+                  ? 'bg-gradient-to-br from-emerald-500/30 to-emerald-600/20 border border-emerald-400/30'
+                  : 'bg-gradient-to-br from-emerald-50 to-emerald-100 border border-emerald-200',
+              ])}>
+                <div className={clsx([
+                  'absolute -bottom-4 -right-4 w-24 h-24 rounded-full',
+                  darkMode ? 'bg-emerald-400/10' : 'bg-emerald-200/50',
+                ])}></div>
+                <div className="absolute top-2 right-2">
+                  <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className={clsx([
+                      'flex items-center justify-center w-10 h-10 rounded-xl',
+                      darkMode 
+                        ? 'bg-emerald-500/30 border border-emerald-400/30'
+                        : 'bg-emerald-200 border border-emerald-300',
+                    ])}>
+                      <Lucide icon="Globe" className={clsx([
+                        'w-5 h-5',
+                        darkMode ? 'text-emerald-400' : 'text-emerald-600',
+                      ])} />
+                    </div>
+                    <span className={clsx([
+                      'text-sm sm:text-base font-semibold',
+                      darkMode ? 'text-emerald-300' : 'text-emerald-700',
+                    ])}>Current Balance</span>
+                  </div>
+                  <div className={clsx([
+                    'text-2xl sm:text-3xl lg:text-4xl font-bold',
+                    darkMode ? 'text-emerald-400' : 'text-emerald-600',
+                  ])}>
+                    ₹{-1 * (totalCalculations?.current_balance || 0)}
+                  </div>
+                </div>
+              </div>
+
+              {/* Net Balance */}
+              <div className={clsx([
+                'relative overflow-hidden rounded-xl p-4 sm:p-5',
+                darkMode 
+                  ? 'bg-gradient-to-br from-cyan-500/30 to-cyan-600/20 border border-cyan-400/30'
+                  : 'bg-gradient-to-br from-cyan-50 to-cyan-100 border border-cyan-200',
+              ])}>
+                <div className={clsx([
+                  'absolute -bottom-4 -right-4 w-24 h-24 rounded-full',
+                  darkMode ? 'bg-cyan-400/10' : 'bg-cyan-200/50',
+                ])}></div>
+                <div className="absolute top-2 right-2">
+                  <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className={clsx([
+                      'flex items-center justify-center w-10 h-10 rounded-xl',
+                      darkMode 
+                        ? 'bg-cyan-500/30 border border-cyan-400/30'
+                        : 'bg-cyan-200 border border-cyan-300',
+                    ])}>
+                      <Lucide icon="Globe" className={clsx([
+                        'w-5 h-5',
+                        darkMode ? 'text-cyan-400' : 'text-cyan-600',
+                      ])} />
+                    </div>
+                    <span className={clsx([
+                      'text-sm sm:text-base font-semibold',
+                      darkMode ? 'text-cyan-300' : 'text-cyan-700',
+                    ])}>Net Balance</span>
+                  </div>
+                  <div className={clsx([
+                    'text-2xl sm:text-3xl lg:text-4xl font-bold',
+                    darkMode ? 'text-cyan-400' : 'text-cyan-600',
+                  ])}>
+                    ₹{-1 * (calculationData?.netBalance?.vendor || 0).toFixed(2)}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Calculation Chart */}
+          <div className={clsx([
+            'flex flex-col col-span-12 p-4 sm:p-5 rounded-2xl shadow-2xl backdrop-blur-xl',
+            darkMode 
+              ? 'bg-white/10 border border-white/15'
+              : 'bg-white border border-slate-200',
+          ])}>
+            <div className="flex items-center gap-3">
+              <div className={clsx([
+                'flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 shrink-0 border rounded-full',
+                darkMode ? 'border-primary/10 bg-primary/10' : 'border-primary/20 bg-primary/10',
+              ])}>
+                <Lucide
+                  icon="Calculator"
+                  className="w-5 h-5 sm:w-6 sm:h-6 text-primary fill-primary/10"
+                />
+              </div>
+              <div>
+                <div className={clsx([
+                  'text-xl sm:text-2xl lg:text-3xl font-semibold',
+                  darkMode ? 'text-white' : 'text-slate-800',
+                ])}>
                   Calculations
                 </div>
               </div>
@@ -449,34 +645,64 @@ function VendorBoard({
           </div>
 
           {(userRole === Role.ADMIN || userRole === Role.VENDOR) && (
-            <div className="flex flex-col col-span-12 rounded-2xl bg-white/10 border border-white/15 shadow-2xl backdrop-blur-xl p-4 sm:p-6">
+            <div className={clsx([
+              'flex flex-col col-span-12 rounded-2xl shadow-2xl backdrop-blur-xl p-4 sm:p-6',
+              darkMode 
+                ? 'bg-white/10 border border-white/15'
+                : 'bg-white border border-slate-200',
+            ])}>
               <div className="flex items-start justify-between gap-3 flex-wrap">
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 border rounded-2xl border-white/20 bg-white/10 shrink-0">
+                  <div className={clsx([
+                    'flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 border rounded-2xl shrink-0',
+                    darkMode ? 'border-white/20 bg-white/10' : 'border-slate-200 bg-slate-100',
+                  ])}>
                     <Lucide
                       icon="NotebookText"
-                      className="w-5 h-5 sm:w-6 sm:h-6 text-white"
+                      className={clsx([
+                        'w-5 h-5 sm:w-6 sm:h-6',
+                        darkMode ? 'text-white' : 'text-slate-800',
+                      ])}
                     />
                   </div>
                   <div>
-                    <div className="text-lg sm:text-xl lg:text-2xl font-semibold text-white">
+                    <div className={clsx([
+                      'text-lg sm:text-xl lg:text-2xl font-semibold',
+                      darkMode ? 'text-white' : 'text-slate-800',
+                    ])}>
                       Settlements & Commissions
                     </div>
-                    <p className="text-white/60 text-sm">Quick financial snapshot</p>
+                    <p className={clsx([
+                      'text-sm',
+                      darkMode ? 'text-white/60' : 'text-slate-600',
+                    ])}>Quick financial snapshot</p>
                   </div>
                 </div>
               </div>
 
               <div className="grid md:grid-cols-2 gap-4 sm:gap-5 mt-6">
-                <div className="rounded-2xl border border-white/15 bg-white/5 p-3 sm:p-4 shadow-inner">
+                <div className={clsx([
+                  'rounded-2xl p-3 sm:p-4 shadow-inner',
+                  darkMode 
+                    ? 'border border-white/15 bg-white/5'
+                    : 'border border-slate-200 bg-slate-50',
+                ])}>
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-base sm:text-lg font-semibold text-white">
+                    <span className={clsx([
+                      'text-base sm:text-lg font-semibold',
+                      darkMode ? 'text-white' : 'text-slate-800',
+                    ])}>
                       Settlements
                     </span>
                   </div>
                   <div className="overflow-x-auto -mx-3 sm:mx-0 px-3 sm:px-0">
-                    <table className="w-full table-auto text-[10px] sm:text-xs md:text-sm text-left text-white/90">
-                      <thead className="bg-white/5 text-white">
+                    <table className={clsx([
+                      'w-full table-auto text-left',
+                      darkMode ? 'text-white/90' : 'text-slate-800',
+                    ])}>
+                      <thead className={clsx([
+                        darkMode ? 'bg-white/5 text-white' : 'bg-slate-100 text-slate-800',
+                      ])}>
                         <tr>
                           <th className="px-1 sm:px-2 md:px-3 py-2 font-semibold">
                             Type
@@ -544,11 +770,12 @@ function VendorBoard({
                         ].map((row, index) => (
                           <tr
                             key={row.type}
-                            className={`${
+                            className={clsx([
                               index % 2 === 0
-                                ? 'bg-white/5'
-                                : 'bg-transparent'
-                            } hover:bg-white/10 transition`}
+                                ? darkMode ? 'bg-white/5' : 'bg-slate-100'
+                                : 'bg-transparent',
+                              'hover:bg-white/10 transition',
+                            ])}
                           >
                             <td className="px-1 sm:px-2 md:px-3 py-2 font-medium">
                               {row.type}
@@ -566,16 +793,32 @@ function VendorBoard({
                   </div>
                 </div>
 
-                <div className="rounded-2xl border border-white/15 bg-white/5 p-3 sm:p-4 shadow-inner">
+                <div className={clsx([
+                  'rounded-2xl p-3 sm:p-4 shadow-inner',
+                  darkMode 
+                    ? 'border border-white/15 bg-white/5'
+                    : 'border border-slate-200 bg-slate-50',
+                ])}>
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-base sm:text-lg font-semibold text-white">
+                    <span className={clsx([
+                      'text-base sm:text-lg font-semibold',
+                      darkMode ? 'text-white' : 'text-slate-800',
+                    ])}>
                       Commissions
                     </span>
-                    <span className="text-xs text-white/60">All values in ₹</span>
+                    <span className={clsx([
+                      'text-xs',
+                      darkMode ? 'text-white/60' : 'text-slate-600',
+                    ])}>All values in ₹</span>
                   </div>
                   <div className="overflow-x-auto -mx-3 sm:mx-0 px-3 sm:px-0">
-                    <table className="w-full table-auto text-[10px] sm:text-xs md:text-sm text-left text-white/90">
-                      <thead className="bg-white/5 text-white">
+                    <table className={clsx([
+                      'w-full table-auto text-left',
+                      darkMode ? 'text-white/90' : 'text-slate-800',
+                    ])}>
+                      <thead className={clsx([
+                        darkMode ? 'bg-white/5 text-white' : 'bg-slate-100 text-slate-800',
+                      ])}>
                         <tr>
                           <th className="px-1 sm:px-2 md:px-3 py-2 font-semibold text-center whitespace-nowrap">
                             Payin
@@ -595,7 +838,10 @@ function VendorBoard({
                         </tr>
                       </thead>
                       <tbody>
-                        <tr className="bg-white/5 hover:bg-white/10">
+                        <tr className={clsx([
+                          darkMode ? 'bg-white/5' : 'bg-slate-100',
+                          'hover:bg-white/10',
+                        ])}>
                           <td className="px-1 sm:px-2 md:px-3 py-2 text-center font-semibold whitespace-nowrap">
                             ₹ {totalCalculations?.total_payin_commission || 0}
                           </td>
@@ -627,16 +873,27 @@ function VendorBoard({
           )}
 
           {/* Deposits Chart */}
-          <div className="flex flex-col col-span-12 p-4 sm:p-5 md:col-span-6 rounded-2xl bg-white/10 border border-white/15 shadow-2xl backdrop-blur-xl">
+          <div className={clsx([
+            'flex flex-col col-span-12 p-4 sm:p-5 md:col-span-6 rounded-2xl shadow-2xl backdrop-blur-xl',
+            darkMode 
+              ? 'bg-white/10 border border-white/15'
+              : 'bg-white border border-slate-200',
+          ])}>
             <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 border rounded-full border-primary/10 bg-primary/10 shrink-0">
+              <div className={clsx([
+                'flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 shrink-0 border rounded-full',
+                darkMode ? 'border-primary/10 bg-primary/10' : 'border-primary/20 bg-primary/10',
+              ])}>
                 <Lucide
                   icon="BadgeIndianRupee"
                   className="w-5 h-5 sm:w-6 sm:h-6 text-primary"
                 />
               </div>
               <div>
-                <div className="text-xl sm:text-2xl lg:text-3xl font-semibold">
+                <div className={clsx([
+                  'text-xl sm:text-2xl lg:text-3xl font-semibold',
+                  darkMode ? 'text-white' : 'text-slate-800',
+                ])}>
                   Deposits
                 </div>
               </div>
@@ -651,16 +908,27 @@ function VendorBoard({
           </div>
 
           {/* Withdrawals Chart */}
-          <div className="flex flex-col col-span-12 p-4 sm:p-5 md:col-span-6 rounded-2xl bg-white/10 border border-white/15 shadow-2xl backdrop-blur-xl">
+          <div className={clsx([
+            'flex flex-col col-span-12 p-4 sm:p-5 md:col-span-6 rounded-2xl shadow-2xl backdrop-blur-xl',
+            darkMode 
+              ? 'bg-white/10 border border-white/15'
+              : 'bg-white border border-slate-200',
+          ])}>
             <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 border rounded-full border-primary/10 bg-primary/10 shrink-0">
+              <div className={clsx([
+                'flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 shrink-0 border rounded-full',
+                darkMode ? 'border-primary/10 bg-primary/10' : 'border-primary/20 bg-primary/10',
+              ])}>
                 <Lucide
                   icon="ArrowRightCircle"
                   className="w-5 h-5 sm:w-6 sm:h-6 text-primary"
                 />
               </div>
               <div>
-                <div className="text-xl sm:text-2xl lg:text-3xl font-semibold">
+                <div className={clsx([
+                  'text-xl sm:text-2xl lg:text-3xl font-semibold',
+                  darkMode ? 'text-white' : 'text-slate-800',
+                ])}>
                   Withdrawals
                 </div>
               </div>
@@ -675,16 +943,27 @@ function VendorBoard({
           </div>
 
           {/* Settlements Chart */}
-          <div className="flex flex-col col-span-12 p-4 sm:p-5 md:col-span-6 rounded-2xl bg-white/10 border border-white/15 shadow-2xl backdrop-blur-xl">
+          <div className={clsx([
+            'flex flex-col col-span-12 p-4 sm:p-5 md:col-span-6 rounded-2xl shadow-2xl backdrop-blur-xl',
+            darkMode 
+              ? 'bg-white/10 border border-white/15'
+              : 'bg-white border border-slate-200',
+          ])}>
             <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 border rounded-full border-primary/10 bg-primary/10 shrink-0">
+              <div className={clsx([
+                'flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 shrink-0 border rounded-full',
+                darkMode ? 'border-primary/10 bg-primary/10' : 'border-primary/20 bg-primary/10',
+              ])}>
                 <Lucide
                   icon="NotebookText"
                   className="w-5 h-5 sm:w-6 sm:h-6 text-primary"
                 />
               </div>
               <div>
-                <div className="text-xl sm:text-2xl lg:text-3xl font-semibold">
+                <div className={clsx([
+                  'text-xl sm:text-2xl lg:text-3xl font-semibold',
+                  darkMode ? 'text-white' : 'text-slate-800',
+                ])}>
                   Settlements
                 </div>
               </div>
