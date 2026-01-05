@@ -215,7 +215,7 @@ const ForgotPassword = ({ onBack, onSuccess }: ForgotPasswordProps) => {
             variant="primary"
             rounded
             disabled={loading}
-            className="w-full mt-4 py-3.5"
+            className="w-full mt-4 py-3.5 font-semibold bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500 hover:from-indigo-600 hover:via-purple-600 hover:to-cyan-600 text-white shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/35 transition-all duration-200 hover:scale-[1.01] active:scale-[0.99]"
             type="submit"
           >
             {loading ? 'Sending...' : 'Send OTP'}
@@ -240,7 +240,7 @@ const ForgotPassword = ({ onBack, onSuccess }: ForgotPasswordProps) => {
             variant="primary"
             rounded
             disabled={loading}
-            className="w-full mt-4 py-3.5"
+            className="w-full mt-4 py-3.5 font-semibold bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500 hover:from-indigo-600 hover:via-purple-600 hover:to-cyan-600 text-white shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/35 transition-all duration-200 hover:scale-[1.01] active:scale-[0.99]"
             type="submit"
           >
             {loading ? 'Verifying...' : 'Verify OTP'}
@@ -303,7 +303,7 @@ const ForgotPassword = ({ onBack, onSuccess }: ForgotPasswordProps) => {
             variant="primary"
             rounded
             disabled={loading}
-            className="w-full mt-6 py-3.5"
+            className="w-full mt-6 py-3.5 font-semibold bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500 hover:from-indigo-600 hover:via-purple-600 hover:to-cyan-600 text-white shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/35 transition-all duration-200 hover:scale-[1.01] active:scale-[0.99]"
             type="submit"
           >
             {loading ? 'Resetting...' : 'Reset Password'}

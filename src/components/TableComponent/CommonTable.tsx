@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import Table from '@/components/Base/Table';
-import Pagination from '@/components/Base/Pagination';
+// import Pagination from '@/components/Base/Pagination';
 import Lucide, { icons } from '@/components/Base/Lucide';
 import { FormCheck, FormSwitch, FormSelect } from '@/components/Base/Form';
 import Tippy from '@/components/Base/Tippy';
@@ -452,50 +452,50 @@ const CommonTable: React.FC<CommonTableProps> = ({
     }
   };
 
-  const renderPaginationLinks = () => {
-    const pageNumbers = [];
-    const pagesToShow = 5;
+  // const renderPaginationLinks = () => {
+  //   const pageNumbers = [];
+  //   const pagesToShow = 5;
 
-    if (totalPages <= pagesToShow) {
-      for (let i = 1; i <= totalPages; i++) {
-        pageNumbers.push(i);
-      }
-    } else {
-      pageNumbers.push(1);
-      let startPage = Math.max(2, Number(currentPage) - 2);
-      let endPage = Math.min(totalPages - 1, Number(currentPage) + 2);
+  //   if (totalPages <= pagesToShow) {
+  //     for (let i = 1; i <= totalPages; i++) {
+  //       pageNumbers.push(i);
+  //     }
+  //   } else {
+  //     pageNumbers.push(1);
+  //     let startPage = Math.max(2, Number(currentPage) - 2);
+  //     let endPage = Math.min(totalPages - 1, Number(currentPage) + 2);
 
-      if (startPage > 2) {
-        pageNumbers.push('...');
-      }
+  //     if (startPage > 2) {
+  //       pageNumbers.push('...');
+  //     }
 
-      for (let i = startPage; i <= endPage; i++) {
-        pageNumbers.push(i);
-      }
+  //     for (let i = startPage; i <= endPage; i++) {
+  //       pageNumbers.push(i);
+  //     }
 
-      if (endPage < totalPages - 1) {
-        pageNumbers.push('...');
-      }
+  //     if (endPage < totalPages - 1) {
+  //       pageNumbers.push('...');
+  //     }
 
-      pageNumbers.push(totalPages);
-    }
+  //     pageNumbers.push(totalPages);
+  //   }
 
-    return pageNumbers.map((page, index) =>
-      typeof page === 'number' ? (
-        <Pagination.Link
-          key={index}
-          active={page === currentPage}
-          onClick={() => handlePageChange(page)}
-        >
-          {page}
-        </Pagination.Link>
-      ) : (
-        <span key={index} className="px-2">
-          ...
-        </span>
-      ),
-    );
-  };
+  //   return pageNumbers.map((page, index) =>
+  //     typeof page === 'number' ? (
+  //       <Pagination.Link
+  //         key={index}
+  //         active={page === currentPage}
+  //         onClick={() => handlePageChange(page)}
+  //       >
+  //         {page}
+  //       </Pagination.Link>
+  //     ) : (
+  //       <span key={index} className="px-2">
+  //         ...
+  //       </span>
+  //     ),
+  //   );
+  // };
 
   const isVendorRow = (row: any) => {
     return columns.some(
@@ -505,7 +505,7 @@ const CommonTable: React.FC<CommonTableProps> = ({
   };
 
   return (
-    <div className="relative w-full min-h-full rounded-3xl overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-3 sm:p-5 border border-white/10 shadow-2xl">
+    <div className="relative w-full min-h-full rounded-3xl overflow-hidden bg-gradient-to-br from-slate-100 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 p-3 sm:p-5 border border-slate-200 dark:border-white/10 shadow-2xl">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.16),transparent_28%),radial-gradient(circle_at_80%_0%,rgba(14,165,233,0.14),transparent_24%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.14),transparent_22%)]"></div>
       <div className="absolute inset-0 backdrop-blur-sm"></div>
       <div className="relative z-10 space-y-5">
@@ -726,16 +726,35 @@ const CommonTable: React.FC<CommonTableProps> = ({
                             onClick={(e) => e.stopPropagation()}
                           >
                             <CustomTooltip
-                              content="More Details"
+                              content="View More Details"
                               trigger={['hover']}
                             >
-                              <Lucide
-                                icon="PlusCircle"
-                                className="w-6 h-6 cursor-pointer text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-200"
+                              <button
+                                className="group relative flex items-center justify-center w-8 h-8 rounded-lg 
+                                  bg-gradient-to-br from-indigo-500/10 to-purple-500/10 
+                                  dark:from-indigo-500/20 dark:to-purple-500/20
+                                  border border-indigo-200/50 dark:border-indigo-500/30
+                                  hover:from-indigo-500/20 hover:to-purple-500/20 
+                                  dark:hover:from-indigo-500/30 dark:hover:to-purple-500/30
+                                  hover:border-indigo-300 dark:hover:border-indigo-400/50
+                                  hover:shadow-lg hover:shadow-indigo-500/20 dark:hover:shadow-indigo-500/10
+                                  transition-all duration-300 ease-out
+                                  active:scale-95"
                                 onClick={() =>
                                   handleShowAllData && handleShowAllData(row)
                                 }
-                              />
+                              >
+                                <Lucide
+                                  icon="ArrowRight"
+                                  className="w-4 h-4 text-indigo-600 dark:text-indigo-400 
+                                    group-hover:text-indigo-700 dark:group-hover:text-indigo-300
+                                    group-hover:scale-110 transition-all duration-300"
+                                />
+                                {/* <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75 dark:bg-indigo-500"></span>
+                                  <span className="relative inline-flex rounded-full h-3 w-3 bg-indigo-500 dark:bg-indigo-400"></span>
+                                </span> */}
+                              </button>
                             </CustomTooltip>
                           </div>
                         ) : col.type === 'number' ? (
@@ -2155,57 +2174,145 @@ const CommonTable: React.FC<CommonTableProps> = ({
       </div>
 
       {!expandable && totalPages > 0 && (
-        <div className="flex flex-col-reverse flex-wrap items-center p-3 sm:p-5 flex-reverse gap-y-2 sm:flex-row">
-          <Pagination className="flex-1 w-full sm:w-auto text-xs sm:text-sm">
-            <Pagination.Link
-              onClick={() => handlePageChange(1)}
-              active={currentPage === 1}
-            >
-              <Lucide icon="ChevronsLeft" className="w-3 h-3 sm:w-4 sm:h-4" />
-            </Pagination.Link>
-            <Pagination.Link
-              onClick={() =>
-                Number(currentPage) > 1 &&
-                handlePageChange(Number(currentPage) - 1)
-              }
-              active={currentPage === 1}
-            >
-              <Lucide icon="ChevronLeft" className="w-3 h-3 sm:w-4 sm:h-4" />
-            </Pagination.Link>
-            {renderPaginationLinks()}
-            <Pagination.Link
-              onClick={() =>
-                Number(currentPage) < totalPages &&
-                handlePageChange(Number(currentPage) + 1)
-              }
-              active={currentPage === totalPages}
-            >
-              <Lucide icon="ChevronRight" className="w-3 h-3 sm:w-4 sm:h-4" />
-            </Pagination.Link>
-            <Pagination.Link
-              onClick={() => handlePageChange(totalPages)}
-              active={currentPage === totalPages}
-            >
-              <Lucide icon="ChevronsRight" className="w-3 h-3 sm:w-4 sm:h-4" />
-            </Pagination.Link>
-          </Pagination>
-          <h2 className="mx-1 sm:mx-2 text-[10px] sm:text-xs md:text-sm flex items-center gap-1 sm:gap-2">
-            <span className="hidden sm:inline">Total Rows</span>
-            <span className="sm:hidden">Total</span>
-            <span className="w-12 sm:w-20 px-1 sm:px-2 py-1 sm:py-2 rounded-[0.5rem] dark:bg-darkmode-700 dark:text-gray-200 dark:border-darkmode-500 text-center text-[10px] sm:text-xs font-semibold">
-              {data.totalCount}
-            </span>
-            <span className="mx-0.5">/</span>
-          </h2>
+        <div className="flex flex-col sm:flex-row items-center justify-between p-4 sm:p-6 bg-gradient-to-r from-slate-50 via-white to-slate-50 dark:from-darkmode-700 dark:via-darkmode-600 dark:to-darkmode-700 border-t border-slate-200/60 dark:border-darkmode-500 rounded-b-2xl">
+          {/* Left side - Page size selector and total count */}
+          <div className="flex items-center gap-3 mb-3 sm:mb-0">
+        <div className="flex items-center gap-2 bg-white dark:bg-darkmode-800 px-3 py-2 rounded-xl shadow-sm border border-slate-200 dark:border-darkmode-500">
+          <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Show</span>
           <FormSelect
-            className="w-16 sm:w-20 rounded-[0.5rem] dark:bg-darkmode-700 dark:text-gray-200 dark:border-darkmode-500 text-[10px] sm:text-xs md:text-sm py-1 sm:py-2"
-            value={pageSize}
-            onChange={(e) => handlePageSizeChange(Number(e.target.value))}
+        className="w-16 border-0 bg-slate-100 dark:bg-darkmode-600 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-primary py-1.5"
+        value={pageSize}
+        onChange={(e) => handlePageSizeChange(Number(e.target.value))}
           >
-            <option value="20">20</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
+        <option value="20">20</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
           </FormSelect>
+          <span className="text-xs font-medium text-slate-500 dark:text-slate-400">entries</span>
+        </div>
+        <div className="hidden sm:flex items-center gap-2 bg-gradient-to-r from-theme-1/10 to-theme-2/10 dark:from-theme-1/20 dark:to-theme-2/20 px-4 py-2 rounded-xl border border-theme-1/30 dark:border-theme-1/40">
+          <Lucide icon="Database" className="w-4 h-4 text-theme-1 dark:text-theme-2" />
+          <span className="text-xs font-semibold text-theme-1 dark:text-theme-2">
+        {data.totalCount.toLocaleString()} records
+          </span>
+        </div>
+          </div>
+
+          {/* Center - Pagination controls */}
+          <div className="flex items-center gap-1.5">
+        <button
+          onClick={() => handlePageChange(1)}
+          disabled={currentPage === 1}
+          className={`flex items-center justify-center w-9 h-9 rounded-xl transition-all duration-200 ${
+        currentPage === 1
+          ? 'bg-slate-100 dark:bg-darkmode-600 text-slate-400 dark:text-slate-500 cursor-not-allowed opacity-70'
+          : 'bg-white dark:bg-darkmode-700 text-slate-600 dark:text-slate-300 hover:bg-theme-1/10 dark:hover:bg-theme-1/20 hover:text-theme-1 dark:hover:text-theme-2 shadow-sm border border-slate-200 dark:border-darkmode-500 hover:border-theme-1/50 dark:hover:border-theme-1/40'
+          }`}
+        >
+          <Lucide icon="ChevronsLeft" className="w-4 h-4" />
+        </button>
+        <button
+          onClick={() => Number(currentPage) > 1 && handlePageChange(Number(currentPage) - 1)}
+          disabled={currentPage === 1}
+          className={`flex items-center justify-center w-9 h-9 rounded-xl transition-all duration-200 ${
+        currentPage === 1
+          ? 'bg-slate-100 dark:bg-darkmode-600 text-slate-400 dark:text-slate-500 cursor-not-allowed opacity-70'
+          : 'bg-white dark:bg-darkmode-700 text-slate-600 dark:text-slate-300 hover:bg-theme-1/10 dark:hover:bg-theme-1/20 hover:text-theme-1 dark:hover:text-theme-2 shadow-sm border border-slate-200 dark:border-darkmode-500 hover:border-theme-1/50 dark:hover:border-theme-1/40'
+          }`}
+        >
+          <Lucide icon="ChevronLeft" className="w-4 h-4" />
+        </button>
+
+        <div className="flex items-center gap-1 px-2">
+          {(() => {
+        const pageNumbers = [];
+        const pagesToShow = 5;
+
+        if (totalPages <= pagesToShow) {
+          for (let i = 1; i <= totalPages; i++) {
+        pageNumbers.push(i);
+          }
+        } else {
+          pageNumbers.push(1);
+          let startPage = Math.max(2, Number(currentPage) - 1);
+          let endPage = Math.min(totalPages - 1, Number(currentPage) + 1);
+
+          if (startPage > 2) {
+            pageNumbers.push('...');
+          }
+
+          for (let i = startPage; i <= endPage; i++) {
+            pageNumbers.push(i);
+          }
+
+          if (endPage < totalPages - 1) {
+            pageNumbers.push('...');
+          }
+
+          pageNumbers.push(totalPages);
+            }
+
+            return pageNumbers.map((page, index) =>
+          typeof page === 'number' ? (
+            <button
+              key={index}
+              onClick={() => handlePageChange(page)}
+              className={`flex items-center justify-center min-w-[36px] h-9 px-3 rounded-xl text-sm font-semibold transition-all duration-200 ${
+            page === currentPage
+              ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg shadow-indigo-500/30 dark:shadow-indigo-500/20 scale-105'
+              : 'bg-white dark:bg-darkmode-700 text-slate-600 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:text-indigo-600 dark:hover:text-indigo-400 shadow-sm border border-slate-200 dark:border-darkmode-500 hover:border-indigo-300 dark:hover:border-indigo-500/50'
+              }`}
+            >
+              {page}
+            </button>
+          ) : (
+            <span key={index} className="px-1 text-slate-400 dark:text-slate-500">
+              •••
+            </span>
+          )
+            );
+          })()}
+        </div>
+
+        <button
+          onClick={() => Number(currentPage) < totalPages && handlePageChange(Number(currentPage) + 1)}
+          disabled={currentPage === totalPages}
+          className={`flex items-center justify-center w-9 h-9 rounded-xl transition-all duration-200 ${
+            currentPage === totalPages
+          ? 'bg-slate-100 dark:bg-darkmode-600 text-slate-400 dark:text-slate-500 cursor-not-allowed'
+          : 'bg-white dark:bg-darkmode-700 text-slate-600 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:text-indigo-600 dark:hover:text-indigo-400 shadow-sm border border-slate-200 dark:border-darkmode-500 hover:border-indigo-300 dark:hover:border-indigo-500/50'
+          }`}
+        >
+          <Lucide icon="ChevronRight" className="w-4 h-4" />
+        </button>
+        <button
+          onClick={() => handlePageChange(totalPages)}
+          disabled={currentPage === totalPages}
+          className={`flex items-center justify-center w-9 h-9 rounded-xl transition-all duration-200 ${
+            currentPage === totalPages
+          ? 'bg-slate-100 dark:bg-darkmode-600 text-slate-400 dark:text-slate-500 cursor-not-allowed'
+          : 'bg-white dark:bg-darkmode-700 text-slate-600 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:text-indigo-600 dark:hover:text-indigo-400 shadow-sm border border-slate-200 dark:border-darkmode-500 hover:border-indigo-300 dark:hover:border-indigo-500/50'
+          }`}
+        >
+          <Lucide icon="ChevronsRight" className="w-4 h-4" />
+        </button>
+          </div>
+
+          {/* Right side - Page info */}
+          <div className="hidden md:flex items-center gap-2 bg-white dark:bg-darkmode-800 px-4 py-2 rounded-xl shadow-sm border border-slate-200 dark:border-darkmode-500">
+        <span className="text-xs text-slate-500 dark:text-slate-400">Page</span>
+        <span className="text-sm font-bold text-slate-700 dark:text-slate-200">{currentPage}</span>
+        <span className="text-xs text-slate-500 dark:text-slate-400">of</span>
+        <span className="text-sm font-bold text-slate-700 dark:text-slate-200">{totalPages}</span>
+          </div>
+
+          {/* Mobile total count */}
+          <div className="sm:hidden flex items-center gap-2 mt-3 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30 px-4 py-2 rounded-xl border border-indigo-200/50 dark:border-indigo-500/30">
+        <Lucide icon="Database" className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
+        <span className="text-xs font-semibold text-indigo-700 dark:text-indigo-300">
+          {data.totalCount.toLocaleString()} records | Page {currentPage} of {totalPages}
+        </span>
+          </div>
         </div>
       )}
       </div>

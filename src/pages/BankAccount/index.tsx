@@ -1,6 +1,5 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Lucide from '@/components/Base/Lucide';
@@ -33,13 +32,12 @@ import {
   addBankDetailsApi,
   getAllBankDetailsApi,
   deleteBankDetailsApi,
-  // getAllBankDetailsBySearchApi,
 } from '@/redux-toolkit/slices/bankDetails/bankDetailsAPI';
 import { getAllMerchantCodes } from '@/redux-toolkit/slices/merchants/merchantAPI';
 import { selectAllMerchantCodes } from '@/redux-toolkit/slices/merchants/merchantSelector';
 import Modal from '@/components/Modal/modals';
 import DynamicForm from '@/components/CommonForm';
-import { BankDetailsFormFields } from '@/constants';
+// import { BankDetailsFormFields } from '@/constants';
 import { getMerchantCodes } from '@/redux-toolkit/slices/merchants/merchantSlice';
 import { selectAllVendorCodes } from '@/redux-toolkit/slices/vendor/vendorSelectors';
 import { getAllVendorCodes } from '@/redux-toolkit/slices/vendor/vendorAPI';
@@ -49,7 +47,6 @@ import {
   resetPagination,
   setPagination,
 } from '@/redux-toolkit/slices/common/params/paramsSlice';
-// import { getCount } from '@/redux-toolkit/slices/common/apis/commonAPI';
 import { getParentTabs } from '@/redux-toolkit/slices/common/tabs/tabSelectors';
 import { setParentTab } from '@/redux-toolkit/slices/common/tabs/tabSlice';
 import { verifyPassword } from '@/redux-toolkit/slices/auth/authAPI';
@@ -65,6 +62,7 @@ import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import { addAllNotification } from '@/redux-toolkit/slices/AllNoti/allNotifications';
 import MultiSelect from '@/components/MultiSelect/MultiSelect';
+import clsx from 'clsx';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -82,7 +80,7 @@ interface FormData {
 
 const BankAccount: React.FC = () => {
   const dispatch = useAppDispatch();
-  useAppSelector(selectDarkMode); // Subscribe to dark mode to trigger re-render
+  const darkMode = useAppSelector(selectDarkMode);
   const pagination = useAppSelector(getPaginationData);
   const [verificationDelete, setVerificationDelete] = useState(false);
   const refreshBankDetails = useAppSelector(getRefreshBakDetails);
@@ -91,7 +89,6 @@ const BankAccount: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [freezeModal, setFreezeModal] = useState(false);
   const [bankToEdit, setBankToEdit] = useState<any>(null);
-  const [formInitialValues, setFormInitialValues] = useState<any>(null);
   const [selectedVendorExport, setSelectedVendorExport] =
     useState<boolean>(false);
   const [selectedFilterVendorExport, setSelectedFilterVendorExport] =
@@ -106,12 +103,12 @@ const BankAccount: React.FC = () => {
   const [selectedFilterDates, setSelectedFilterDates] = useState<string>(
     `${date} - ${date}`,
   );
-  const [selectedSubTab, setSelectedSubTab] = useState<boolean>(true); 
+  const [selectedSubTab, setSelectedSubTab] = useState<boolean>(true);
   const [pendingToggles, setPendingToggles] = useState<Set<string>>(new Set());
   interface ExportModalState {
     open: boolean;
     selectedBankId: string | null;
-    data: any; // Use a more specific type if possible
+    data: any;
   }
 
   const [exportModalState, setExportModalState] = useState<ExportModalState>({
@@ -153,7 +150,6 @@ const BankAccount: React.FC = () => {
       role === Role.SUB_MERCHANT;
   }
 
-  // let bankDetails: any[] = [];
   let designationIs;
   designationIs = localStorage.getItem('userData');
   const userData = designationIs ? JSON.parse(designationIs) : {};
@@ -165,36 +161,17 @@ const BankAccount: React.FC = () => {
   const bankModal = (): void => {
     setNewUserModal((prev) => {
       if (!prev) {
-        // Opening modal - clear form data
         setFormData(null);
       }
-      // Just toggle the modal state, don't clear edit state here
       return !prev;
     });
-    // setVerification(false);
   };
 
-  // Update formInitialValues whenever bankToEdit changes
-  useEffect(() => {
-    if (bankToEdit) {
-      setFormInitialValues({
-        ...bankToEdit,
-        is_phonepay: bankToEdit?.config?.is_phonepay ?? false,
-        is_intent: bankToEdit?.config?.is_intent ?? false,
-        is_staticQR: bankToEdit?.config?.is_staticQR ?? false,
-      });
-    } else {
-      setFormInitialValues(null);
-    }
-  }, [bankToEdit]);
 
-  // Reset form state after modal closes
   useEffect(() => {
     if (!newUserModal) {
       setTimeout(() => {
-        // Modal is closed, reset all form-related state
         setBankToEdit(null);
-        setFormInitialValues(null);
         setFormData(null);
         setaddMerchant(false);
       }, 300);
@@ -211,29 +188,6 @@ const BankAccount: React.FC = () => {
   const merchantCodes = useAppSelector(selectAllMerchantCodes);
   const vendorCodes = useAppSelector(selectAllVendorCodes);
 
-  const userOptions = (() => {
-    const allOptions = vendorCodes.flatMap((vendor: any) => {
-      // If vendor has no subvendors, include the vendor itself
-      if (!vendor.subvendors || vendor.subvendors.length === 0) {
-        return [{
-          value: vendor.value,
-          label: vendor.label,
-        }];
-      }
-      // If vendor has subvendors, include only the subvendors
-      return vendor.subvendors.map((subvendor: any) => ({
-        value: subvendor.value,
-        label: subvendor.label,
-      }));
-    });
-
-    // Remove duplicates based on value
-    const uniqueOptions = Array.from(
-      new Map(allOptions.map((option) => [option.value, option])).values()
-    );
-
-    return uniqueOptions;
-  })();
 
   const merchantsOptions = [
     ...merchantCodes.map((merchant) => ({
@@ -244,7 +198,6 @@ const BankAccount: React.FC = () => {
 
   const fetchClientsDetails = useCallback(async () => {
     dispatch(resetPagination());
-    // Construct the array of promises based on role
     const promises = [
       role === Role.ADMIN
         ? getAllMerchantCodes(true, undefined, true)
@@ -262,9 +215,8 @@ const BankAccount: React.FC = () => {
     if (vendorCodesList) {
       dispatch(getVendorCodes(vendorCodesList));
     }
-  }, [dispatch, role]); // Include role in dependencies
+  }, [dispatch, role]);
 
-  // it will debounce the search input
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearchQuery(searchQuery.trim());
@@ -281,30 +233,14 @@ const BankAccount: React.FC = () => {
         page: (pagination?.page || 1).toString(),
         limit: (pagination?.limit || 10).toString(),
         bank_used_for: value,
-        active: active.toString(), // Add is_enabled filter
+        active: active.toString(),
         ...(query && { search: query }),
       }).toString();
 
       dispatch(onload());
-      // let response;
-      // if (!query) {
       let response = await getAllBankDetailsApi(queryString);
       dispatch(getBankDetailsSlice(response.banks));
       dispatch(getBankCount(response.totalCount));
-
-      // } else {
-      //   response = await getAllBankDetailsBySearchApi(queryString);
-      //   dispatch(getBankDetailsSlice(response.bankAccounts));
-      //   dispatch(getBankCount(response.totalCount));
-      // }
-      // if (response) {
-      //   setNotificationStatus(Status.SUCCESS);
-      //   setNotificationMessage('Bank Accounts fetched successfully');
-      // } else {
-      //   setNotificationStatus(Status.ERROR);
-      //   setNotificationMessage('No Records Found!');
-      // }
-      // basicNonStickyNotificationToggle();
     },
     [pagination?.page, pagination?.limit, dispatch],
   );
@@ -344,16 +280,6 @@ const BankAccount: React.FC = () => {
     pagination?.page,
     pagination?.limit,
   ]);
-  // const fetchCount = async () => {
-  //   const getCountData = await getCount('BankAccount', '', {
-  //     bank_used_for: selectedMethod,
-  //   });
-  //   dispatch(getBankCount(getCountData.count));
-  // };
-
-  // useEffect(() => {
-  //   fetchCount();
-  // }, [dispatch, selectedMethod]);
 
   const handleAddMerchantModal = (data: any) => {
     setAddMerchantFlag(true);
@@ -496,13 +422,6 @@ const BankAccount: React.FC = () => {
     setIsLoading(true);
     try {
       if (bankToEdit && !addMerchantFlag) {
-        //stop opening verification on adding merchant
-        // if (!verified) {
-        //   setErrorMessage('Please verify your password before updating.');
-        //   setVerification(true);
-        //   setFormData(data);
-        //   return;
-        // }
         if (!bankToEdit) {
           throw new Error('Form data or bank to edit is missing');
         }
@@ -537,7 +456,6 @@ const BankAccount: React.FC = () => {
               message: 'No changes detected',
             }),
           );
-          // setVerification(false);
           return;
         }
 
@@ -554,8 +472,7 @@ const BankAccount: React.FC = () => {
               message: 'Bank Account Updated Successfully',
             }),
           );
-          // setVerification(false);
-          bankModal(); // Use bankModal() to properly close and cleanup
+          bankModal();
           setFormData(null);
           dispatch(setRefreshBankDetails(true));
         } else {
@@ -563,8 +480,6 @@ const BankAccount: React.FC = () => {
         }
       } else if (addMerchantFlag) {
         addMerchantModal();
-        //merchant codes date wise shown
-        // Only date without time to avoid new object in merchant_added every time merchant assign to bank
         const currentDate = new Date().toISOString().split('T')[0];
         const existingConfig = selectedBankId.config || {};
         const previousMerchantDetails = existingConfig.merchant_added || {};
@@ -605,7 +520,6 @@ const BankAccount: React.FC = () => {
       } else {
         const bank_used_for = selectedMethod;
         Object.assign(data, { bank_used_for });
-        // sending userId for sub vendor and vendor operations
         if (userData.designation === Role.SUB_VENDOR) {
           data = {
             ...data,
@@ -696,7 +610,6 @@ const BankAccount: React.FC = () => {
   ) => {
     const toggleKey = `${id}-${type}`;
     
-    // Prevent duplicate requests
     if (pendingToggles.has(toggleKey)) {
       return;
     }
@@ -704,29 +617,22 @@ const BankAccount: React.FC = () => {
     try {
       setPendingToggles(prev => new Set([...prev, toggleKey]));
       
-      // Optimistic update: immediately update the state
       const user = allBankDetails.bankdetails.find((user) => user.id === id);
       if (user) {
         const updatedUser: any = { ...user };
         if (type in updatedUser) {
-          // Direct property update
           updatedUser[type] = status;
         } else if (updatedUser.config) {
-          // Config property update
           updatedUser.config = { ...updatedUser.config, [type]: status };
         } else {
-          // Create config if it doesn't exist
           updatedUser.config = { [type]: status };
         }
         dispatch(updateBankDetailSlice(updatedUser));
       }
       
-      // Make API call
       const userUpdate: any = await updateBankDetailsApi(id, { [type]: status });
       
-      // Handle API response errors
       if (userUpdate?.error?.message) {
-        // Revert optimistic update on error
         if (user) {
           dispatch(updateBankDetailSlice(user));
         }
@@ -738,11 +644,10 @@ const BankAccount: React.FC = () => {
         );
         dispatch(setRefreshBankDetails(true));
       } else if (userUpdate) {
-        // Update with actual API response if available
         dispatch(updateBankDetailSlice(userUpdate));
       }
     } catch (error) {
-      // Revert optimistic update on error
+      console.log(error)
       const user = allBankDetails.bankdetails.find((user) => user.id === id);
       if (user) {
         dispatch(updateBankDetailSlice(user));
@@ -769,7 +674,6 @@ const BankAccount: React.FC = () => {
       setSelectedMethod(value);
       setSelectedSubTab(true); 
       dispatch(resetPagination());
-      // fetchBankAccounts(value);
     }
   };
   const handleSubTabChange = (active: boolean) => {
@@ -821,22 +725,6 @@ const BankAccount: React.FC = () => {
     setFormData(row);
     setMaxLimit(value);
   };
-
-  // const handleVerification = async (passwordData: { password: string }) => {
-  //   setIsLoading(true);
-  //   try {
-  //     setErrorMessage(null);
-  //     const response = await verifyPassword(passwordData.password);
-  //     setBankToEdit(bankToEdit);
-  //     setVerififed(response);
-  //     bankModal();
-  //   } catch  {
-  //     setErrorMessage('Invalid details. Please try again.');
-  //   }
-  //   finally {
-  //     setIsLoading(false);
-  //   }
-  // };
 
   const handleVerificationdelete = async (passwordData: {
     password: string;
@@ -912,14 +800,12 @@ const BankAccount: React.FC = () => {
     disabled: item.config?.is_freeze === true ? true : false,
   }));
 
-  // Helper function to reset export states
   const resetExportStates = useCallback(() => {
     setSelectedVendorExport(false);
     setSelectedStatus('');
     setSelectedFilterVendorExport('');
   }, []);
 
-  // Helper function to show notification and close modal
   const showNotificationAndCloseModal = useCallback(
     (status: any, message: string) => {
       dispatch(addAllNotification({ status, message }));
@@ -928,32 +814,24 @@ const BankAccount: React.FC = () => {
     [dispatch],
   );
 
-  // Helper function to filter admin columns
   const filterAdminColumns = useCallback(
     (item: any) => {
-      if (role !== Role.ADMIN) {
-        const { UsedWith, ...rest } = item;
-        return rest;
-      }
       return item;
     },
     [role],
   );
 
-  // Helper function to format date
   const formatDate = useCallback(
     (date: string) =>
       dayjs(date).tz('Asia/Kolkata').format('DD-MM-YYYY hh:mm:ss A'),
     [],
   );
 
-  // Helper function to get date range
   const getDateRange = useCallback(() => {
     const [startDate = '', endDate = ''] = selectedFilterDates.split(' - ');
     return { startDate, endDate };
   }, [selectedFilterDates]);
 
-  // Helper function to build query params for PayIn vendor export
   const buildPayInVendorQuery = useCallback(() => {
     const { startDate, endDate } = getDateRange();
     const queryParams = new URLSearchParams();
@@ -970,7 +848,6 @@ const BankAccount: React.FC = () => {
     const userIds = selectedFilterVendorExport.map((obj: any) => obj.value);
     queryParams.append('userId', JSON.stringify(userIds));
 
-    // Process status filters
     const isUsedValues: string[] = [];
     const statuses: string[] = [];
     if (selectedStatus?.length > 0) {
@@ -1002,7 +879,6 @@ const BankAccount: React.FC = () => {
     resetExportStates,
   ]);
 
-  // Helper function to process PayIn vendor reports
   const processPayInVendorReports = useCallback(
     (reports: any[], type: string) => {
       if (!reports.length) {
@@ -1050,7 +926,6 @@ const BankAccount: React.FC = () => {
     ],
   );
 
-  // Helper function to build query params for PayOut vendor export
   const buildPayOutVendorQuery = useCallback(() => {
     const { startDate, endDate } = getDateRange();
     const queryParams = new URLSearchParams();
@@ -1088,7 +963,6 @@ const BankAccount: React.FC = () => {
     resetExportStates,
   ]);
 
-  // Helper function to process PayOut vendor reports
   const processPayOutVendorReports = useCallback(
     (reports: any[], type: string) => {
       if (!reports.length) {
@@ -1157,7 +1031,6 @@ const BankAccount: React.FC = () => {
     ],
   );
 
-  // Helper function to handle PayIn regular reports
   const handlePayInRegularReports = useCallback(
     async (type: string, apiData?: any[]) => {
       if (!selectedFilterDates?.includes(' - ')) {
@@ -1206,7 +1079,6 @@ const BankAccount: React.FC = () => {
         }_${startDate}_to_${endDate}`;
 
         if (includeMerchants) {
-          // Process reports with merchant details
           const dateGroupedReports: Record<
             string,
             { items: any[]; merchants: Set<string> }
@@ -1214,7 +1086,6 @@ const BankAccount: React.FC = () => {
           const csvData: any[] = [];
           const processedSnos = new Set<string>();
 
-          // Group items by date and extract merchants
           bankReports.forEach((item) => {
             const createdAt = item.created_at
               ? new Date(item.created_at)
@@ -1232,7 +1103,6 @@ const BankAccount: React.FC = () => {
               dateGroupedReports[dateKey]?.items.push(item);
             }
 
-            // Process merchant_added
             const merchantAdded = item.details?.merchant_added || {};
             Object.entries(merchantAdded).forEach(
               ([rawDateKey, merchantsList]) => {
@@ -1254,7 +1124,6 @@ const BankAccount: React.FC = () => {
             );
           });
 
-          // Generate CSV data
           Object.entries(dateGroupedReports).forEach(
             ([date, { items, merchants }]) => {
               items.forEach((item) => {
@@ -1300,7 +1169,6 @@ const BankAccount: React.FC = () => {
             fileName,
           );
         } else {
-          // Process vendor reports
           const csvData = bankReports
             .filter(
               (item) =>
@@ -1331,6 +1199,7 @@ const BankAccount: React.FC = () => {
           `Report exported successfully as ${type}`,
         );
       } catch (error) {
+        console.log(error)
         showNotificationAndCloseModal(Status.ERROR, 'Error exporting report');
       }
     },
@@ -1346,7 +1215,6 @@ const BankAccount: React.FC = () => {
     ],
   );
 
-  // Helper function to handle PayOut regular reports
   const handlePayOutRegularReports = useCallback(
     async (type: string) => {
       const { startDate, endDate } = getDateRange();
@@ -1450,6 +1318,7 @@ const BankAccount: React.FC = () => {
           `Report exported successfully as ${type}`,
         );
       } catch (error) {
+        console.log(error)
         showNotificationAndCloseModal(Status.ERROR, 'Error exporting report');
       }
     },
@@ -1463,7 +1332,6 @@ const BankAccount: React.FC = () => {
     ],
   );
 
-  // Main optimized handleDownload function
   const handleDownload = useCallback(
     async (type: string, apiData?: any[]) => {
       try {
@@ -1478,7 +1346,6 @@ const BankAccount: React.FC = () => {
             await handlePayInRegularReports(type, apiData);
           }
         } else {
-          // PayOut
           if (selectedVendorExport) {
             const queryString = buildPayOutVendorQuery();
             if (!queryString) return;
@@ -1490,6 +1357,7 @@ const BankAccount: React.FC = () => {
           }
         }
       } catch (error) {
+        console.log(error)
         showNotificationAndCloseModal(Status.ERROR, 'Error exporting report');
       }
     },
@@ -1507,55 +1375,53 @@ const BankAccount: React.FC = () => {
   );
 
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4 sm:p-6 lg:p-8 shadow-2xl border border-white/10 min-h-screen">
-      {/* Background gradient overlay */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.15),transparent_30%),radial-gradient(circle_at_85%_10%,rgba(14,165,233,0.12),transparent_28%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.12),transparent_24%)]"></div>
+    <div className={clsx([
+      'relative overflow-hidden rounded-3xl p-4 sm:p-6 lg:p-8 shadow-2xl min-h-screen',
+      darkMode 
+        ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border border-white/10'
+        : 'bg-gradient-to-br from-white via-slate-50 to-white border border-slate-200',
+    ])}>
+      <div className={clsx([
+        'pointer-events-none absolute inset-0',
+        darkMode 
+          ? 'bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.15),transparent_30%),radial-gradient(circle_at_85%_10%,rgba(14,165,233,0.12),transparent_28%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.12),transparent_24%)]'
+          : 'bg-[radial-gradient(circle_at_20%_20%,rgba(79,70,229,0.08),transparent_30%),radial-gradient(circle_at_85%_10%,rgba(14,165,233,0.06),transparent_28%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,0.06),transparent_24%)]',
+      ])}></div>
 
       <div className="relative z-10">
-        {/* Header Section */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 border rounded-2xl border-white/20 bg-white/10 shrink-0">
+            <div className={clsx([
+              'flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 border rounded-2xl shrink-0',
+              darkMode 
+                ? 'border-white/20 bg-white/10'
+                : 'border-slate-200 bg-slate-100',
+            ])}>
               <Lucide
                 icon="Building"
-                className="w-5 h-5 sm:w-6 sm:h-6 text-white"
+                className={clsx([
+                  'w-5 h-5 sm:w-6 sm:h-6',
+                  darkMode ? 'text-white' : 'text-slate-700',
+                ])}
               />
             </div>
             <div>
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold text-white">
+              <h1 className={clsx([
+                'text-xl sm:text-2xl md:text-3xl font-semibold',
+                darkMode ? 'text-white' : 'text-slate-800',
+              ])}>
                 Bank Accounts
               </h1>
-              <p className="text-white/60 text-sm hidden sm:block">
+              <p className={clsx([
+                'text-sm hidden sm:block',
+                darkMode ? 'text-white/60' : 'text-slate-500',
+              ])}>
                 Manage your bank accounts
               </p>
             </div>
           </div>
-
-          <div className="flex flex-col sm:flex-row gap-x-3 gap-y-2">
-            <Modal
-              handleModal={bankModal}
-              forOpen={newUserModal}
-              buttonTitle={`${bankToEdit ? 'Edit ' : 'Add '} Bank Details`}
-            >
-              <DynamicForm
-                sections={BankDetailsFormFields(
-                  bankToEdit ? [] : userOptions,
-                  selectedMethod,
-                  role || undefined,
-                  designation || undefined,
-                  bankToEdit ? true : false,
-                )}
-                onSubmit={handleSubmitData}
-                defaultValues={formInitialValues || {}}
-                isEditMode={!!bankToEdit}
-                handleCancel={bankModal}
-                isLoading={isLoading}
-              />
-            </Modal>
-          </div>
         </div>
 
-        {/* All Modals - remain the same */}
         <Modal handleModal={handleCancelDelete} forOpen={deleteModal}>
           <ModalContent
             handleCancelDelete={handleCancelDelete}
@@ -1768,37 +1634,53 @@ const BankAccount: React.FC = () => {
           </Modal>
         )}
 
-        {/* Tab Container */}
-        <div className="rounded-2xl bg-white/10 border border-white/15 shadow-2xl backdrop-blur-xl overflow-hidden">
+        <div className={clsx([
+          'rounded-2xl shadow-2xl backdrop-blur-xl overflow-hidden',
+          darkMode 
+            ? 'bg-white/10 border border-white/15'
+            : 'bg-white border border-slate-200',
+        ])}>
           <Tab.Group
             selectedIndex={parentTab}
             onChange={handleParentTabChange}
           >
-            <Tab.List className="flex border-b border-white/10 bg-white/5">
+            <Tab.List className={clsx([
+              'flex border-b',
+              darkMode ? 'border-white/10 bg-white/5' : 'border-slate-200 bg-slate-50',
+            ])}>
               <Tab className="relative flex-1">
                 {({ selected }) => (
                   <Tab.Button
-                    className={`w-full py-3 sm:py-4 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base md:text-lg font-medium transition-all duration-300 relative ${
+                    className={clsx([
+                      'w-full py-3 sm:py-4 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base md:text-lg font-medium transition-all duration-300 relative',
                       selected
-                        ? 'text-white bg-gradient-to-r from-theme-1/20 via-theme-2/20 to-emerald-500/20 border-b-2 border-theme-1'
-                        : 'text-white/60 hover:text-white hover:bg-white/5'
-                    }`}
+                        ? darkMode
+                          ? 'text-white bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-cyan-500/20 border-b-2 border-indigo-500'
+                          : 'text-slate-800 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-cyan-500/10 border-b-2 border-indigo-500'
+                        : darkMode
+                          ? 'text-white/60 hover:text-white hover:bg-white/5'
+                          : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100',
+                    ])}
                     as="button"
                     onClick={() => handleDataTabChange('PayIn')}
                   >
-                    <div className={`flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl ${
+                    <div className={clsx([
+                      'flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl',
                       selected 
-                        ? 'bg-gradient-to-r from-theme-1 to-theme-2 shadow-lg shadow-theme-1/30' 
-                        : 'bg-white/10'
-                    }`}>
+                        ? 'bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500 shadow-lg shadow-indigo-500/30' 
+                        : darkMode ? 'bg-white/10' : 'bg-slate-200',
+                    ])}>
                       <Lucide 
                         icon="BadgeIndianRupee" 
-                        className={`w-4 h-4 sm:w-5 sm:h-5 ${selected ? 'text-white' : 'text-white/70'}`} 
+                        className={clsx([
+                          'w-4 h-4 sm:w-5 sm:h-5',
+                          selected ? 'text-white' : darkMode ? 'text-white/70' : 'text-slate-500',
+                        ])} 
                       />
                     </div>
                     <span>PayIn</span>
                     {selected && (
-                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-theme-1 via-theme-2 to-emerald-500"></div>
+                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500"></div>
                     )}
                   </Tab.Button>
                 )}
@@ -1806,53 +1688,75 @@ const BankAccount: React.FC = () => {
               <Tab className="relative flex-1">
                 {({ selected }) => (
                   <Tab.Button
-                    className={`w-full py-3 sm:py-4 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base md:text-lg font-medium transition-all duration-300 relative ${
+                    className={clsx([
+                      'w-full py-3 sm:py-4 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base md:text-lg font-medium transition-all duration-300 relative',
                       selected
-                        ? 'text-white bg-gradient-to-r from-theme-1/20 via-theme-2/20 to-emerald-500/20 border-b-2 border-theme-1'
-                        : 'text-white/60 hover:text-white hover:bg-white/5'
-                    }`}
+                        ? darkMode
+                          ? 'text-white bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-cyan-500/20 border-b-2 border-indigo-500'
+                          : 'text-slate-800 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-cyan-500/10 border-b-2 border-indigo-500'
+                        : darkMode
+                          ? 'text-white/60 hover:text-white hover:bg-white/5'
+                          : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100',
+                    ])}
                     as="button"
                     onClick={() => handleDataTabChange('PayOut')}
                   >
-                    <div className={`flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl ${
+                    <div className={clsx([
+                      'flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl',
                       selected 
-                        ? 'bg-gradient-to-r from-theme-1 to-theme-2 shadow-lg shadow-theme-1/30' 
-                        : 'bg-white/10'
-                    }`}>
+                        ? 'bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500 shadow-lg shadow-indigo-500/30' 
+                        : darkMode ? 'bg-white/10' : 'bg-slate-200',
+                    ])}>
                       <Lucide 
                         icon="ArrowRightCircle" 
-                        className={`w-4 h-4 sm:w-5 sm:h-5 ${selected ? 'text-white' : 'text-white/70'}`} 
+                        className={clsx([
+                          'w-4 h-4 sm:w-5 sm:h-5',
+                          selected ? 'text-white' : darkMode ? 'text-white/70' : 'text-slate-500',
+                        ])} 
                       />
                     </div>
                     <span>PayOut</span>
                     {selected && (
-                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-theme-1 via-theme-2 to-emerald-500"></div>
+                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500"></div>
                     )}
                   </Tab.Button>
                 )}
               </Tab>
             </Tab.List>
 
-            {/* Search and Actions Bar */}
-            <div className="p-4 sm:p-6 border-b border-white/10">
+            <div className={clsx([
+              'p-4 sm:p-6 border-b',
+              darkMode ? 'border-white/10' : 'border-slate-200',
+            ])}>
               <div className="flex flex-col sm:items-center sm:flex-row gap-y-3">
                 <div>
                   <div className="relative">
                     <Lucide
                       icon="Search"
-                      className="absolute inset-y-0 left-0 z-10 w-4 h-4 my-auto ml-3 stroke-[1.3] text-white/50"
+                      className={clsx([
+                        'absolute inset-y-0 left-0 z-10 w-4 h-4 my-auto ml-3 stroke-[1.3]',
+                        darkMode ? 'text-white/50' : 'text-slate-400',
+                      ])}
                     />
                     <FormInput
                       type="text"
                       placeholder="Search Banks..."
-                      className="pl-9 sm:w-64 rounded-xl bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-theme-1/50 focus:ring-theme-1/30"
+                      className={clsx([
+                        'pl-9 sm:w-64 rounded-xl',
+                        darkMode 
+                          ? 'bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-theme-1/50 focus:ring-theme-1/30'
+                          : 'bg-white border-slate-200 text-slate-800 placeholder:text-slate-400 focus:border-theme-1/50 focus:ring-theme-1/30',
+                      ])}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                     />
                     {searchQuery && (
                       <Lucide
                         icon="X"
-                        className="absolute inset-y-0 right-0 z-10 w-4 h-4 my-auto mr-3 stroke-[1.3] text-white/50 cursor-pointer hover:text-white"
+                        className={clsx([
+                          'absolute inset-y-0 right-0 z-10 w-4 h-4 my-auto mr-3 stroke-[1.3] cursor-pointer',
+                          darkMode ? 'text-white/50 hover:text-white' : 'text-slate-400 hover:text-slate-600',
+                        ])}
                         onClick={() => setSearchQuery('')}
                       />
                     )}
@@ -1863,7 +1767,12 @@ const BankAccount: React.FC = () => {
                     <Menu.Button
                       as={Button}
                       variant="outline-secondary"
-                      className="w-full sm:w-auto bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30"
+                      className={clsx([
+                        'w-full sm:w-auto',
+                        darkMode 
+                          ? 'bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30'
+                          : 'bg-slate-100 border-slate-200 text-slate-700 hover:bg-slate-200 hover:border-slate-300',
+                      ])}
                       onClick={() => {
                         setSelectedVendorExport(true);
                         setSelectedFilterVendorExport('');
@@ -1881,7 +1790,12 @@ const BankAccount: React.FC = () => {
                     <Menu.Button
                       as={Button}
                       variant="outline-secondary"
-                      className="w-full sm:w-auto bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30"
+                      className={clsx([
+                        'w-full sm:w-auto',
+                        darkMode 
+                          ? 'bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30'
+                          : 'bg-slate-100 border-slate-200 text-slate-700 hover:bg-slate-200 hover:border-slate-300',
+                      ])}
                       onClick={handleRefresh}
                     >
                       <Lucide
@@ -1895,7 +1809,12 @@ const BankAccount: React.FC = () => {
                     <Menu.Button
                       as={Button}
                       variant="outline-secondary"
-                      className="w-full sm:w-auto bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30"
+                      className={clsx([
+                        'w-full sm:w-auto',
+                        darkMode 
+                          ? 'bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30'
+                          : 'bg-slate-100 border-slate-200 text-slate-700 hover:bg-slate-200 hover:border-slate-300',
+                      ])}
                       onClick={handleReset}
                     >
                       <Lucide
@@ -1909,52 +1828,49 @@ const BankAccount: React.FC = () => {
               </div>
             </div>
 
-            {/* Sub Tabs - Active/Inactive */}
-            <Tab.Group
-              selectedIndex={selectedSubTab ? 0 : 1}
-              onChange={(index) => handleSubTabChange(index === 0)}
-            >
-              <Tab.List className="flex border-b border-white/10 bg-white/5">
-                <Tab className="relative flex-1">
-                  {({ selected }) => (
-                    <Tab.Button
-                      className={`w-full py-3 flex items-center justify-center gap-2 text-sm font-medium transition-all duration-300 ${
-                        selected
-                          ? 'text-white bg-gradient-to-r from-emerald-500/20 to-green-500/20'
-                          : 'text-white/60 hover:text-white hover:bg-white/5'
-                      }`}
-                      as="button"
-                    >
-                      <Lucide icon="CheckCircle" className="w-4 h-4" />
-                      Active {selectedMethod} Bank
-                      {selected && (
-                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-emerald-500 to-green-500"></div>
-                      )}
-                    </Tab.Button>
-                  )}
-                </Tab>
-                <Tab className="relative flex-1">
-                  {({ selected }) => (
-                    <Tab.Button
-                      className={`w-full py-3 flex items-center justify-center gap-2 text-sm font-medium transition-all duration-300 ${
-                        selected
-                          ? 'text-white bg-gradient-to-r from-red-500/20 to-orange-500/20'
-                          : 'text-white/60 hover:text-white hover:bg-white/5'
-                      }`}
-                      as="button"
-                    >
-                      <Lucide icon="XCircle" className="w-4 h-4" />
-                      Inactive {selectedMethod} Bank
-                      {selected && (
-                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-red-500 to-orange-500"></div>
-                      )}
-                    </Tab.Button>
-                  )}
-                </Tab>
-              </Tab.List>
-            </Tab.Group>
+            <div className={clsx([
+              'px-4 sm:px-6 py-3',
+              darkMode ? 'bg-white/5' : 'bg-slate-50',
+            ])}>
+              <div className={clsx([
+                'flex flex-wrap gap-2 p-2 rounded-xl',
+                darkMode 
+                  ? 'bg-slate-800/50 border border-white/10'
+                  : 'bg-slate-100 border border-slate-200',
+              ])}>
+                <button
+                  onClick={() => handleSubTabChange(true)}
+                  className={clsx([
+                    'flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200',
+                    selectedSubTab
+                      ? 'bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 text-white shadow-lg shadow-emerald-500/25'
+                      : darkMode
+                        ? 'text-white/60 hover:text-white hover:bg-white/10'
+                        : 'text-slate-600 hover:text-slate-800 hover:bg-white',
+                  ])}
+                >
+                  <Lucide icon="CheckCircle" className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  <span className="hidden sm:inline">Active {selectedMethod} Bank</span>
+                  <span className="sm:hidden">Active</span>
+                </button>
+                <button
+                  onClick={() => handleSubTabChange(false)}
+                  className={clsx([
+                    'flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200',
+                    !selectedSubTab
+                      ? 'bg-gradient-to-r from-rose-500 via-red-500 to-orange-500 text-white shadow-lg shadow-rose-500/25'
+                      : darkMode
+                        ? 'text-white/60 hover:text-white hover:bg-white/10'
+                        : 'text-slate-600 hover:text-slate-800 hover:bg-white',
+                  ])}
+                >
+                  <Lucide icon="XCircle" className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  <span className="hidden sm:inline">Inactive {selectedMethod} Bank</span>
+                  <span className="sm:hidden">Inactive</span>
+                </button>
+              </div>
+            </div>
 
-            {/* Table Section */}
             <div className="p-4 sm:p-6">
               <div className="overflow-auto xl:overflow-visible">
                 {allBankDetails.loading ? (

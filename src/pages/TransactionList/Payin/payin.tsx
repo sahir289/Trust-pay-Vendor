@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import React, { useCallback, useEffect, useState } from 'react';
-import { Tab } from '@/components/Base/Headless';
 import { Role } from '@/constants';
 import Lucide from '@/components/Base/Lucide';
 import LoadingIcon from '@/components/Base/LoadingIcon';
@@ -25,8 +24,8 @@ import { getAllMerchantCodes } from '@/redux-toolkit/slices/merchants/merchantAP
 import { getAllBankNames } from '@/redux-toolkit/slices/bankDetails/bankDetailsAPI';
 import { getBankNames } from '@/redux-toolkit/slices/bankDetails/bankDetailsSlice';
 import { selectAllBankNames } from '@/redux-toolkit/slices/bankDetails/bankDetailsSelectors';
-// import { getSumPayIn } from '@/redux-toolkit/slices/payin/payinSelectors';
-// import { setSumPayIn } from '@/redux-toolkit/slices/payin/payinSlice';
+import clsx from 'clsx';
+
 interface PayInSummary {
   status: string;
   totalAmount: number;
@@ -44,7 +43,7 @@ interface ConsolidatedStatus {
 
 const PayInComponent: React.FC = () => {
   const dispatch = useAppDispatch();
-  useAppSelector(selectDarkMode); // Subscribe to dark mode to trigger re-render
+  const darkMode = useAppSelector(selectDarkMode);
   const activeTab = useAppSelector(getTabs);
   // const getSumPayin = useAppSelector(getSumPayIn);
   
@@ -108,68 +107,83 @@ const PayInComponent: React.FC = () => {
   };
 
   const handleGetAllVendorCodes = async () => {
-      if (
-        role !== Role.MERCHANT && vendorCodes.length == 0
-      ) {
-        const res = await getAllVendorCodes();
-        setVendorCodes(
-          res.map((el: any) => ({
-            label: el.label,
-            value: el.value,
-          })),
-        );
-      }
-    };
-  
-    useEffect(() => {
-      if (role !== Role.MERCHANT && callVendor)  {
-        handleGetAllVendorCodes();
-        setCallVendor(false);
-      }
-    }, [callVendor]);
-    useEffect(() => {
-      if (role !== Role.MERCHANT && callBank) {
-        fetchBankNames();
-        setCallBank(false);
-      }
-    }, [callBank]);
+    if (role !== Role.MERCHANT && vendorCodes.length == 0) {
+      const res = await getAllVendorCodes();
+      setVendorCodes(
+        res.map((el: any) => ({
+          label: el.label,
+          value: el.value,
+        })),
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (role !== Role.MERCHANT && callVendor) {
+      handleGetAllVendorCodes();
+      setCallVendor(false);
+    }
+  }, [callVendor]);
+
+  useEffect(() => {
+    if (role !== Role.MERCHANT && callBank) {
+      fetchBankNames();
+      setCallBank(false);
+    }
+  }, [callBank]);
+
   const handleGetAllMerchantCodes = async () => {
-      if (
-        role !== Role.VENDOR && merchantCodes.length == 0
-      ) {
-        const res = await getAllMerchantCodes();
-        setMerchantCodes(
-          res.map((el: any) => ({
-            label: el.label,
-            value: el.value,
-          })),
-        );
-        setMerchantCodesData(
-          res.map((el: any) => ({
-            label: el.label,
-            value: el.merchant_id,
-          })),
-        );
-      }
-    };
-    useEffect(() => {
-      if (role !== Role.VENDOR && callMerchant) {
-        handleGetAllMerchantCodes();
-        setCallMerchant(false);
-      }
-    }, [callMerchant]);
+    if (role !== Role.VENDOR && merchantCodes.length == 0) {
+      const res = await getAllMerchantCodes();
+      setMerchantCodes(
+        res.map((el: any) => ({
+          label: el.label,
+          value: el.value,
+        })),
+      );
+      setMerchantCodesData(
+        res.map((el: any) => ({
+          label: el.label,
+          value: el.merchant_id,
+        })),
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (role !== Role.VENDOR && callMerchant) {
+      handleGetAllMerchantCodes();
+      setCallMerchant(false);
+    }
+  }, [callMerchant]);
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'Success':
-        return 'text-green-600';
+        return darkMode ? 'text-emerald-400' : 'text-emerald-600';
       case 'Dropped':
-        return 'text-red-600';
+        return darkMode ? 'text-rose-400' : 'text-rose-600';
       case 'Pending':
-        return 'text-yellow-600';
+        return darkMode ? 'text-amber-400' : 'text-amber-600';
       case 'InProcess':
-        return 'text-blue-600';
+        return darkMode ? 'text-blue-400' : 'text-blue-600';
       default:
-        return 'text-gray-600';
+        return darkMode ? 'text-slate-400' : 'text-slate-600';
+    }
+  };
+
+  const getStatusBgColor = (status: string) => {
+    switch (status) {
+      case 'Success':
+        return darkMode ? 'from-emerald-500/20 to-emerald-600/10 border-emerald-400/30' : 'from-emerald-50 to-emerald-100/50 border-emerald-200';
+      case 'Dropped':
+        return darkMode ? 'from-rose-500/20 to-rose-600/10 border-rose-400/30' : 'from-rose-50 to-rose-100/50 border-rose-200';
+      case 'Pending':
+        return darkMode ? 'from-amber-500/20 to-amber-600/10 border-amber-400/30' : 'from-amber-50 to-amber-100/50 border-amber-200';
+      case 'InProcess':
+        return darkMode ? 'from-blue-500/20 to-blue-600/10 border-blue-400/30' : 'from-blue-50 to-blue-100/50 border-blue-200';
+      default:
+        return darkMode ? 'from-slate-500/20 to-slate-600/10 border-slate-400/30' : 'from-slate-50 to-slate-100/50 border-slate-200';
     }
   };
 
@@ -205,237 +219,211 @@ const PayInComponent: React.FC = () => {
     }
   });
 
+  // Tab configuration
+  const tabs = [
+    { id: 0, label: 'All', icon: 'Globe', shortLabel: 'All' },
+    { id: 1, label: 'Completed', icon: 'BadgeCheck', shortLabel: 'Done' },
+    { id: 2, label: 'In Progress', icon: 'loader', shortLabel: 'Progress' },
+    { id: 3, label: 'Dropped', icon: 'Trash2', shortLabel: 'Dropped' },
+    { id: 4, label: 'Review', icon: 'AlertTriangle', shortLabel: 'Review' },
+  ];
+
   return (
-    <div className="flex flex-col">
-      <div className="flex flex-col p-1 sm:p-2">
-        <div className="flex flex-col p-1 sm:p-2">
-          {/* Add Refresh button for getSum */}
-          {error ? (
-            <div className="text-red-600 text-xs sm:text-sm">Error loading data</div>
-          ) : data.length === 0 ? (
-            <div></div>
-          ) : (
-            <div className="flex flex-row flex-wrap sm:flex-nowrap gap-1 sm:gap-2">
-              {consolidatedData.map((item, index) => (
-                <div
-                  key={index}
-                  className="w-[calc(50%-0.25rem)] sm:w-1/4 p-1.5 sm:p-2 border border-dashed rounded-md border-slate-300/80 shadow-sm"
-                >
-                  <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 justify-around">
-                    <div className="text-[10px] sm:text-xs font-medium">{item.totalCount}</div>
-                    <div
-                      className={`text-[10px] sm:text-xs font-medium truncate ${getStatusColor(
-                        item.name,
-                      )}`}
-                    >
-                      {item.name}
-                    </div>
-                    <CustomTooltip
-                      content={
-                        <div className="mt-1 text-xs sm:text-sm text-slate-300 min-w-[200px] max-w-[300px]">
-                          {item.statuses.length > 0 ? (
-                            item.statuses.map((status) => (
-                              <div key={status.status} className="py-1">
-                                {status.status}: ₹
-                                {formatNumber(status.totalAmount)} (
-                                {status.totalCount})
-                              </div>
-                            ))
-                          ) : (
-                            <div>No data available</div>
-                          )}
-                        </div>
-                      }
-                    >
-                      <div className="text-[10px] sm:text-xs font-medium cursor-pointer truncate max-w-full">
-                        ₹{formatNumber(item.totalAmount)}
-                      </div>
-                    </CustomTooltip>
-                  </div>
-                </div>
-              ))}
-              <div className="flex justify-end w-full sm:w-auto mt-1 sm:mt-0 sm:mb-2">
-                <button
-                  className="px-2 sm:px-3 py-1 bg-primary/10 hover:bg-primary/20 text-primary dark:bg-primary/20 dark:hover:bg-primary/30 rounded-lg flex items-center gap-1 sm:gap-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                  onClick={getSum}
-                  disabled={isLoadingSum}
-                  type="button"
-                >
-                  {isLoadingSum ? (
-                    <LoadingIcon icon="tail-spin" className="w-3 h-3 sm:w-4 sm:h-4" />
-                  ) : (
-                    <Lucide icon="RefreshCw" className="w-3 h-3 sm:w-4 sm:h-4" />
-                  )}
-                </button>
-              </div>
-            </div>
-          )}
+    <div className="flex flex-col gap-4">
+      {/* Summary Cards */}
+      {error ? (
+        <div className={clsx([
+          'text-xs sm:text-sm p-3 rounded-lg',
+          darkMode ? 'text-rose-400 bg-rose-500/10' : 'text-rose-600 bg-rose-50',
+        ])}>
+          Error loading data
         </div>
+      ) : data.length > 0 && (
+        <div className="flex flex-col gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
+            {consolidatedData.map((item, index) => (
+              <div
+                key={index}
+                className={clsx([
+                  'relative overflow-hidden rounded-xl p-3 sm:p-4 transition-all duration-300',
+                  'bg-gradient-to-br border',
+                  getStatusBgColor(item.name),
+                  darkMode ? 'hover:shadow-lg' : 'hover:shadow-md',
+                ])}
+              >
+                <div className={clsx([
+                  'absolute top-0 right-0 w-12 h-12 rounded-full -mr-6 -mt-6',
+                  darkMode ? 'bg-white/5' : 'bg-black/5',
+                ])}></div>
+                
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center justify-between">
+                    <span className={clsx([
+                      'text-[10px] sm:text-xs font-semibold uppercase tracking-wide',
+                      getStatusColor(item.name),
+                    ])}>
+                      {item.name}
+                    </span>
+                    <span className={clsx([
+                      'text-xs sm:text-sm font-bold px-2 py-0.5 rounded-full',
+                      darkMode ? 'bg-white/10 text-white' : 'bg-black/5 text-slate-700',
+                    ])}>
+                      {item.totalCount}
+                    </span>
+                  </div>
+                  
+                  <CustomTooltip
+                    content={
+                      <div className={clsx([
+                        'text-xs min-w-[180px] max-w-[280px]',
+                        darkMode ? 'text-slate-300' : 'text-slate-600',
+                      ])}>
+                        {item.statuses.length > 0 ? (
+                          item.statuses.map((status) => (
+                            <div key={status.status} className="py-1 flex justify-between">
+                              <span>{status.status}:</span>
+                              <span className="font-medium">
+                                ₹{formatNumber(status.totalAmount)} ({status.totalCount})
+                              </span>
+                            </div>
+                          ))
+                        ) : (
+                          <div>No data available</div>
+                        )}
+                      </div>
+                    }
+                  >
+                    <div className={clsx([
+                      'text-sm sm:text-lg font-bold cursor-pointer',
+                      darkMode ? 'text-white' : 'text-slate-800',
+                    ])}>
+                      ₹{formatNumber(item.totalAmount)}
+                    </div>
+                  </CustomTooltip>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          {/* Refresh Button */}
+          <div className="flex justify-end">
+            <button
+              className={clsx([
+                'px-3 py-2 rounded-lg flex items-center gap-2 transition-all duration-200',
+                'disabled:opacity-50 disabled:cursor-not-allowed',
+                darkMode 
+                  ? 'bg-white/10 hover:bg-white/20 text-white border border-white/10'
+                  : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200',
+              ])}
+              onClick={getSum}
+              disabled={isLoadingSum}
+              type="button"
+            >
+              {isLoadingSum ? (
+                <LoadingIcon icon="tail-spin" className="w-4 h-4" />
+              ) : (
+                <Lucide icon="RefreshCw" className="w-4 h-4" />
+              )}
+              <span className="text-xs sm:text-sm font-medium">Refresh</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Modern Pill Tabs */}
+      <div className={clsx([
+        'flex flex-wrap gap-2 p-2 rounded-xl',
+        darkMode 
+          ? 'bg-slate-800/50 border border-white/10'
+          : 'bg-slate-100 border border-slate-200',
+      ])}>
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => handleTabChange(tab.id)}
+            className={clsx([
+              'flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200',
+              activeTab === tab.id
+                ? 'bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500 text-white shadow-lg shadow-indigo-500/25'
+                : darkMode
+                  ? 'text-white/60 hover:text-white hover:bg-white/10'
+                  : 'text-slate-600 hover:text-slate-800 hover:bg-white',
+            ])}
+          >
+            {tab.icon === 'loader' ? (
+              <LoadingIcon icon="ball-triangle" className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            ) : (
+              <Lucide icon={tab.icon as any} className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            )}
+            <span className="hidden sm:inline">{tab.label}</span>
+            <span className="sm:hidden">{tab.shortLabel}</span>
+          </button>
+        ))}
       </div>
-      <Tab.Group selectedIndex={activeTab} onChange={handleTabChange}>
-        <Tab.List className="grid grid-cols-2 sm:grid-cols-3 md:flex border-b-0 bg-transparent relative">
-          <Tab className="relative flex-1">
-            {({ selected }) => (
-              <Tab.Button
-                className={`w-full py-2 sm:py-3 flex items-center justify-center gap-1 text-[10px] sm:text-xs md:text-sm transition-all duration-200 relative ${
-                  selected
-                    ? 'bg-white dark:bg-darkmode-700 text-slate-900 dark:text-white border-t-4 border-l-4 border-r-4 border-gray-100 dark:border-darkmode-400 rounded-tl-xl rounded-tr-xl shadow-sm'
-                    : 'bg-slate-50 dark:bg-darkmode-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-darkmode-700'
-                }`}
-                as="button"
-                style={selected ? {
-                  position: 'relative',
-                  zIndex: 10
-                } : {}}
-              >
-                <Lucide icon="Globe" className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 stroke-[2.5]" />
-                All
-              </Tab.Button>
-            )}
-          </Tab>
-          <Tab className="relative flex-1">
-            {({ selected }) => (
-              <Tab.Button
-                className={`w-full py-2 sm:py-3 flex items-center justify-center gap-1 text-[10px] sm:text-xs md:text-sm transition-all duration-200 relative ${
-                  selected
-                    ? 'bg-white dark:bg-darkmode-700 text-slate-900 dark:text-white border-t-4 border-l-4 border-r-4 border-gray-100 dark:border-darkmode-400 rounded-tl-xl rounded-tr-xl shadow-sm'
-                    : 'bg-slate-50 dark:bg-darkmode-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-darkmode-700'
-                }`}
-                as="button"
-                style={selected ? {
-                  position: 'relative',
-                  zIndex: 10
-                } : {}}
-              >
-                <Lucide
-                  icon="BadgeCheck"
-                  className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 stroke-[2.5]"
-                />
-                <span className="hidden sm:inline">Completed</span>
-                <span className="sm:hidden">Done</span>
-              </Tab.Button>
-            )}
-          </Tab>
-          <Tab className="relative flex-1">
-            {({ selected }) => (
-              <Tab.Button
-                className={`w-full py-2 sm:py-3 flex items-center justify-center gap-1 text-[10px] sm:text-xs md:text-sm transition-all duration-200 relative ${
-                  selected
-                    ? 'bg-white dark:bg-darkmode-700 text-slate-900 dark:text-white border-t-4 border-l-4 border-r-4 border-gray-100 dark:border-darkmode-400 rounded-tl-xl rounded-tr-xl shadow-sm'
-                    : 'bg-slate-50 dark:bg-darkmode-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-darkmode-700'
-                }`}
-                as="button"
-                style={selected ? {
-                  position: 'relative',
-                  zIndex: 10
-                } : {}}
-              >
-                <LoadingIcon icon="ball-triangle" className="w-3 h-3 sm:w-4 sm:h-4" />
-                <span className="hidden sm:inline">InProgress</span>
-                <span className="sm:hidden">Progress</span>
-              </Tab.Button>
-            )}
-          </Tab>
-          <Tab className="relative flex-1">
-            {({ selected }) => (
-              <Tab.Button
-                className={`w-full py-2 sm:py-3 flex items-center justify-center gap-1 text-[10px] sm:text-xs md:text-sm transition-all duration-200 relative ${
-                  selected
-                    ? 'bg-white dark:bg-darkmode-700 text-slate-900 dark:text-white border-t-4 border-l-4 border-r-4 border-gray-100 dark:border-darkmode-400 rounded-tl-xl rounded-tr-xl shadow-sm'
-                    : 'bg-slate-50 dark:bg-darkmode-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-darkmode-700'
-                }`}
-                as="button"
-                style={selected ? {
-                  position: 'relative',
-                  zIndex: 10
-                } : {}}
-              >
-                <Lucide icon="Trash2" className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 stroke-[2.5]" />
-                Dropped
-              </Tab.Button>
-            )}
-          </Tab>
-          <Tab className="relative flex-1">
-            {({ selected }) => (
-              <Tab.Button
-                className={`w-full py-2 sm:py-3 flex items-center justify-center gap-1 text-[10px] sm:text-xs md:text-sm transition-all duration-200 relative ${
-                  selected
-                    ? 'bg-white dark:bg-darkmode-700 text-slate-900 dark:text-white border-t-4 border-l-4 border-r-4 border-gray-100 dark:border-darkmode-400 rounded-tl-xl rounded-tr-xl shadow-sm'
-                    : 'bg-slate-50 dark:bg-darkmode-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-darkmode-700'
-                }`}
-                as="button"
-                style={selected ? {
-                  position: 'relative',
-                  zIndex: 10
-                } : {}}
-              >
-                <Lucide
-                  icon="AlertTriangle"
-                  className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 stroke-[2.5]"
-                />
-                Review
-              </Tab.Button>
-            )}
-          </Tab>
-        </Tab.List>
-        <Tab.Panels className="border-b border-l border-r border-gray-100 dark:border-darkmode-400 border-t-4 border-t-gray-100 dark:border-t-darkmode-400">
-          <Tab.Panel className="p-2 sm:p-4 md:p-5 leading-relaxed">
-            <AllPayIn
-              vendorCodes={vendorCodes}
-              merchantCodes={merchantCodes}
-              merchantCodesData={merchantCodesData}
-              bankNames={bankNames}
-              setCallMerchant={setCallMerchant}
-              setCallVendor={setCallVendor}
-              setCallBank={setCallBank}
-            />
-          </Tab.Panel>
-          <Tab.Panel className="p-2 sm:p-4 md:p-5 leading-relaxed">
-            <CompletedPayIn
-              vendorCodes={vendorCodes}
-              merchantCodes={merchantCodes}
-              merchantCodesData={merchantCodesData}
-              bankNames={bankNames}
-              setCallMerchant={setCallMerchant}
-              setCallVendor={setCallVendor}
-              setCallBank={setCallBank}
-            />
-          </Tab.Panel>
-          <Tab.Panel className="p-2 sm:p-4 md:p-5 leading-relaxed">
-            <InProgressPayIn
-              vendorCodes={vendorCodes}
-              merchantCodes={merchantCodes}
-              merchantCodesData={merchantCodesData}
-              bankNames={bankNames}
-              setCallMerchant={setCallMerchant}
-              setCallVendor={setCallVendor}
-              setCallBank={setCallBank}
-            />
-          </Tab.Panel>
-          <Tab.Panel className="p-2 sm:p-4 md:p-5 leading-relaxed">
-            <DroppedPayIn
-              vendorCodes={vendorCodes}
-              merchantCodes={merchantCodes}
-              merchantCodesData={merchantCodesData}
-              bankNames={bankNames}
-              setCallMerchant={setCallMerchant}
-              setCallVendor={setCallVendor}
-              setCallBank={setCallBank}
-            />
-          </Tab.Panel>
-          <Tab.Panel className="p-2 sm:p-4 md:p-5 leading-relaxed">
-            <ReviewPayIn
-              vendorCodes={vendorCodes}
-              merchantCodes={merchantCodes}
-              merchantCodesData={merchantCodesData}
-              bankNames={bankNames}
-              setCallMerchant={setCallMerchant}
-              setCallVendor={setCallVendor}
-              setCallBank={setCallBank}
-            />
-          </Tab.Panel>
-        </Tab.Panels>
-      </Tab.Group>
+
+      {/* Tab Content */}
+      <div className={clsx([
+        'rounded-xl p-4',
+        darkMode 
+          ? 'bg-white/5 border border-white/10'
+          : 'bg-white border border-slate-200',
+      ])}>
+        {activeTab === 0 && (
+          <AllPayIn
+            vendorCodes={vendorCodes}
+            merchantCodes={merchantCodes}
+            merchantCodesData={merchantCodesData}
+            bankNames={bankNames}
+            setCallMerchant={setCallMerchant}
+            setCallVendor={setCallVendor}
+            setCallBank={setCallBank}
+          />
+        )}
+        {activeTab === 1 && (
+          <CompletedPayIn
+            vendorCodes={vendorCodes}
+            merchantCodes={merchantCodes}
+            merchantCodesData={merchantCodesData}
+            bankNames={bankNames}
+            setCallMerchant={setCallMerchant}
+            setCallVendor={setCallVendor}
+            setCallBank={setCallBank}
+          />
+        )}
+        {activeTab === 2 && (
+          <InProgressPayIn
+            vendorCodes={vendorCodes}
+            merchantCodes={merchantCodes}
+            merchantCodesData={merchantCodesData}
+            bankNames={bankNames}
+            setCallMerchant={setCallMerchant}
+            setCallVendor={setCallVendor}
+            setCallBank={setCallBank}
+          />
+        )}
+        {activeTab === 3 && (
+          <DroppedPayIn
+            vendorCodes={vendorCodes}
+            merchantCodes={merchantCodes}
+            merchantCodesData={merchantCodesData}
+            bankNames={bankNames}
+            setCallMerchant={setCallMerchant}
+            setCallVendor={setCallVendor}
+            setCallBank={setCallBank}
+          />
+        )}
+        {activeTab === 4 && (
+          <ReviewPayIn
+            vendorCodes={vendorCodes}
+            merchantCodes={merchantCodes}
+            merchantCodesData={merchantCodesData}
+            bankNames={bankNames}
+            setCallMerchant={setCallMerchant}
+            setCallVendor={setCallVendor}
+            setCallBank={setCallBank}
+          />
+        )}
+      </div>
     </div>
   );
 };
