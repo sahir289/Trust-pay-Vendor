@@ -612,27 +612,6 @@ function Main() {
             </div>
             </div>
 
-            {loginObj.isAdminLogin && (
-            <div className="space-y-2">
-              <FormLabel className="text-sm text-slate-600 dark:text-slate-200">
-            Unique ID<span className="text-danger">*</span>
-              </FormLabel>
-              <FormInput
-            type="text"
-            className="block w-full px-4 py-3.5 rounded-xl border border-slate-200 dark:border-darkmode-400 focus:border-theme-1/70 focus:ring-2 focus:ring-theme-1/30 transition"
-            placeholder="Enter unique ID"
-            value={loginObj.uniqueId}
-            onChange={(e) =>
-              updateFormValue({
-              updateType: 'uniqueId',
-              value: e.target.value,
-              })
-            }
-            required
-              />
-            </div>
-            )}
-
             <div className="flex items-center text-xs text-slate-500 sm:text-sm gap-3">
             {loginObj.isAdminLogin && (
               <div className="flex items-center gap-2">

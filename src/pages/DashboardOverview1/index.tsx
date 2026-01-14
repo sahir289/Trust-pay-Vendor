@@ -376,17 +376,6 @@ function Main() {
     setNewTransactionModal(false);
   };
 
-  // Debounced effect for filter changes
-  useEffect(() => {
-    const debounceTimer = window.setTimeout(() => {
-      if (activeTab !== 2) {
-        handleFilterData();
-      }
-      setIsloading(false);
-    }, 1000);
-
-    return () => window.clearTimeout(debounceTimer);
-  }, [merchantSelectedFilter, vendorSelectedFilter, activeTab]);
 
   const getFilterDateRange = (dateRangeStr: string) => {
     const [startDate, endDate] = dateRangeStr.split(' - ');
